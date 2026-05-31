@@ -1,0 +1,5 @@
+method,nprobe,direction,r1,r10,r100,n_vectors,d,seed
+ivfpq,16,text->image,0.446,0.5598,0.6048,100000,200,42
+ivfpq_pmc,16,text->image,0.431,0.5654,0.6221,100000,200,42
+opq_ivfpq,16,text->image,0.434,0.5535,0.6062,100000,200,42
+opq_ivfpq_pmc,16,text->image,0.444,0.568,0.6234,100000,200,42

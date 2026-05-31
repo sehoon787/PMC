@@ -1,0 +1,116 @@
+\section{Experiments}\label{sec:experiments}
+
+\begin{table}[t]
+\caption{Mechanism/control checks at $\alpha{=}1$ (original exact-IP GT). J@100 $=$ top-100 Jaccard overlap vs.\ exact GT.}\label{tab:mechcontrol}
+\centering
+{\footnotesize
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lcccc@{}}
+\toprule
+\textbf{Direction} & \textbf{Flip\%} & \textbf{J@100} & \textbf{BinaryFlat R@100} & \textbf{$n{=}25$ cos} \\
+\midrule
+MSCOCO t$\to$i & 16.14 & 0.5852 & $0.5073\to0.5697$ & 0.9860 \\
+MSCOCO i$\to$t & 16.00 & 0.5422 & $0.4579\to0.5675$ & 0.9863 \\
+AudioCaps t$\to$a & 14.20 & 0.8016 & $0.6298\to0.6597$ & 0.9653 \\
+AudioCaps a$\to$t & 17.75 & 0.8036 & $0.5143\to0.6442$ & 0.9546 \\
+\bottomrule
+\end{tabular*}%
+}
+\end{table}
+
+\begin{table}[t]
+\caption{MSCOCO/CLIP-B/32 checks: calibration sensitivity, component ablation, and IVF-RaBitQ (IVFRaBitQFastScan) controls. Rand/Shuf are mean$\pm$std over 5 seeds.}\label{tab:mech_extra}
+\centering
+{\footnotesize
+\setlength{\tabcolsep}{1.5pt}
+\renewcommand{\arraystretch}{0.92}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lcccc@{}}
+\toprule
+\multicolumn{5}{@{}l}{\textbf{Calibration sensitivity}}\\
+\textbf{$n_\mathrm{calib}$} & \textbf{t$\to$i R@100} & \textbf{cos} & \textbf{i$\to$t R@100} & \textbf{cos} \\
+\midrule
+25  & .7294 & .9860 & .6938 & .9863 \\
+100 & .7296 & .9965 & .6950 & .9964 \\
+400 & .7296 & .9992 & .6947 & .9992 \\
+\bottomrule
+\end{tabular*}\\[0pt]
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}llcccc@{}}
+\toprule
+\multicolumn{6}{@{}l}{\textbf{Component ablation}}\\
+\textbf{Index} & \textbf{Dir.} & \textbf{Van.} & \textbf{Q-only} & \textbf{DB-only} & \textbf{Both} \\
+\midrule
+BinaryFlat & t$\to$i & .507 & .569 & .570 & .570 \\
+BinaryFlat & i$\to$t & .458 & .571 & .568 & .569 \\
+IVF-RaBitQ & t$\to$i & .578 & .541 & \textbf{.637} & .599 \\
+IVF-RaBitQ & i$\to$t & .515 & .495 & \textbf{.608} & .554 \\
+\bottomrule
+\end{tabular*}\\[0pt]
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lcccccc@{}}
+\toprule
+\multicolumn{7}{@{}l}{\textbf{IVF-RaBitQ controls}}\\
+\textbf{Dir.} & \textbf{Van.} & \textbf{DB-PMC} & \textbf{Rand} & \textbf{Shuf} & \textbf{Flip} & \textbf{NoNorm} \\
+\midrule
+t$\to$i & .578 & \textbf{.637} & .562$\pm$.009 & .552$\pm$.006 & .514 & .555 \\
+i$\to$t & .515 & \textbf{.608} & .564$\pm$.009 & .559$\pm$.009 & .491 & .520 \\
+\bottomrule
+\end{tabular*}%
+}
+\end{table}
+
+\subsection{Setup}\label{sec:exp-setup}
+
+We evaluate three frozen backbones: CLIP ViT-B/32 ($d{=}512$)~\cite{radford2021clip}, CLIP ViT-L/14 ($d{=}768$), and ImageBind ($d{=}1024$)~\cite{girdhar2023imagebind}. Datasets span image--text and audio--text retrieval: MSCOCO 5K~\cite{lin2014coco}, Flickr30K ($n{=}31$K)~\cite{young2014flickr30k}, AudioCaps~\cite{kim2019audiocaps} (884 clips, 4{,}415 captions; text$\to$audio retrieves over audio DB), Clotho v2 ($n{=}5{,}926$)~\cite{drossos2020clotho}, and at large scale LAION-400M (407M vectors across 410 shards; exact brute-force inner-product (IP) ground truth over 10K random queries per direction, computed per shard with exact \texttt{IndexFlatIP} search and merged into the global top-100, identical to a single full-corpus scan)~\cite{schuhmann2021laion}. Indexes are built with FAISS~\cite{johnson2021faiss,douze2024faiss}: IVFRaBitQFastScan (1-bit, 33--136\,B/vec) and IVFPQ/OPQ~\cite{jegou2011pq,ge2013opq} ($m{=}16$, 64\,B/vec); default $n_\mathrm{list}{=}64$, $n_\mathrm{probe}{=}16$; LAION uses $n_\mathrm{list}{=}20\mathrm{K}$, 30.4\,GB, 72\,B/vec ($28\times$); PMC leaves bytes per vector identical to vanilla; BQ baselines include BinaryFlat, BinaryIVF, and rotated BinaryFlat (BBQ-style). We report R@10 and R@100 against exact-IP ground truth on original (unshifted) embeddings---PMC modifies only the index-internal representation (analogous to OPQ rotation), so gains reflect better approximation, not redefined relevance---and QPS (queries per second) as the single-threaded median over 5 runs. All experiments run on a single Intel Core i7-12700F, 32\,GB RAM, CPU-only.\looseness=-1
+
+%% ---------------------------------------------------------------
+\vspace{-3pt}
+\subsection{Main Results}\label{sec:results}
+%% ---------------------------------------------------------------
+
+PMC improves RaBitQ recall across nearly all tested configurations (Table~\ref{tab:main}). Gains scale with gap magnitude: Flickr30K i$\to$t reaches $+$48\% and MSCOCO CLIP-L i$\to$t $+$37\% at high gap. R@10 gains are usually smaller than R@100, consistent with IVF routing effects on larger candidate sets. Query-only mean shift can hurt---it leaves IVF centroids misaligned, degrading routing---while PMC improves both directions (Table~\ref{tab:main}). Across all 16 BQ method$\times$direction configurations, PMC improves or matches R@100 without exception (Table~\ref{tab:signbit_methods}).
+Query throughput is unchanged: PMC achieves within 1\% of vanilla QPS across all configurations (Figure~\ref{fig:analysis-bcd}c).\looseness=-1
+
+\textbf{$\|\mathbf{g}\|$ as predictor.}
+The ratio condition~\eqref{eq:ratio-form} implies more flips at higher gap, matching the Flickr30K/MSCOCO vs.\ AudioCaps contrast: AudioCaps shows minimal gain ($\Delta_\mathrm{VP}{\leq}$5\%) because its gap ($\|\mathbf{g}\|{=}0.61$) is small relative to intra-class variance. At deployment scale, LAION-400M confirms the pattern in both retrieval directions at 407M vectors with identical index memory (Table~\ref{tab:main}).\looseness=-1
+
+\enlargethispage{\baselineskip}
+\subsection{Sign-Bit Corruption Analysis}\label{sec:analysis}
+
+We validate the predicted sign-bit corruption mechanism through gap-magnitude correlation, bit-flip statistics, and selective correction.
+R@100 gains grow with $\|\mathbf{g}\|$: high-gap settings show the largest improvements while low-gap datasets improve modestly (Table~\ref{tab:main}). PMC induces 14--18\% sign-bit flips with J@100 of 0.54--0.80 (Table~\ref{tab:mechcontrol}), confirming the predicted mechanism; gap direction is stable from $n{=}25$ samples (cosine $\geq 0.95$). Selective PMC recovers gains from high-$|g_i|$ dimensions first: on MSCOCO/CLIP, $\mathcal{E}(5\%){\approx}87\%$ already recovers peak R@100 (Figure~\ref{fig:analysis-bcd}b); ImageBind's diffuse gap ($\mathcal{E}(10\%){\approx}72\%$) requires broader correction.
+
+%% ---------------------------------------------------------------
+\subsection{Ablation Study}\label{sec:ablation}
+%% ---------------------------------------------------------------
+
+Calibration is stable from $n_\mathrm{calib}{=}25$ (cosine $\approx0.986$), making PMC practical with few cross-modal samples. BinaryFlat is insensitive to shift direction, but IVF-RaBitQ strongly prefers DB-only correction (.637/.608) over Q-only (.541/.495) or both sides (.599/.554)---shifting both sides re-displaces the routing pivot after code boundaries improve, confirming that the centroid must be corrected at the source where it simultaneously serves as routing pivot and code boundary. Four controls (random, shuffled, sign-flipped, un-normalized shift) all trail DB-PMC (Table~\ref{tab:mech_extra}), ruling out arbitrary perturbation.\looseness=-1
+
+%% ---------------------------------------------------------------
+\subsection{Multi-Bit Generality}\label{sec:multibit}
+%% ---------------------------------------------------------------
+
+\begin{table}[t]
+\caption{PMC generality on IVFPQ and OPQ across encoders.}\label{tab:multibit}
+\vspace{2pt}
+\centering
+{\footnotesize
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lll cccc@{}}
+\toprule
+\textbf{Dataset} & \textbf{Enc.} & \textbf{Dir.} & \multicolumn{2}{c}{\textbf{IVFPQ}} & \multicolumn{2}{c}{\textbf{OPQ}} \\
+\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+& & & R@100 & $\Delta$ & R@100 & $\Delta$ \\
+\midrule
+MSCOCO & CLIP  & t$\to$i & .54\,/\,\textbf{.63} & +16\% & .61\,/\,\textbf{.66} & +8\% \\
+      &       & i$\to$t & .50\,/\,\textbf{.64} & +30\% & \textbf{.67}\,/\,\textbf{.67} & $-1$\% \\
+      & CL-L  & t$\to$i & .43\,/\,\textbf{.63} & +46\% & .56\,/\,\textbf{.67} & +20\% \\
+      &       & i$\to$t & .35\,/\,\textbf{.58} & +69\% & .60\,/\,\textbf{.67} & +12\% \\
+      & IB    & t$\to$i & .59\,/\,\textbf{.70} & +18\% & .69\,/\,\textbf{.76} & +11\% \\
+      &       & i$\to$t & .59\,/\,\textbf{.68} & +16\% & .72\,/\,\textbf{.78} & +7\% \\
+\midrule
+Flickr & CL-L & t$\to$i & .51\,/\,\textbf{.54} & +5\% & \textbf{.55}\,/\, .54 & $-1$\% \\
+       &      & i$\to$t & .43\,/\,\textbf{.47} & +9\% & .48\,/\,\textbf{.50} & +5\% \\
+\bottomrule
+\end{tabular*}%
+}
+
+\end{table}
+
+{\emergencystretch=1em PMC generalizes beyond 1-bit: it improves all shown IVFPQ settings and most OPQ settings (audio omitted; $n_\mathrm{db}$ too small for codebook training), with the gap-proportional trend persisting (Table~\ref{tab:multibit}). OPQ's learned rotation partially absorbs distributional shift, yielding smaller but complementary PMC gains; IVFPQ lacks this compensation and benefits more.\looseness=-1\par}

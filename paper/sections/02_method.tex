@@ -1,0 +1,70 @@
+\section{Method}\label{sec:method}
+
+\subsection{Problem Setup}\label{sec:setup}
+
+Let $\phi$ be a frozen multimodal encoder mapping inputs from modalities $a$
+and $b$ into $\mathbb{R}^d$.
+The database $\mathcal{X} = \{\phi(x_i)\}$ consists of modality-$b$ embeddings;
+queries $q = \phi(q_j)$ come from modality~$a$.
+We denote the per-modality means $\boldsymbol{\mu}_q = \mathbb{E}[\phi(q)]$
+and $\boldsymbol{\mu}_x = \mathbb{E}[\phi(x)]$,
+and the \emph{modality gap} $\mathbf{g} = \boldsymbol{\mu}_q - \boldsymbol{\mu}_x$.
+The goal is to build a compressed ANN index over $\mathcal{X}$ that answers
+cross-modal queries with high recall under a fixed memory budget.
+
+\subsection{BQ Vulnerability to Modality Gap}\label{sec:why}
+
+BQ encodes each dimension as $\hat{x}_i = \mathrm{sign}(x_i - c_i)$ relative to centroid $c$, as in RaBitQ~\cite{gao2024rabitq} and BBQ (Apache Lucene). With one bit, the decision boundary passes exactly through $c$ with \emph{zero error margin}.
+Let $\delta_i = x_i - c_i$ be the residual under $c = \boldsymbol{\mu}_x$ (so $b_i = \mathrm{sign}\,\delta_i$); shifting to $c^* = \boldsymbol{\mu}_x + \alpha\mathbf{g}$ flips dimension~$i$'s sign iff
+\begin{equation}\label{eq:ratio-form}
+  \delta_i(\delta_i - \alpha g_i) < 0\,,\quad\text{i.e.,}\quad 0 < \frac{\delta_i}{\alpha g_i} < 1\,.
+\end{equation}
+Under smooth symmetric residual densities $p_i$ near the decision boundary, a first-order expansion yields the expected number of flips:
+\begin{equation}\label{eq:expected-flips}
+  \mathbb{E}[F]\;\approx\;\alpha\sum_i p_i(0)\,|g_i|\,,
+\end{equation}
+a density-weighted $\ell_1$ norm of the gap. Eq.~\eqref{eq:ratio-form} shows that flip risk in dimension~$i$ grows with $|\alpha g_i|/|\delta_i|$: larger gap components produce wider flip intervals. When gap energy is concentrated---in CLIP-L on MSCOCO, top 10\% of dimensions carry ${\approx}90$\% of $\|\mathbf{g}\|^2$---corruption is \emph{structured} rather than random, biasing Hamming distance estimates systematically. The same offset misaligns IVF cluster assignments, compounding routing errors with code corruption. Eq.~\eqref{eq:expected-flips} formalizes this scaling, explaining the gap-proportional gains in Table~\ref{tab:main} and why top-5\% selective PMC already reaches peak recall (Figure~\ref{fig:analysis-bcd}b).
+Multi-bit quantization (IVFPQ~\cite{jegou2011pq}, OPQ~\cite{ge2013opq}) partially absorbs displacement through wider error margins; BQ is maximally vulnerable and is the focus of our main claims (multi-bit: Section~\ref{sec:multibit}). PMC applies to all $\mathrm{sign}(\cdot{-}c)$ methods (BinaryFlat, BinaryIVF, BBQ, RaBitQ) and analogous schemes such as LSH~\cite{wang2018hashsurvey}.\looseness=-1
+
+\subsection{PMC Correction}\label{sec:pmc}
+
+PMC applies a one-time centroid alignment \emph{before} index
+construction.
+Given a training sample of queries from modality~$a$ and the database from
+modality~$b$, we compute the gap $\mathbf{g}$ and shift database vectors
+toward the query centroid:
+%
+\begin{equation}\label{eq:pmc}
+  \mathbf{x}' = \frac{\mathbf{x} + \alpha \, \mathbf{g}}
+                      {\|\mathbf{x} + \alpha \, \mathbf{g}\|}
+  \,,\qquad
+  \mathbf{q}' = \frac{\mathbf{q} - (1-\alpha) \, \mathbf{g}}
+                      {\|\mathbf{q} - (1-\alpha) \, \mathbf{g}\|}
+\end{equation}
+%
+where $\alpha \in [0,1]$ interpolates between full query-side correction
+($\alpha{=}0$, equivalent to mean shift) and full database-side alignment
+($\alpha{=}1$).
+The BQ index is then built on $\{\mathbf{x}'\}$; in our main setting
+$\alpha{=}1$ (full database-side alignment), query-time transformation is
+identity ($\mathbf{q}'{=}\mathbf{q}$), so serving incurs no extra cost.
+
+\textbf{Effectiveness of {\boldmath$\alpha{=}1$}.}
+Per-vector renormalization after the shift preserves unit-norm structure; the $\alpha$-sweep in Figure~\ref{fig:analysis-bcd}a confirms $\alpha{=}1$ as best or near-best across all tested settings.\looseness=-1
+
+\textbf{Selective PMC as a mechanism test.}
+We restrict correction to top-$P$\% dimensions ranked by $|g_i|$:
+\begin{align}
+  g_{\mathrm{sel},i} &= \begin{cases}
+    g_i & \text{if } |g_i| \ge |g|_{(P)} \\
+    0   & \text{otherwise}
+  \end{cases} \label{eq:selective-gap} \\[2pt]
+  \mathbf{x}'_{\mathrm{sel}} &= \frac{\mathbf{x} + \alpha \, \mathbf{g}_{\mathrm{sel}}}{\|\mathbf{x} + \alpha \, \mathbf{g}_{\mathrm{sel}}\|} \label{eq:selective}
+\end{align}
+where $|g|_{(P)}$ is the top-$P$\% magnitude threshold on $|g_i|$. The cumulative energy captured by $\mathbf{g}_{\mathrm{sel}}$ is
+\begin{equation}\label{eq:energy-frac}
+  \mathcal{E}(P) = \frac{\sum_{i \in \mathcal{S}_P} g_i^2}{\|\mathbf{g}\|^2}\,,
+  \quad \mathcal{S}_P = \bigl\{i : |g_i| \geq |g|_{(P)}\bigr\}\,.
+\end{equation}
+Since flip risk concentrates in high-$|g_i|$ dimensions (Eq.~\eqref{eq:ratio-form}), correcting only the highest-energy ones suffices: for CLIP the top 10\% by $|g_i|$ carry 86--92\% of total gap energy across all tested datasets, so $P{=}5$\% already recovers peak recall; ImageBind's diffuse gap (${\approx}72\%$) requires full-vector correction.\looseness=-1
+

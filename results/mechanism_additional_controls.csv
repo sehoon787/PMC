@@ -1,0 +1,73 @@
+dataset,backbone,direction,index_type,mode,seed,r10,r100,gap_norm,db_mean_norm,query_mean_norm,gt_protocol,note
+mscoco,clip-b32,text2image,binary_flat,vanilla,,0.355900,0.507302,0.824388,0.686422,0.712861,original_exact_ip,baseline no shift
+mscoco,clip-b32,text2image,ivf_rabitq,vanilla,,0.421420,0.577940,0.824388,0.686422,0.712861,original_exact_ip,baseline no shift
+mscoco,clip-b32,text2image,binary_flat,query_only,,0.397480,0.569140,0.824388,0.686422,0.702526,original_exact_ip,normalized query-side shift only
+mscoco,clip-b32,text2image,ivf_rabitq,query_only,,0.391760,0.541144,0.824388,0.686422,0.702526,original_exact_ip,normalized query-side shift only
+mscoco,clip-b32,text2image,binary_flat,db_only,,0.396980,0.569712,0.824388,0.701497,0.712861,original_exact_ip,normalized DB-side PMC alpha=1
+mscoco,clip-b32,text2image,ivf_rabitq,db_only,,0.475100,0.637160,0.824388,0.701497,0.712861,original_exact_ip,normalized DB-side PMC alpha=1
+mscoco,clip-b32,text2image,binary_flat,both,,0.396340,0.569716,0.824388,0.615197,0.630295,original_exact_ip,normalized split correction alpha=0.5
+mscoco,clip-b32,text2image,ivf_rabitq,both,,0.440800,0.598558,0.824388,0.615197,0.630295,original_exact_ip,normalized split correction alpha=0.5
+mscoco,clip-b32,text2image,binary_flat,query_only_no_norm,,0.395980,0.569348,0.824388,0.686422,0.686422,original_exact_ip,query-side shift without post-shift L2 normalization
+mscoco,clip-b32,text2image,ivf_rabitq,query_only_no_norm,,0.389500,0.539794,0.824388,0.686422,0.686422,original_exact_ip,query-side shift without post-shift L2 normalization
+mscoco,clip-b32,text2image,binary_flat,db_only_no_norm,,0.395980,0.569352,0.824388,0.712861,0.712861,original_exact_ip,DB-side shift without post-shift L2 normalization
+mscoco,clip-b32,text2image,ivf_rabitq,db_only_no_norm,,0.399120,0.555302,0.824388,0.712861,0.712861,original_exact_ip,DB-side shift without post-shift L2 normalization
+mscoco,clip-b32,text2image,binary_flat,both_no_norm,,0.395980,0.569350,0.824388,0.565481,0.565481,original_exact_ip,split correction without post-shift L2 normalization
+mscoco,clip-b32,text2image,ivf_rabitq,both_no_norm,,0.390660,0.543754,0.824388,0.565481,0.565481,original_exact_ip,split correction without post-shift L2 normalization
+mscoco,clip-b32,text2image,binary_flat,sign_flipped_gap,,0.318180,0.463746,0.824388,0.878514,0.712861,original_exact_ip,"same gap magnitude but opposite direction, DB-side"
+mscoco,clip-b32,text2image,ivf_rabitq,sign_flipped_gap,,0.372460,0.513952,0.824388,0.878514,0.712861,original_exact_ip,"same gap magnitude but opposite direction, DB-side"
+mscoco,clip-b32,text2image,binary_flat,random_direction_same_norm,0,0.280440,0.422178,0.824388,0.833571,0.712861,original_exact_ip,DB-side random direction with same norm as gap
+mscoco,clip-b32,text2image,ivf_rabitq,random_direction_same_norm,0,0.406880,0.568782,0.824388,0.833571,0.712861,original_exact_ip,DB-side random direction with same norm as gap
+mscoco,clip-b32,text2image,binary_flat,shuffled_gap,0,0.336620,0.479256,0.824388,0.826084,0.712861,original_exact_ip,DB-side coordinate-shuffled gap
+mscoco,clip-b32,text2image,ivf_rabitq,shuffled_gap,0,0.397760,0.558344,0.824388,0.826084,0.712861,original_exact_ip,DB-side coordinate-shuffled gap
+mscoco,clip-b32,text2image,binary_flat,random_direction_same_norm,1,0.280860,0.421256,0.824388,0.826696,0.712861,original_exact_ip,DB-side random direction with same norm as gap
+mscoco,clip-b32,text2image,ivf_rabitq,random_direction_same_norm,1,0.407740,0.561220,0.824388,0.826696,0.712861,original_exact_ip,DB-side random direction with same norm as gap
+mscoco,clip-b32,text2image,binary_flat,shuffled_gap,1,0.340840,0.488788,0.824388,0.829942,0.712861,original_exact_ip,DB-side coordinate-shuffled gap
+mscoco,clip-b32,text2image,ivf_rabitq,shuffled_gap,1,0.388080,0.547432,0.824388,0.829942,0.712861,original_exact_ip,DB-side coordinate-shuffled gap
+mscoco,clip-b32,text2image,binary_flat,random_direction_same_norm,2,0.260560,0.401818,0.824388,0.826387,0.712861,original_exact_ip,DB-side random direction with same norm as gap
+mscoco,clip-b32,text2image,ivf_rabitq,random_direction_same_norm,2,0.404120,0.558546,0.824388,0.826387,0.712861,original_exact_ip,DB-side random direction with same norm as gap
+mscoco,clip-b32,text2image,binary_flat,shuffled_gap,2,0.336300,0.484924,0.824388,0.829701,0.712861,original_exact_ip,DB-side coordinate-shuffled gap
+mscoco,clip-b32,text2image,ivf_rabitq,shuffled_gap,2,0.382080,0.547534,0.824388,0.829701,0.712861,original_exact_ip,DB-side coordinate-shuffled gap
+mscoco,clip-b32,text2image,binary_flat,random_direction_same_norm,3,0.273160,0.419614,0.824388,0.825059,0.712861,original_exact_ip,DB-side random direction with same norm as gap
+mscoco,clip-b32,text2image,ivf_rabitq,random_direction_same_norm,3,0.382820,0.549164,0.824388,0.825059,0.712861,original_exact_ip,DB-side random direction with same norm as gap
+mscoco,clip-b32,text2image,binary_flat,shuffled_gap,3,0.340220,0.491098,0.824388,0.821865,0.712861,original_exact_ip,DB-side coordinate-shuffled gap
+mscoco,clip-b32,text2image,ivf_rabitq,shuffled_gap,3,0.386820,0.548214,0.824388,0.821865,0.712861,original_exact_ip,DB-side coordinate-shuffled gap
+mscoco,clip-b32,text2image,binary_flat,random_direction_same_norm,4,0.273440,0.423468,0.824388,0.834940,0.712861,original_exact_ip,DB-side random direction with same norm as gap
+mscoco,clip-b32,text2image,ivf_rabitq,random_direction_same_norm,4,0.402280,0.570612,0.824388,0.834940,0.712861,original_exact_ip,DB-side random direction with same norm as gap
+mscoco,clip-b32,text2image,binary_flat,shuffled_gap,4,0.336160,0.485456,0.824388,0.828092,0.712861,original_exact_ip,DB-side coordinate-shuffled gap
+mscoco,clip-b32,text2image,ivf_rabitq,shuffled_gap,4,0.400360,0.559508,0.824388,0.828092,0.712861,original_exact_ip,DB-side coordinate-shuffled gap
+mscoco,clip-b32,image2text,binary_flat,vanilla,,0.276980,0.457924,0.824388,0.712861,0.686422,original_exact_ip,baseline no shift
+mscoco,clip-b32,image2text,ivf_rabitq,vanilla,,0.265980,0.515454,0.824388,0.712861,0.686422,original_exact_ip,baseline no shift
+mscoco,clip-b32,image2text,binary_flat,query_only,,0.394840,0.570916,0.824388,0.712861,0.701497,original_exact_ip,normalized query-side shift only
+mscoco,clip-b32,image2text,ivf_rabitq,query_only,,0.313780,0.495434,0.824388,0.712861,0.701497,original_exact_ip,normalized query-side shift only
+mscoco,clip-b32,image2text,binary_flat,db_only,,0.394520,0.567536,0.824388,0.702526,0.686422,original_exact_ip,normalized DB-side PMC alpha=1
+mscoco,clip-b32,image2text,ivf_rabitq,db_only,,0.413000,0.608346,0.824388,0.702526,0.686422,original_exact_ip,normalized DB-side PMC alpha=1
+mscoco,clip-b32,image2text,binary_flat,both,,0.394960,0.568664,0.824388,0.630295,0.615197,original_exact_ip,normalized split correction alpha=0.5
+mscoco,clip-b32,image2text,ivf_rabitq,both,,0.362020,0.553544,0.824388,0.630295,0.615197,original_exact_ip,normalized split correction alpha=0.5
+mscoco,clip-b32,image2text,binary_flat,query_only_no_norm,,0.393940,0.571876,0.824388,0.712861,0.712861,original_exact_ip,query-side shift without post-shift L2 normalization
+mscoco,clip-b32,image2text,ivf_rabitq,query_only_no_norm,,0.318140,0.498422,0.824388,0.712861,0.712861,original_exact_ip,query-side shift without post-shift L2 normalization
+mscoco,clip-b32,image2text,binary_flat,db_only_no_norm,,0.393940,0.571876,0.824388,0.686422,0.686422,original_exact_ip,DB-side shift without post-shift L2 normalization
+mscoco,clip-b32,image2text,ivf_rabitq,db_only_no_norm,,0.324720,0.520050,0.824388,0.686422,0.686422,original_exact_ip,DB-side shift without post-shift L2 normalization
+mscoco,clip-b32,image2text,binary_flat,both_no_norm,,0.393940,0.571876,0.824388,0.565481,0.565481,original_exact_ip,split correction without post-shift L2 normalization
+mscoco,clip-b32,image2text,ivf_rabitq,both_no_norm,,0.317440,0.506354,0.824388,0.565481,0.565481,original_exact_ip,split correction without post-shift L2 normalization
+mscoco,clip-b32,image2text,binary_flat,sign_flipped_gap,,0.209440,0.393328,0.824388,0.891030,0.686422,original_exact_ip,"same gap magnitude but opposite direction, DB-side"
+mscoco,clip-b32,image2text,ivf_rabitq,sign_flipped_gap,,0.269260,0.490930,0.824388,0.891030,0.686422,original_exact_ip,"same gap magnitude but opposite direction, DB-side"
+mscoco,clip-b32,image2text,binary_flat,random_direction_same_norm,0,0.254760,0.423556,0.824388,0.846150,0.686422,original_exact_ip,DB-side random direction with same norm as gap
+mscoco,clip-b32,image2text,ivf_rabitq,random_direction_same_norm,0,0.327260,0.558624,0.824388,0.846150,0.686422,original_exact_ip,DB-side random direction with same norm as gap
+mscoco,clip-b32,image2text,binary_flat,shuffled_gap,0,0.296200,0.464802,0.824388,0.843312,0.686422,original_exact_ip,DB-side coordinate-shuffled gap
+mscoco,clip-b32,image2text,ivf_rabitq,shuffled_gap,0,0.323720,0.553780,0.824388,0.843312,0.686422,original_exact_ip,DB-side coordinate-shuffled gap
+mscoco,clip-b32,image2text,binary_flat,random_direction_same_norm,1,0.243040,0.398894,0.824388,0.836740,0.686422,original_exact_ip,DB-side random direction with same norm as gap
+mscoco,clip-b32,image2text,ivf_rabitq,random_direction_same_norm,1,0.324420,0.557398,0.824388,0.836740,0.686422,original_exact_ip,DB-side random direction with same norm as gap
+mscoco,clip-b32,image2text,binary_flat,shuffled_gap,1,0.313480,0.477440,0.824388,0.834862,0.686422,original_exact_ip,DB-side coordinate-shuffled gap
+mscoco,clip-b32,image2text,ivf_rabitq,shuffled_gap,1,0.362620,0.574676,0.824388,0.834862,0.686422,original_exact_ip,DB-side coordinate-shuffled gap
+mscoco,clip-b32,image2text,binary_flat,random_direction_same_norm,2,0.266800,0.416190,0.824388,0.836856,0.686422,original_exact_ip,DB-side random direction with same norm as gap
+mscoco,clip-b32,image2text,ivf_rabitq,random_direction_same_norm,2,0.330480,0.562342,0.824388,0.836856,0.686422,original_exact_ip,DB-side random direction with same norm as gap
+mscoco,clip-b32,image2text,binary_flat,shuffled_gap,2,0.293120,0.463826,0.824388,0.844370,0.686422,original_exact_ip,DB-side coordinate-shuffled gap
+mscoco,clip-b32,image2text,ivf_rabitq,shuffled_gap,2,0.324040,0.553562,0.824388,0.844370,0.686422,original_exact_ip,DB-side coordinate-shuffled gap
+mscoco,clip-b32,image2text,binary_flat,random_direction_same_norm,3,0.264560,0.427960,0.824388,0.830366,0.686422,original_exact_ip,DB-side random direction with same norm as gap
+mscoco,clip-b32,image2text,ivf_rabitq,random_direction_same_norm,3,0.361040,0.580604,0.824388,0.830366,0.686422,original_exact_ip,DB-side random direction with same norm as gap
+mscoco,clip-b32,image2text,binary_flat,shuffled_gap,3,0.320620,0.487006,0.824388,0.844984,0.686422,original_exact_ip,DB-side coordinate-shuffled gap
+mscoco,clip-b32,image2text,ivf_rabitq,shuffled_gap,3,0.325120,0.555392,0.824388,0.844984,0.686422,original_exact_ip,DB-side coordinate-shuffled gap
+mscoco,clip-b32,image2text,binary_flat,random_direction_same_norm,4,0.227800,0.404680,0.824388,0.850444,0.686422,original_exact_ip,DB-side random direction with same norm as gap
+mscoco,clip-b32,image2text,ivf_rabitq,random_direction_same_norm,4,0.327920,0.563490,0.824388,0.850444,0.686422,original_exact_ip,DB-side random direction with same norm as gap
+mscoco,clip-b32,image2text,binary_flat,shuffled_gap,4,0.299460,0.468482,0.824388,0.840369,0.686422,original_exact_ip,DB-side coordinate-shuffled gap
+mscoco,clip-b32,image2text,ivf_rabitq,shuffled_gap,4,0.323440,0.557122,0.824388,0.840369,0.686422,original_exact_ip,DB-side coordinate-shuffled gap

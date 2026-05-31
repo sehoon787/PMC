@@ -1,0 +1,116 @@
+\section{Related Work}\label{sec:related}
+
+\textbf{Vector quantization for ANN.}
+Classical ANN compression methods such as Product Quantization (PQ)\slash OPQ~\cite{jegou2011pq,ge2013opq}
+quantize vectors by subspace codebooks, while newer systems such as
+ScaNN\slash SOAR\slash QAQ~\cite{guo2020scann,sun2023soar,zhang2023qaq} improve scoring,
+routing, or query-aware ranking through anisotropic quantization and
+query-dependent computation. In the 1-bit regime,
+RaBitQ~\cite{gao2024rabitq} provides distortion bounds for BQ,
+Extended-RaBitQ~\cite{gao2025extended} generalizes this line to multi-bit
+settings, and later variants integrate quantization with graph
+structures~\cite{gou2025symphonyqg}. Binary hashing methods such as
+ITQ~\cite{gong2013itq} similarly rely on distributional alignment. Across
+these lines, the standard assumption is that query and database statistics are
+in-distribution and approximately centroid-aligned.
+
+\textbf{Cross-modal and OOD retrieval.}
+Cross-modal and OOD retrieval methods usually intervene outside compressed code
+formation. OOD-DiskANN~\cite{jaiswal2022ood,subramanya2019diskann} augments
+graph search for distribution shift; RoarGraph/DEG~\cite{chen2024roargraph,yin2025deg}
+modify graph connectivity; DeDrift~\cite{baranchuk2023dedrift} and
+TCR~\cite{li2025tcr} use test-time adaptation or retraining-style updates to
+counter drift. They are effective but usually assume uncompressed vectors, additional graph
+structures, or online serving updates. PMC is complementary: one offline
+centroid correction before index construction, with no added index-time memory
+or required retraining.
+
+\textbf{Modality gap.}
+Mind-the-Gap~\cite{liang2022mind} shows that cross-modal embedding spaces often
+exhibit stable centroid offsets between modalities. Follow-up analyses attribute
+this behavior to training dynamics~\cite{schrodi2025twoeffects}, characterize
+its geometry~\cite{levi2025doubleellipsoid}, and study mean-subtraction effects~\cite{zhang2024c3}.
+Other work either preserves the gap~\cite{ramasinghe2024acceptgap}, reduces it
+through encoder retraining~\cite{eslami2025alignclip}, or exploits gap-aware
+calibration for \emph{uncompressed} ranking~\cite{li2025grclip}; see also the
+recent survey~\cite{wang2024crossmodal}. No prior work addresses how the
+modality gap degrades \emph{compressed} ANN indexes, where centroid
+misalignment corrupts both IVF routing and quantized codes; this is our focus.
+
+Closest to our setting, gap-aware calibration for mixed-modality ranking~\cite{li2025grclip} adjusts scores to compensate for the centroid offset, but operates on uncompressed vectors and does not enter code formation; PMC targets the compressed index itself, rewriting IVF routing and binary codes at the source before quantization.
+
+\begin{table}[t]
+\caption{BQ methods (R@100, Vanilla\,/\,PMC) on MSCOCO (CLIP-B/32) and AudioCaps (IB). RotatedBinary\,=\,rotated BinaryFlat (BBQ-style).}\label{tab:signbit_methods}
+\vspace{2pt}
+\centering
+{\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.0}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}l cc cc@{}}
+\toprule
+& \multicolumn{2}{c}{\textbf{MSCOCO}} & \multicolumn{2}{c}{\textbf{AudioCaps}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+\textbf{Method} & t$\to$i & i$\to$t & t$\to$a & a$\to$t \\
+\midrule
+BinaryFlat    & .51\,/\,\textbf{.57} & .46\,/\,\textbf{.57} & .63\,/\,\textbf{.66} & .51\,/\,\textbf{.64} \\
+BinaryIVF     & .51\,/\,\textbf{.57} & .47\,/\,\textbf{.57} & .59\,/\,\textbf{.61} & .50\,/\,\textbf{.63} \\
+RotatedBinary & .29\,/\,\textbf{.58} & .21\,/\,\textbf{.57} & .65\,/\,\textbf{.70} & .63\,/\,\textbf{.69} \\
+RaBitQ        & .58\,/\,\textbf{.64} & .52\,/\,\textbf{.61} & \textbf{.75}\,/\,\textbf{.75} & .67\,/\,\textbf{.75} \\
+\bottomrule
+\end{tabular*}
+}
+\end{table}
+
+\begin{figure}[t]
+\nointerlineskip\hrule height 0.8pt\vspace{1pt}%
+{\setlength{\abovecaptionskip}{0pt}\setlength{\belowcaptionskip}{0pt}%
+\captionof{algorithm}{PMC Index Construction}\label{alg:pmc}}%
+\vspace{1pt}\nointerlineskip\hrule height 0.4pt\vspace{1pt}%
+\footnotesize
+\begin{algorithmic}[1]
+\Require Database $\mathcal{X}$ (modality~$b$), query sample $\mathcal{Q}$ (modality~$a$), interpolation $\alpha$
+\Ensure IVF-based quantized index $\mathcal{I}$ and gap $\mathbf{g}$
+\State $\boldsymbol{\mu}_q \gets \mathrm{mean}(\mathcal{Q})$; \quad $\boldsymbol{\mu}_x \gets \mathrm{mean}(\mathcal{X})$
+\State $\mathbf{g} \gets \boldsymbol{\mu}_q - \boldsymbol{\mu}_x$
+\For{each $\mathbf{x} \in \mathcal{X}$}
+  \State $\mathbf{x}' \gets \mathrm{normalize}(\mathbf{x} + \alpha \, \mathbf{g})$
+\EndFor
+\State $\mathcal{I} \gets \mathrm{BuildIndex}(\{\mathbf{x}'\})$ \Comment{RaBitQ, BBQ, BinaryFlat}
+\State \Return $\mathcal{I}$, $\mathbf{g}$
+\end{algorithmic}%
+\nointerlineskip\hrule height 0.8pt
+\Description{Pseudocode for PMC index construction: compute modality means and gap, shift each database vector by alpha times the gap, normalize, then build the quantized index.}
+\end{figure}
+
+\begin{table*}[!t]
+\caption{PMC at $\alpha{=}1$ for IVFRaBitQFastScan (Vanilla/MeanShift/\textbf{PMC}; relative R@100 gains $\Delta_\mathrm{VP}$=Vanilla$\to$PMC, $\Delta_\mathrm{MP}$=MeanShift$\to$PMC).}\label{tab:main}
+\vspace{2pt}
+\centering
+{\footnotesize
+\setlength{\tabcolsep}{2pt}
+\renewcommand{\arraystretch}{1.0}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}llc cccc cccc@{}}
+\toprule
+\textbf{Dataset} & \textbf{Enc.} & $\|\mathbf{g}\|$ & \multicolumn{4}{c}{\textbf{$q{\to}db$}} & \multicolumn{4}{c}{\textbf{$db{\to}q$}} \\
+\cmidrule(lr){4-7}\cmidrule(lr){8-11}
+& & & R@10 & R@100 & $\Delta_\mathrm{VP}$ & $\Delta_\mathrm{MP}$ & R@10 & R@100 & $\Delta_\mathrm{VP}$ & $\Delta_\mathrm{MP}$ \\
+\midrule
+MSCOCO    & CLIP  & .82 & .39\,/\,.37\,/\,\textbf{.46} & .57\,/\,.53\,/\,\textbf{.63} & +10\% & +17\% & .28\,/\,.30\,/\,\textbf{.38} & .49\,/\,.49\,/\,\textbf{.60} & +22\% & +22\% \\
+MSCOCO    & CL-L  & .82 & .36\,/\,.37\,/\,\textbf{.48} & .54\,/\,.53\,/\,\textbf{.65} & +20\% & +22\% & .26\,/\,.34\,/\,\textbf{.44} & .46\,/\,.50\,/\,\textbf{.63} & +37\% & +25\% \\
+MSCOCO    & IB    & .70 & .56\,/\,.51\,/\,\textbf{.63} & .67\,/\,.62\,/\,\textbf{.75} & +12\% & +21\% & .57\,/\,.54\,/\,\textbf{.64} & .70\,/\,.66\,/\,\textbf{.75} & +7\%  & +14\% \\
+Flickr30K & CL-L  & .77 & .29\,/\,.25\,/\,\textbf{.37} & .39\,/\,.34\,/\,\textbf{.48} & +23\% & +41\% & .21\,/\,.27\,/\,\textbf{.38} & .31\,/\,.35\,/\,\textbf{.46} & +48\% & +31\% \\
+Clotho    & IB    & .61 & .59\,/\,.44\,/\,\textbf{.59} & .72\,/\,.60\,/\,\textbf{.73} & +2\%  & +22\% & .48\,/\,.35\,/\,\textbf{.53} & .62\,/\,.51\,/\,\textbf{.68} & +11\% & +34\% \\
+AudioCaps & IB    & .61 & .36\,/\,.45\,/\,\textbf{.39} & .75\,/\,.78\,/\,\textbf{.79} & +5\%  & +0\%  & .43\,/\,.47\,/\,\textbf{.45} & .82\,/\,.82\,/\,\textbf{.83} & +1\%  & +1\%  \\
+LAION-400M & CLIP & .72 & .068\,/\,.037\,/\,\textbf{.082} & .095\,/\,.072\,/\,\textbf{.137} & +44\% & +90\% & .031\,/\,.028\,/\,\textbf{.046} & .058\,/\,.042\,/\,\textbf{.072} & +24\% & +71\% \\
+\bottomrule
+\end{tabular*}
+}\\[1pt]
+{\scriptsize $q{\to}db$: text-to-image/audio; $db{\to}q$: reverse. Each cell reports Vanilla\,/\,MeanShift\,/\,\textbf{PMC}. CLIP\,=\,CLIP ViT-B/32; CL-L\,=\,CLIP-L; IB\,=\,ImageBind. MeanShift\,=\,query-only mean shift. LAION: $n_\mathrm{list}{=}20$K, $n_\mathrm{probe}{=}256$; single-thread CPU (i7-12700F).}
+\end{table*}
+
+\begin{figure*}[!t]
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig3_analysis.pdf}
+  \Description{Three-panel analysis figure. Panel (a) shows BQ alpha sweep curves on MSCOCO and Clotho with mean shift markers and best performance near alpha equals 1. Panel (b) shows selective PMC versus top-P percent dimensions. Panel (c) shows R@100 versus QPS Pareto curves in log-scale where PMC dominates vanilla at comparable throughput.}
+  \caption{(a) BQ R@100 vs.\ shift strength $\alpha$ on MSCOCO+Clotho ($\alpha{=}0$: query-only mean shift, $\alpha{=}1$: full DB-side PMC): $\alpha{=}1$ is best or near-best, justifying the default. (b) Selective PMC: on concentrated-gap MSCOCO, top-$P{=}5$\% already reaches peak R@100; diffuse gaps require broader correction. (c) R@100--QPS Pareto: PMC dominates vanilla across throughput levels.}\label{fig:analysis-bcd}
+\end{figure*}

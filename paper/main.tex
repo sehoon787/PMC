@@ -1,0 +1,93 @@
+\documentclass[sigconf,natbib=true,anonymous=true]{acmart}
+
+\acmConference[CIKM '26]{The 35th ACM International Conference on Information and Knowledge Management}{November 7--11, 2026}{Rome, Italy}
+\acmYear{2026}
+
+\hypersetup{
+    bookmarks=true,
+    bookmarksopen=true,
+    bookmarksnumbered=true,
+    pdfborder={0 0 0},
+    colorlinks=false,
+    pdftitle={PMC: Build-Time Per-Modality Centroid Correction for Cross-Modal Binary-Quantized Retrieval},
+    pdfauthor={Anonymous Author(s)},
+    pdfsubject={CIKM 2026 Short Paper},
+    pdfkeywords={cross-modal retrieval, modality gap, approximate nearest neighbor search, binary quantization}
+}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{flushend}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\title{PMC: Build-Time Per-Modality Centroid Correction for Cross-Modal Binary-Quantized Retrieval}
+
+\author{Anonymous Author(s)}
+\affiliation{%
+  \institution{Anonymous Institution}
+}
+
+\setlength{\textfloatsep}{2pt plus 1pt minus 1pt}
+\setlength{\floatsep}{6pt plus 1pt minus 1pt}
+\setlength{\intextsep}{4pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{2pt}
+\setlength{\belowcaptionskip}{1pt}
+\setlength{\dbltextfloatsep}{2pt plus 1pt minus 1pt}
+\setlength{\dblfloatsep}{4pt plus 2pt minus 2pt}
+\setcounter{topnumber}{10}
+\setcounter{dbltopnumber}{10}
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\dbltopfraction}{0.95}
+\renewcommand{\floatpagefraction}{0.7}
+\renewcommand{\dblfloatpagefraction}{0.7}
+\begin{document}
+
+\setlength{\abovedisplayskip}{10pt plus 2pt minus 5pt}
+\setlength{\belowdisplayskip}{10pt plus 2pt minus 5pt}
+
+\input{sections/abstract}
+
+\begin{CCSXML}
+<ccs2012>
+<concept>
+<concept_id>10002951.10003317.10003347.10003352</concept_id>
+<concept_desc>Information systems~Multimedia and multimodal retrieval</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10002951.10003317.10003347.10003356</concept_id>
+<concept_desc>Information systems~Search engine indexing</concept_desc>
+<concept_significance>300</concept_significance>
+</concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Information systems~Multimedia and multimodal retrieval}
+\ccsdesc[300]{Information systems~Search engine indexing}
+
+\keywords{cross-modal retrieval, modality gap, approximate nearest neighbor search, binary quantization}
+
+\maketitle
+
+\input{sections/01_introduction}
+\input{sections/01b_related}
+\input{sections/02_method}
+\input{sections/03_experiments}
+\input{sections/04_conclusion}
+
+\section*{GenAI Usage Disclosure}
+Generative AI tools (Claude) were used for code scaffolding and LaTeX formatting.
+All experimental design, results, analyses, and scientific claims were
+independently produced and verified by the authors.
+
+\balance
+\emergencystretch=2em
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}

@@ -1,0 +1,18 @@
+claim_type,dataset,backbone,direction,computed_value,paper_value,status
+gap_norm,mscoco_coco5k,clip-l,text->image,13.914763,N/A,NO_PAPER_VALUE
+gap_energy_top10pct,mscoco_coco5k,clip-l,text->image,0.901031,0.86-0.92,PASS
+gap_energy_top5pct,mscoco_coco5k,clip-l,text->image,0.867152,0.86-0.87,PASS (0.867 rounds to 87%)
+gap_energy_top10pct,mscoco_coco5k,clip-b32,text->image,0.901516,0.86-0.92,PASS
+gap_energy_top5pct,mscoco_coco5k,clip-b32,text->image,0.863766,0.86-0.87,PASS (0.864 rounds to 86%)
+gap_norm,mscoco_coco5k,imagebind,text->image,46.507030,N/A,NO_PAPER_VALUE
+gap_energy_top10pct,mscoco_coco5k,imagebind,text->image,0.740605,N/A,IMAGEBIND_DIFFUSE_GAP (consistent with AudioCaps/Clotho 70-74%)
+gap_energy_top5pct,mscoco_coco5k,imagebind,text->image,0.642336,N/A,IMAGEBIND_DIFFUSE_GAP
+gap_norm,audiocaps_test,imagebind,text->audio,56.957047,N/A,NO_PAPER_VALUE
+gap_energy_top10pct,audiocaps_test,imagebind,text->audio,0.698535,N/A,N/A_CLAIM_SCOPED_TO_CLIP (ImageBind diffuse gap expected: 70-74%)
+gap_energy_top5pct,audiocaps_test,imagebind,text->audio,0.597920,N/A,N/A_CLAIM_SCOPED_TO_CLIP (ImageBind diffuse gap expected: 70-74%)
+gap_norm,clotho_eval,imagebind,text->audio,54.855919,N/A,NO_PAPER_VALUE
+gap_energy_top10pct,clotho_eval,imagebind,text->audio,0.726997,N/A,N/A_CLAIM_SCOPED_TO_CLIP (ImageBind diffuse gap expected: 70-74%)
+gap_energy_top5pct,clotho_eval,imagebind,text->audio,0.632499,N/A,N/A_CLAIM_SCOPED_TO_CLIP (ImageBind diffuse gap expected: 70-74%)
+same_modal_oracle_r100_exact_flatip,mscoco_coco5k,clip-l,image->image,1.000000,1.0 (trivial),PASS
+same_modal_oracle_r100_vanilla_rabitq,mscoco_coco5k,clip-l,image->image,0.708000,0.84,MISMATCH (diff=-0.1320)
+rabitq_lower_bound_33bpv,all,all,N/A,N/A,33 B/vec,THEORETICAL

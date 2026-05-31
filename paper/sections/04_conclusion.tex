@@ -1,0 +1,3 @@
+\section{Conclusion}\label{sec:conclusion}
+
+PMC addresses cross-modal centroid mismatch in compressed ANN through a build-time database-side correction: by exploiting the centroid's dual role as IVF routing pivot and sign-bit decision boundary, it rewrites these baked-in index structures rather than redefining relevance or shifting only queries. Under fixed exact-IP ground truth, PMC yields recall gains that scale with modality-gap magnitude, with no extra index memory and, at $\alpha{=}1$, no serving-time query transform. Future directions include drift-adaptive $\alpha$ for streaming settings, PMC-style correction for graph-based ANN, and billion-scale deployment.

@@ -1,0 +1,14 @@
+# Default path configuration for PMC experiments.
+# Relative paths are resolved from current/pmc_crossmodal/.
+#
+# Create config/paths.local.yaml for machine-specific overrides.
+# You can also point PMC_PATHS_YAML to another YAML file, or override
+# individual keys with PMC_<KEY> environment variables.
+
+data_dir: data
+results_dir: results
+features_dir: data/features
+audiocaps_dir: data/raw/audiocaps
+audiocaps_metadata_csv: data/raw/audiocaps/test.csv
+hf_home: .hf-cache
+yt_dlp_path: yt-dlp
