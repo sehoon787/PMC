@@ -1,0 +1,3 @@
+\section{Conclusion}\label{sec:conclusion}
+
+PMC addresses cross-modal centroid mismatch in compressed ANN through a build-time database-side correction that rewrites the index's routing pivots and sign-bit boundaries rather than shifting only queries, yielding recall gains that scale with modality-gap magnitude at no extra index memory and, at $\alpha{=}1$, no serving-time query transform; the lone regime favoring uncorrected codes---deep reranking under sub-1\% list probing at 400M scale---is a scan-depth effect, not a limit of the correction. Future work: drift-adaptive $\alpha$ for streaming, graph-based ANN, and billion-scale deployment.

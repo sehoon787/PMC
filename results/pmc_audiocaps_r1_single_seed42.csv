@@ -1,0 +1,7 @@
+method,alpha,nprobe,direction,r1,r10,r100,bytes_per_vec,n_vectors,d,seed
+vanilla_rabitq,0.0,16,text->audio,0.5566,0.6929,0.7331,136,884,1024,42
+pmc_1.00,1.0,16,text->audio,0.569,0.7215,0.7322,136,884,1024,42
+vanilla_meanshift,0.0,16,text->audio,0.3631,0.583,0.5982,136,884,1024,42
+vanilla_rabitq,0.0,16,audio->text,0.4197,0.6231,0.681,136,884,1024,42
+pmc_1.00,1.0,16,audio->text,0.4706,0.7015,0.7401,136,884,1024,42
+vanilla_meanshift,0.0,16,audio->text,0.2873,0.5218,0.5991,136,884,1024,42

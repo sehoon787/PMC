@@ -1,0 +1,9 @@
+method,nprobe,direction,r1,r10,r100,n_vectors,d,seed
+ivfpq,16,text->image,0.572,0.4803,0.5126,1000,768,42
+ivfpq_pmc,16,text->image,0.623,0.5202,0.5367,1000,768,42
+opq_ivfpq,16,text->image,0.66,0.5511,0.5473,1000,768,42
+opq_ivfpq_pmc,16,text->image,0.631,0.5251,0.5426,1000,768,42
+ivfpq,16,image->text,0.485,0.4023,0.4344,1000,768,42
+ivfpq_pmc,16,image->text,0.589,0.4857,0.474,1000,768,42
+opq_ivfpq,16,image->text,0.546,0.4559,0.4796,1000,768,42
+opq_ivfpq_pmc,16,image->text,0.6,0.5127,0.5022,1000,768,42

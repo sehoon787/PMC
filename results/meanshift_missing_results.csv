@@ -1,0 +1,7 @@
+condition,backbone,dataset,direction,seed,method,r10,r100,delta_r10,delta_r100,gt_protocol
+MSCOCO_CLIP-L,CLIP-L/14,MSCOCO,text->image,42,meanshift,0.36676,0.531732,0.00258,-0.008978,original_exact_ip
+MSCOCO_CLIP-L,CLIP-L/14,MSCOCO,text->image,123,meanshift,0.3651,0.529662,-0.00012,-0.010218,original_exact_ip
+MSCOCO_CLIP-L,CLIP-L/14,MSCOCO,text->image,456,meanshift,0.36374,0.532186,0.00328,-0.004788,original_exact_ip
+MSCOCO_CLIP-L,CLIP-L/14,MSCOCO,image->text,42,meanshift,0.341,0.502344,0.08068,0.0482,original_exact_ip
+MSCOCO_CLIP-L,CLIP-L/14,MSCOCO,image->text,123,meanshift,0.34488,0.509734,0.08164,0.041664,original_exact_ip
+MSCOCO_CLIP-L,CLIP-L/14,MSCOCO,image->text,456,meanshift,0.34066,0.500328,0.0813,0.041718,original_exact_ip

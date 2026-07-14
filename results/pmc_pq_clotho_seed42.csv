@@ -1,0 +1,9 @@
+method,nprobe,direction,r1,r10,r100,n_vectors,d,seed
+ivfpq,16,text->audio,0.4507,0.5793,0.6439,1045,1024,42
+ivfpq_pmc,16,text->audio,0.4555,0.6006,0.6668,1045,1024,42
+opq_ivfpq,16,text->audio,0.5321,0.6806,0.6994,1045,1024,42
+opq_ivfpq_pmc,16,text->audio,0.4852,0.661,0.7145,1045,1024,42
+ivfpq,16,audio->text,0.4077,0.5677,0.6519,1045,1024,42
+ivfpq_pmc,16,audio->text,0.3952,0.5516,0.6485,1045,1024,42
+opq_ivfpq,16,audio->text,0.5081,0.6501,0.7012,1045,1024,42
+opq_ivfpq_pmc,16,audio->text,0.422,0.6042,0.6789,1045,1024,42
