@@ -205,26 +205,29 @@ Point `features_dir` at that directory in `config/paths.yaml`, or override it wi
 `PMC_FEATURES_DIR`. A script that cannot find a file prints the exact path it
 expected, which is the quickest way to check your layout.
 
-### Getting the source datasets
+### Getting the source datasets and extracting features
 
-No downloader ships for MSCOCO, Flickr30K, AudioCaps or Clotho — obtain them from
-their official distributions (Flickr30K requires accepting a usage agreement, and
-AudioCaps audio must be fetched from YouTube, where clip availability changes over
-time). `scripts/download_laion400m.py` covers LAION-400M.
+`scripts/data_prep/` holds the pipeline that produced the caches. Every script has
+a `__main__` guard and runs from the repo root.
 
-### Extracting features
+| Stage | Script | Covers |
+|-------|--------|--------|
+| Download | `22_download_audiocaps.py` | AudioCaps audio via yt-dlp |
+| Download | `22_audiocaps_official_hf.py` | AudioCaps from the HuggingFace mirror (more reliable) |
+| Download | `22_clotho_allsplits_download.py` | Clotho v2, all splits, from Zenodo |
+| Extract (CLIP) | `16_extract_features.py` | MSCOCO and Flickr30K, CLIP-B/32 and CLIP-L/14 |
+| Extract (CLIP) | `17_extract_flickr30k_full.py` | Flickr30K full 31K split |
+| Extract (ImageBind) | `20_imagebind_feature_extraction.py` | MSCOCO and AudioCaps |
+| Extract (ImageBind) | `21_audiocaps_imagebind_only.py` | AudioCaps alone |
+| Download | `download_laion400m.py` | LAION-400M embeddings |
 
-There is no command-line entry point; call the library directly.
+MSCOCO and Flickr30K images are not downloaded for you: fetch them from their
+official distributions (Flickr30K requires accepting a usage agreement) and point
+`raw_dir` at them, or pass `raw_dir` to the extraction call. AudioCaps and Clotho
+are handled end to end by the scripts above.
 
-- **CLIP on MSCOCO / Flickr30K** — `src.features.jobs.run_clip_feature_extraction`
-  with a `FeatureExtractionSpec`. It looks for raw data under `CFG.raw_dir /
-  "mscoco_karpathy"` or `"flickr30k"` unless you pass `raw_dir` explicitly.
-- **ImageBind on AudioCaps / Clotho** — `src.features.cache.encode_dataset` with
-  `ImageBindEncoder`; set `audiocaps_dir` and `audiocaps_metadata_csv` in
-  `config/paths.yaml` for AudioCaps.
-
-Encoders are frozen and never fine-tuned, so results depend on the checkpoint
-version you extract with.
+Encoders are frozen and never fine-tuned, so the checkpoint version you extract
+with determines the features.
 
 > Re-extraction will not reproduce the paper's numbers exactly. AudioCaps in
 > particular drifts as YouTube clips are removed: the paper's run covered 672 clips

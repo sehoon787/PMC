@@ -192,6 +192,14 @@ longer backs the paper value. Large-dataset regeneration from raw embeddings
 the cached path; the `emit_*.py` builders listed above are the FAISS-bound entry
 points for it.
 
+## Upstream of every result
+
+`scripts/data_prep/` turns raw datasets into the `data/features/` caches that the
+`emit_*.py` builders read: AudioCaps and Clotho download end to end, MSCOCO and
+Flickr30K need their images obtained separately. Re-running this stage does not
+reproduce the committed CSVs bit for bit -- AudioCaps clip availability drifts --
+which is why those CSVs, not the raw data, are the canonical source of truth.
+
 ## Not a paper element
 
 * `scripts/emit_map_ndcg.py` — mAP@k / nDCG@k sweep (FAISS-bound; requires `data/features/`) over the six small-corpus rows, scored
