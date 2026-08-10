@@ -529,12 +529,12 @@ def main(gt_only: bool = False) -> None:
     text_dir = LAION_DIR / "text_emb"
     if not img_dir.is_dir():
         print(f"\n[ERROR] Image shard directory not found: {img_dir}")
-        print("  Run: python scripts/download_laion400m.py --img-only")
+        print("  Run: python scripts/data_prep/download_laion400m.py --img-only")
         print("  Or set LAION400M_DIR environment variable.")
         sys.exit(1)
     if not text_dir.is_dir():
         print(f"\n[ERROR] Text shard directory not found: {text_dir}")
-        print("  Run: python scripts/download_laion400m.py --text-only")
+        print("  Run: python scripts/data_prep/download_laion400m.py --text-only")
         sys.exit(1)
 
     # Count available shards

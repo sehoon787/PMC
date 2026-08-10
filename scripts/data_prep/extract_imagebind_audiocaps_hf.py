@@ -1,5 +1,5 @@
 """
-download_audiocaps_hf.py -- AudioCaps ImageBind feature extraction from the
+extract_imagebind_audiocaps_hf.py -- AudioCaps ImageBind feature extraction from the
 OFFICIAL HuggingFace protocol CSV (test_official_hf.csv).
 
 Background

@@ -213,13 +213,16 @@ a `__main__` guard and runs from the repo root.
 | Stage | Script | Covers |
 |-------|--------|--------|
 | Download | `download_audiocaps_ytdlp.py` | AudioCaps audio via yt-dlp |
-| Download | `download_audiocaps_hf.py` | AudioCaps from the HuggingFace mirror (more reliable) |
-| Download | `download_clotho.py` | Clotho v2, all splits, from Zenodo |
+| Extract (ImageBind) | `extract_imagebind_audiocaps_hf.py` | AudioCaps via the official HuggingFace protocol CSV |
+| Download + extract | `download_and_extract_clotho.py` | Clotho v2 from Zenodo, then ImageBind features for all splits |
 | Extract (CLIP) | `extract_clip_features.py` | MSCOCO and Flickr30K, CLIP-B/32 and CLIP-L/14 |
 | Extract (CLIP) | `extract_clip_flickr30k_full.py` | Flickr30K full 31K split |
 | Extract (ImageBind) | `extract_imagebind_features.py` | MSCOCO and AudioCaps |
 | Extract (ImageBind) | `extract_imagebind_audiocaps.py` | AudioCaps alone |
-| Download | `download_laion400m.py` | LAION-400M embeddings |
+| Download | `download_laion400m.py` | LAION-400M embedding shards |
+
+The LAION scripts read their shard directory from `LAION400M_DIR`; without it they fall
+back to a path from the original machine.
 
 MSCOCO and Flickr30K images are not downloaded for you: fetch them from their
 official distributions (Flickr30K requires accepting a usage agreement) and point

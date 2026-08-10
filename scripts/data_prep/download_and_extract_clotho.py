@@ -1,5 +1,5 @@
 """
-download_clotho.py -- Download Clotho v2 dev/val from Zenodo and
+download_and_extract_clotho.py -- Download Clotho v2 dev/val from Zenodo and
 extract ImageBind features for all splits (dev + val + eval).
 
 Outputs:
