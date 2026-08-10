@@ -1,4 +1,8 @@
-"""reproduce_map_ndcg.py -- mAP/nDCG at the Table-2 operating point (exploratory).
+"""emit_map_ndcg.py -- mAP/nDCG at the Table-2 operating point (exploratory).
+
+FAISS-bound builder: reads feature caches from data/features/ and builds indexes,
+so it cannot run from a bare clone. Named emit_* per the convention in
+docs/PAPER_RESULT_PROVENANCE.md (reproduce_* read committed CSVs only).
 
 Answers the reviewer question "what do rank-aware metrics say?" without
 redefining relevance.  Relevance is the exact inner-product top-100 over the

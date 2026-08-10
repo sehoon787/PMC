@@ -194,7 +194,7 @@ points for it.
 
 ## Not a paper element
 
-* `scripts/reproduce_map_ndcg.py` — mAP@k / nDCG@k sweep over the six small-corpus rows, scored
+* `scripts/emit_map_ndcg.py` — mAP@k / nDCG@k sweep (FAISS-bound; requires `data/features/`) over the six small-corpus rows, scored
   against exact-IP ground truth at the Table-2 operating points → `results/map_ndcg_seed42.csv`.
   Exploratory only: no figure or table in the paper reports these metrics. Note that Table 2 scores
   AudioCaps against caption--clip pairings rather than exact-IP, so those two rows are not directly

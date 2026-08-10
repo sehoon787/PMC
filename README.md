@@ -73,7 +73,7 @@ R@10 at the same operating points and index protocol as the R@100 table above. P
 
 ### Ranking quality — mAP and nDCG
 
-Exploratory run (`scripts/reproduce_map_ndcg.py`, seed 42), scored against exact-IP ground truth at the same operating points as the R@100 table. **PMC is best in all 12 cells on every metric.** Note that the R@100 table scores AudioCaps against caption--clip pairings, so its two rows here are not directly comparable to that table; the other ten reproduce it within ±0.005. LAION-400M is out of scope for this run.
+Exploratory run (`scripts/emit_map_ndcg.py`, seed 42), scored against exact-IP ground truth at the same operating points as the R@100 table. **PMC is best in all 12 cells on every metric.** Note that the R@100 table scores AudioCaps against caption--clip pairings, so its two rows here are not directly comparable to that table; the other ten reproduce it within ±0.005. LAION-400M is out of scope for this run.
 
 | Dataset | Enc. | Dir. | mAP@100 (Van / MS / PMC) | nDCG@100 (Van / MS / PMC) |
 |---------|------|------|--------------------------|---------------------------|
@@ -161,7 +161,7 @@ Each script maps to one paper element. Run from the repo root.
 | `scripts/reproduce_gap_energy.py` | Method: gap-energy concentration claim |
 | `scripts/reproduce_clotho.py` | Clotho audio retrieval (R@1) |
 | `scripts/reproduce_audiocaps.py` | AudioCaps audio retrieval (R@1) |
-| `scripts/reproduce_map_ndcg.py` | mAP/nDCG ranking-quality sweep (exploratory; not a paper element) → `results/map_ndcg_seed42.csv` |
+| `scripts/emit_map_ndcg.py` | mAP/nDCG ranking-quality sweep (exploratory; not a paper element; FAISS-bound, needs `data/features/`) → `results/map_ndcg_seed42.csv` |
 | `scripts/generate_figure.py` | Combined figure for paper |
 
 ### Quick mechanism check (no GPU required)

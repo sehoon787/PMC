@@ -40,7 +40,7 @@ final/
 │   ├── reproduce_tab2_rerank.py
 │   ├── reproduce_tab3_mech_extra.py
 │   ├── reproduce_tab4_multibit.py
-│   ├── reproduce_map_ndcg.py
+│   ├── emit_map_ndcg.py
 │   ├── reproduce_table3_pq_sweep.py
 │   ├── reproduce_ablation_rerank.py
 │   ├── reproduce_mechanism_controls.py
@@ -109,7 +109,7 @@ All reproduction scripts live in `final/scripts/`. Each script corresponds to on
 | `reproduce_mechanism_additional_controls.py` | Table 4 additional IVF-RaBitQ controls |
 | `reproduce_gapcal_comparison.py` | Centroid-alignment strategy comparison (validates the DB-side build-time choice) |
 | `reproduce_tab4_multibit.py` | Table 5 (`tab:multibit`) — multi-bit generality aggregator (filename keeps legacy `tab4` prefix) |
-| `reproduce_map_ndcg.py` | mAP/nDCG ranking-quality sweep across the six small-corpus rows; exploratory, not tied to a paper element |
+| `emit_map_ndcg.py` | mAP/nDCG ranking-quality sweep across the six small-corpus rows; FAISS-bound, requires `data/features/`; exploratory, not tied to a paper element |
 | `reproduce_table3_pq_sweep.py` | IVFPQ/OPQ alpha sweep (produces the PQ CSVs feeding Table 5 and Fig. 3a) |
 | `reproduce_audiocaps.py` | Table 2 AudioCaps rows |
 | `reproduce_clotho.py` | Table 2 Clotho rows |
