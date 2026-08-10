@@ -2,14 +2,14 @@
 
 \subsection{Problem Setup}\label{sec:setup}
 
-Let $\phi$ be a frozen multimodal encoder mapping modalities $a$
+Let $\phi$ be a frozen multimodal encoder mapping inputs from modalities $a$
 and $b$ into $\mathbb{R}^d$.
-The database $\mathcal{X} = \{\phi(x_i)\}$ holds modality-$b$ embeddings;
+The database $\mathcal{X} = \{\phi(x_i)\}$ consists of modality-$b$ embeddings;
 queries $q = \phi(q_j)$ come from modality~$a$.
-With per-modality means $\boldsymbol{\mu}_q = \mathbb{E}[\phi(q)]$
+We denote the per-modality means $\boldsymbol{\mu}_q = \mathbb{E}[\phi(q)]$
 and $\boldsymbol{\mu}_x = \mathbb{E}[\phi(x)]$,
-the \emph{modality gap} is $\mathbf{g} = \boldsymbol{\mu}_q - \boldsymbol{\mu}_x$.
-The goal is a compressed ANN index over $\mathcal{X}$ that answers
+and the \emph{modality gap} $\mathbf{g} = \boldsymbol{\mu}_q - \boldsymbol{\mu}_x$.
+The goal is to build a compressed ANN index over $\mathcal{X}$ that answers
 cross-modal queries with high recall under a fixed memory budget.
 
 \subsection{BQ Vulnerability to Modality Gap}\label{sec:why}
@@ -24,7 +24,7 @@ Under smooth symmetric residual densities $p_i$ near the decision boundary, a fi
   \mathbb{E}[F]\;\approx\;\alpha\sum_i p_i(0)\,|g_i|\,,
 \end{equation}
 a density-weighted $\ell_1$ norm of the gap. Eq.~\eqref{eq:ratio-form} shows that flip risk in dimension~$i$ grows with $|\alpha g_i|/|\delta_i|$. When gap energy is concentrated---in CLIP-L on MSCOCO, top 10\% of dimensions carry ${\approx}90$\% of $\|\mathbf{g}\|^2$---corruption is \emph{structured} rather than random, biasing Hamming distance estimates systematically. The same offset misaligns IVF cluster assignments, compounding routing errors with code corruption. Eq.~\eqref{eq:expected-flips} formalizes this scaling, explaining the gap-proportional gains in Table~\ref{tab:mainresults} and the top-5\% selective PMC result on concentrated-gap encoders (Figure~\ref{fig:analysis-bcd}b).
-Multi-bit quantization (IVFPQ~\cite{jegou2011pq}, OPQ~\cite{ge2013opq}) partially absorbs displacement through wider error margins; BQ is maximally vulnerable and is the focus of our main claims (multi-bit: Section~\ref{sec:multibit}). PMC applies to all $\mathrm{sign}(\cdot{-}c)$ methods (BinaryFlat, BinaryIVF, BBQ, RaBitQ) and analogous schemes such as LSH~\cite{wang2018hashsurvey}.\looseness=-1
+Multi-bit quantization (IVFPQ~\cite{jegou2011pq}, OPQ~\cite{ge2013opq}) partially absorbs displacement through wider error margins; BQ is maximally vulnerable and is the focus of our main claims (multi-bit: Section~\ref{sec:multibit}). PMC applies to all $\mathrm{sign}(\cdot{-}c)$ methods and analogous schemes such as LSH~\cite{wang2018hashsurvey}.\looseness=-1
 
 \subsection{PMC Correction}\label{sec:pmc}
 
@@ -46,7 +46,7 @@ where $\alpha \in [0,1]$ interpolates between full query-side correction
 ($\alpha{=}0$, equivalent to mean shift) and full database-side alignment
 ($\alpha{=}1$).
 The BQ index is then built on $\{\mathbf{x}'\}$; in our main setting
-$\alpha{=}1$, query-time transformation is
+$\alpha{=}1$ (full database-side alignment), query-time transformation is
 identity ($\mathbf{q}'{=}\mathbf{q}$), so serving incurs no extra cost.
 
 \textbf{Effectiveness of {\boldmath$\alpha{=}1$}.}

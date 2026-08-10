@@ -10,10 +10,9 @@ vector~\cite{jegou2011pq,gao2024rabitq}.\looseness=-1
 
 Binary quantization (BQ) is the extreme compression point:
 RaBitQ~\cite{gao2024rabitq} reaches $32\times$ compression by encoding each
-dimension as one sign bit relative to the dataset centroid. Its production
-adoption in Apache Lucene BBQ and extension to multi-bit
-Extended-RaBitQ~\cite{gao2025extended} show BQ indexing is now
-practically deployed.\looseness=-1
+dimension as one sign bit relative to the dataset centroid. Its adoption in Apache Lucene BBQ and multi-bit
+Extended-RaBitQ~\cite{gao2025extended} shows BQ indexing is now
+deployed in production.\looseness=-1
 
 \begin{figure}[!t]
   \centering
@@ -25,7 +24,7 @@ practically deployed.\looseness=-1
 {\emergencystretch=1em
 These methods rely on a shared-centroid residual premise: queries and database
 vectors share a common centroid. Cross-modal
-retrieval violates it---\hspace{0pt}queries cluster around
+retrieval violates this assumption---\hspace{0pt}queries from one modality cluster around
 a different centroid than the database vectors.\looseness=-1\par}
 
 This \emph{modality gap}~\cite{liang2022mind} is particularly harmful to BQ

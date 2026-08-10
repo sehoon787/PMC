@@ -50,6 +50,50 @@ R@100 at `n_list=80K, n_probe=256`, single-thread CPU (i7-12700F):
 | q→db (text→image) | 0.108 | 0.074 | **0.143** | +32% |
 | db→q (image→text) | 0.069 | 0.043 | **0.073** | +6% |
 
+### Early-rank quality — R@10
+
+R@10 at the same operating points and index protocol as the R@100 table above. PMC is best in all 14 dataset×direction configurations.
+
+| Dataset | Enc. | ‖g‖ | Dir. | Vanilla | MeanShift | PMC | Δ |
+|---------|------|-----|------|---------|-----------|------|---|
+| MSCOCO val5k | CLIP-ViT-B/32 | 0.82 | q→db | 0.40 | 0.38 | **0.46** | +15% |
+| MSCOCO val5k | CLIP-ViT-B/32 | 0.82 | db→q | 0.29 | 0.30 | **0.39** | +36% |
+| MSCOCO val5k | CLIP-ViT-L/14 | 0.82 | q→db | 0.36 | 0.37 | **0.48** | +33% |
+| MSCOCO val5k | CLIP-ViT-L/14 | 0.82 | db→q | 0.26 | 0.35 | **0.44** | +69% |
+| MSCOCO val5k | ImageBind | 0.70 | q→db | 0.55 | 0.51 | **0.63** | +14% |
+| MSCOCO val5k | ImageBind | 0.70 | db→q | 0.57 | 0.54 | **0.64** | +11% |
+| Flickr30K | CLIP-ViT-L/14 | 0.77 | q→db | 0.31 | 0.26 | **0.38** | +22% |
+| Flickr30K | CLIP-ViT-L/14 | 0.77 | db→q | 0.22 | 0.29 | **0.38** | +79% |
+| Clotho | ImageBind | 0.61 | q→db | 0.59 | 0.45 | **0.60** | +1% |
+| Clotho | ImageBind | 0.61 | db→q | 0.48 | 0.35 | **0.54** | +12% |
+| AudioCaps | ImageBind | 0.61 | q→db | 0.39 | 0.43 | **0.44** | +12% |
+| AudioCaps | ImageBind | 0.61 | db→q | 0.44 | 0.46 | **0.48** | +9% |
+| LAION-400M | CLIP-ViT-B/32 | 0.72 | q→db | 0.075 | 0.037 | **0.086** | +14% |
+| LAION-400M | CLIP-ViT-B/32 | 0.72 | db→q | 0.035 | 0.028 | **0.048** | +38% |
+
+### Ranking quality — mAP and nDCG
+
+Exploratory run (`scripts/reproduce_map_ndcg.py`, seed 42), scored against exact-IP ground truth at the same operating points as the R@100 table. **PMC is best in all 12 cells on every metric.** Note that the R@100 table scores AudioCaps against caption--clip pairings, so its two rows here are not directly comparable to that table; the other ten reproduce it within ±0.005. LAION-400M is out of scope for this run.
+
+| Dataset | Enc. | Dir. | mAP@100 (Van / MS / PMC) | nDCG@100 (Van / MS / PMC) |
+|---------|------|------|--------------------------|---------------------------|
+| MSCOCO val5k | CLIP-ViT-B/32 | q→db | 0.474 / 0.433 / **0.544** | 0.642 / 0.607 / **0.693** |
+| MSCOCO val5k | CLIP-ViT-B/32 | db→q | 0.374 / 0.391 / **0.508** | 0.563 / 0.569 / **0.668** |
+| MSCOCO val5k | CLIP-ViT-L/14 | q→db | 0.434 / 0.440 / **0.578** | 0.609 / 0.608 / **0.716** |
+| MSCOCO val5k | CLIP-ViT-L/14 | db→q | 0.327 / 0.412 / **0.547** | 0.525 / 0.585 / **0.696** |
+| MSCOCO val5k | ImageBind | q→db | 0.603 / 0.546 / **0.703** | 0.733 / 0.690 / **0.802** |
+| MSCOCO val5k | ImageBind | db→q | 0.639 / 0.593 / **0.704** | 0.763 / 0.722 / **0.803** |
+| Flickr30K | CLIP-ViT-L/14 | q→db | 0.275 / 0.223 / **0.364** | 0.475 / 0.413 / **0.555** |
+| Flickr30K | CLIP-ViT-L/14 | db→q | 0.178 / 0.248 / **0.358** | 0.381 / 0.444 / **0.551** |
+| Clotho | ImageBind | q→db | 0.660 / 0.512 / **0.675** | 0.777 / 0.668 / **0.786** |
+| Clotho | ImageBind | db→q | 0.537 / 0.402 / **0.615** | 0.688 / 0.582 / **0.746** |
+| AudioCaps | ImageBind | q→db | 0.640 / 0.498 / **0.662** | 0.762 / 0.650 / **0.771** |
+| AudioCaps | ImageBind | db→q | 0.574 / 0.453 / **0.654** | 0.710 / 0.616 / **0.770** |
+
+Mean relative gain over vanilla: mAP@100 +28.9%, R@10 +25.6%, mAP@10 +16.6%, R@100 +15.6%, nDCG@100 +14.3%, nDCG@10 +9.7% — PMC returns true neighbours *and* ranks them higher, so R@100 is the conservative reading of its benefit.
+
+> Caveat: with a 100-item ground truth, the @10 metrics saturate (any 10 hits inside the true top-100 score 1.0), so mAP@100 / nDCG@100 are the discriminative pair here. Single seed, single operating point, no confidence intervals.
+
 > PMC adds **zero memory** and keeps query throughput within **1%** of vanilla RaBitQ across all configurations.
 
 ---
@@ -98,18 +142,27 @@ Each script maps to one paper element. Run from the repo root.
 
 | Script | Paper Element |
 |--------|---------------|
-| `scripts/reproduce_table1_signbit.py` | Table 1: Binary-quantization methods (R@100, Vanilla/PMC) |
-| `scripts/reproduce_table2_main_aggregator.py` | Table 2: Main PMC results (IVF-RaBitQFastScan) |
+| `scripts/reproduce_tab1_signbit_methods.py` | Table 1: Binary-quantization methods (R@100, Vanilla/PMC) |
+| `scripts/reproduce_tab2_main.py` | Table 2: Main PMC results (IVF-RaBitQFastScan), No-reranking columns |
+| `scripts/reproduce_tab2_rerank.py` | Table 2: Main PMC results, With-reranking columns (K'=400) |
 | `scripts/reproduce_laion400m.py` | Table 2: LAION-400M large-scale row |
-| `scripts/reproduce_table3_pq_sweep.py` | PMC + PQ alpha sweep (feeds Table 5; Fig. 3a) |
-| `scripts/reproduce_table5_multibit.py` | Table 5: Multi-bit IVFPQ/OPQ generality |
+| `scripts/reproduce_ablation_rerank.py` | LAION-400M K'-sweep reranking ablation (repo-only) |
+| `scripts/analysis/verify_signbit_analysis.py` | Table 3: sign-bit mechanism metrics (Flip%, J@100) |
+| `scripts/analysis/verify_calibration.py` | Table 3: calibration cosine (cos@25); §4.4 calibration prose |
 | `scripts/reproduce_mechanism_controls.py` | Tables 3-4: bit-flip/J@100, exact control, component ablation, calibration sensitivity |
+| `scripts/reproduce_tab3_mech_extra.py` | Table 4: component ablation + IVF-RaBitQ controls (filename keeps legacy `tab3` prefix) |
 | `scripts/reproduce_mechanism_additional_controls.py` | Table 4: Additional IVF-RaBitQ controls |
+| `scripts/reproduce_gapcal_comparison.py` | Centroid-alignment strategy comparison (validates DB-side build-time correction) |
+| `scripts/reproduce_tab4_multibit.py` | Table 5: Multi-bit IVFPQ/OPQ generality (filename keeps legacy `tab4` prefix) |
+| `scripts/reproduce_table3_pq_sweep.py` | PMC + PQ alpha sweep (feeds Table 5; Fig. 3a) |
+| `scripts/reproduce_fig3_analysis_bcd.py` | Figure 3: alpha sweep, selective PMC, QPS Pareto panels |
 | `scripts/reproduce_figure_c.py` | Figure: Selective PMC analysis |
 | `scripts/reproduce_qps_pareto.py` | QPS vs Recall Pareto plot |
+| `scripts/reproduce_gap_energy.py` | Method: gap-energy concentration claim |
 | `scripts/reproduce_clotho.py` | Clotho audio retrieval (R@1) |
 | `scripts/reproduce_audiocaps.py` | AudioCaps audio retrieval (R@1) |
-| `scripts/generate_figure.py` | Combined 2×2 figure for paper |
+| `scripts/reproduce_map_ndcg.py` | mAP/nDCG ranking-quality sweep (exploratory; not a paper element) → `results/map_ndcg_seed42.csv` |
+| `scripts/generate_figure.py` | Combined figure for paper |
 
 ### Quick mechanism check (no GPU required)
 

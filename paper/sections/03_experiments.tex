@@ -55,8 +55,8 @@ i$\to$t & .515 & \textbf{.608} & .564$\pm$.009 & .559$\pm$.009 & .491 & .520 \\
 \subsection{Main Results}\label{sec:results}
 %% ---------------------------------------------------------------
 
-PMC improves RaBitQ recall in nearly all tested configurations, with gains scaling with gap magnitude (Table~\ref{tab:mainresults}): Flickr30K i$\to$t reaches $+$45\% and MSCOCO CLIP-L i$\to$t $+$34\%. MeanShift can hurt---it leaves IVF centroids misaligned, degrading routing---while PMC improves or matches both directions. Across all 16 BQ method$\times$direction configurations, PMC improves or matches R@100 (Table~\ref{tab:signbit_methods}).
-PMC adds no per-query work, so QPS tracks Vanilla across all $n_\mathrm{probe}$ (Figure~\ref{fig:analysis-bcd}c). The same ordering holds at R@10, where PMC is best in all 14 dataset$\times$direction configurations.\looseness=-1
+PMC improves RaBitQ recall in nearly all tested configurations, with gains scaling with gap magnitude (Table~\ref{tab:mainresults}): Flickr30K i$\to$t reaches $+$45\% and MSCOCO CLIP-L i$\to$t $+$34\%. MeanShift can hurt---it leaves IVF centroids misaligned, degrading routing---while PMC improves or matches both directions. Across all 16 BQ method $\times$ direction configurations, PMC improves or matches R@100 without exception (Table~\ref{tab:signbit_methods}); the same ordering holds at R@10, where PMC is best in all 14 dataset $\times$ direction configurations.
+PMC adds no per-query work, so QPS tracks Vanilla across all $n_\mathrm{probe}$ (Figure~\ref{fig:analysis-bcd}c).\looseness=-1
 
 \textbf{{\boldmath$\|\mathbf{g}\|$} as predictor.}
 The ratio condition~\eqref{eq:ratio-form} implies more flips at higher gap, and R@100 gains track $\|\mathbf{g}\|$: MSCOCO CL-L ($\|\mathbf{g}\|{=}.82$) and Flickr30K CL-L ($\|\mathbf{g}\|{=}.77$) show the largest gains, whereas AudioCaps ($\|\mathbf{g}\|{=}.61$) gains only marginally---its gap is small relative to intra-class variance. Direct bit-level checks corroborate this (Table~\ref{tab:mechanism}): PMC induces 14--18\% sign-bit flips while preserving nontrivial ground-truth top-100 overlap ($J@100{=}0.54$--$0.80$) and repairs BinaryFlat R@100 in every direction.\looseness=-1
@@ -95,10 +95,10 @@ Flickr & CL-L & .47\,/\,\textbf{.50} & +7\% & .51\,/\,\textbf{.52} & +1\% \\
 
 \end{table}
 
-Calibration is stable from $n_\mathrm{calib}{=}25$ (cosine $0.955$--$0.986$ across modalities, Table~\ref{tab:mechanism}; R@100 flat within .003 up to $n_\mathrm{calib}{=}400$), making PMC practical with few samples. BinaryFlat is insensitive to shift direction, but IVF-RaBitQ strongly prefers DB-only correction (.637/.608) over Q-only (.541/.495) or both sides (.599/.554)---shifting both re-displaces the routing pivot, confirming the centroid must be corrected at the source, where it is both routing pivot and code boundary. Four controls (random, shuffled, sign-flipped, un-normalized shift) all trail DB-PMC (Table~\ref{tab:mech_extra}), ruling out arbitrary perturbation.\looseness=-1
+Calibration is stable from $n_\mathrm{calib}{=}25$ (cosine $0.955$--$0.986$ across modalities, Table~\ref{tab:mechanism}; R@100 flat within .003 up to $n_\mathrm{calib}{=}400$), making PMC practical with few cross-modal samples. BinaryFlat is insensitive to shift direction, but IVF-RaBitQ strongly prefers DB-only correction (.637/.608) over Q-only (.541/.495) or both sides (.599/.554)---shifting both re-displaces the routing pivot, confirming the centroid must be corrected at the source, where it is both routing pivot and code boundary. Four controls (random, shuffled, sign-flipped, un-normalized shift) all trail DB-PMC (Table~\ref{tab:mech_extra}), ruling out arbitrary perturbation.\looseness=-1
 
 %% ---------------------------------------------------------------
 \subsection{Multi-Bit Generality}\label{sec:multibit}
 %% ---------------------------------------------------------------
 
-{\emergencystretch=1em PMC generalizes beyond 1-bit: it improves IVFPQ and OPQ across all encoders and datasets (audio omitted; $n_\mathrm{db}$ too small for codebook training), with the gap-proportional trend persisting (Table~\ref{tab:multibit}). OPQ's learned rotation partly absorbs the shift, giving smaller but complementary gains; IVFPQ lacks this and benefits more.\looseness=-1\par}
+{\emergencystretch=1em PMC generalizes beyond 1-bit: averaged over both directions it improves IVFPQ and OPQ across all encoders and datasets (audio omitted; $n_\mathrm{db}$ too small for codebook training), with the gap-proportional trend persisting (Table~\ref{tab:multibit}). OPQ's learned rotation partly absorbs the shift, giving smaller but complementary gains; IVFPQ lacks this and benefits more.\looseness=-1\par}

@@ -8,7 +8,14 @@ from .index_wrappers import (
     build_vanilla_rabitq,
     compute_nlist,
 )
-from .metrics import compute_ground_truth, nn_recall_at_k, recall_at_k
+from .metrics import (
+    average_precision_at_k,
+    compute_ground_truth,
+    map_at_k,
+    ndcg_at_k,
+    nn_recall_at_k,
+    recall_at_k,
+)
 from .pmc import (
     SimpleRaBitQIndex,
     build_pmc_rabitq_index,
@@ -21,6 +28,7 @@ from .pmc import (
 __all__ = [
     "HNSWIndex",
     "SimpleRaBitQIndex",
+    "average_precision_at_k",
     "build_hnsw",
     "build_ivfpq",
     "build_opq_ivfpq",
@@ -29,6 +37,8 @@ __all__ = [
     "compute_gap",
     "compute_nlist",
     "compute_ground_truth",
+    "map_at_k",
+    "ndcg_at_k",
     "nn_recall_at_k",
     "recall_at_k",
     "search_pmc",

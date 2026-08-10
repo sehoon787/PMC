@@ -53,4 +53,4 @@ Ground truth is always computed on ORIGINAL (unshifted) L2-normalized vectors. T
 
 ## Success Criterion
 
-Gate 1: PMC best-alpha R@10 >= vanilla index R@10 + 0.03 on text->image. The paper's main results use alpha=1.0, which is optimal across all tested backbones and index types (Figure 3a).
+Gate 1: PMC best-alpha R@10 >= vanilla index R@10 + 0.03 on text->image (aligned with ABOUT.md)

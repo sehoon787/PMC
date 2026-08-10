@@ -2,26 +2,22 @@
 
 ## Status
 
-This repository is the clean standalone reproduction package for the CIKM 2026 short
-paper *PMC: Build-Time Per-Modality Centroid Correction for Cross-Modal Binary-Quantized
-Retrieval*. The repository root **is** the package: it contains only the code, scripts,
-results, and paper source needed to reproduce all reported numbers. Historical research
-scripts and compatibility layers from the development tree are not included.
+`final/` is the clean standalone reproduction package for the CIKM 2026 short paper.
+It contains only the code, scripts, results, and paper source needed to reproduce all
+reported numbers. Historical research scripts and compatibility layers from
+`current/pmc_crossmodal/` are not present here.
 
 ## Project Layout
 
 ```text
-PMC/
+final/
 ├── config/
 │   └── paths.yaml
 ├── data/
-│   └── features/           # external feature cache (not committed)
+│   └── features → symlink to external feature cache
 ├── docs/
-│   ├── ARCHITECTURE.md
-│   └── METHOD_DESIGN.md
 ├── paper/
-│   ├── main.tex            # acmart sigconf, anonymous=true
-│   ├── main.pdf
+│   ├── main.tex
 │   ├── refs.bib
 │   ├── sections/
 │   │   ├── abstract.tex
@@ -30,9 +26,34 @@ PMC/
 │   │   ├── 02_method.tex
 │   │   ├── 03_experiments.tex
 │   │   └── 04_conclusion.tex
-│   └── figures/            # figure source (.py) and outputs (.pdf, .png)
-├── results/                # paper-critical CSV outputs (32 files, committed)
-├── scripts/                # reproduction scripts (one per paper element)
+│   └── figures/
+│       ├── fig_gap_vs_gain.pdf
+│       ├── fig_analysis_bcd.pdf
+│       └── fig_combined_1x4.pdf
+├── results/              (52 CSVs)
+├── scripts/
+│   ├── analysis/
+│   │   ├── verify_signbit_analysis.py
+│   │   └── verify_calibration.py
+│   ├── reproduce_tab1_signbit_methods.py
+│   ├── reproduce_tab2_main.py
+│   ├── reproduce_tab2_rerank.py
+│   ├── reproduce_tab3_mech_extra.py
+│   ├── reproduce_tab4_multibit.py
+│   ├── reproduce_map_ndcg.py
+│   ├── reproduce_table3_pq_sweep.py
+│   ├── reproduce_ablation_rerank.py
+│   ├── reproduce_mechanism_controls.py
+│   ├── reproduce_mechanism_additional_controls.py
+│   ├── reproduce_gapcal_comparison.py
+│   ├── reproduce_gap_energy.py
+│   ├── reproduce_audiocaps.py
+│   ├── reproduce_clotho.py
+│   ├── reproduce_laion400m.py
+│   ├── reproduce_fig3_analysis_bcd.py
+│   ├── reproduce_figure_c.py
+│   ├── reproduce_qps_pareto.py
+│   └── generate_figure.py
 ├── src/
 │   ├── core/
 │   │   ├── pmc.py
@@ -42,20 +63,7 @@ PMC/
 │   │   ├── mscoco.py
 │   │   ├── flickr30k.py
 │   │   ├── audiocaps.py
-│   │   ├── clotho.py
-│   │   ├── downloads.py
-│   │   └── items.py
-│   ├── encoders/
-│   │   ├── clip.py
-│   │   ├── imagebind.py
-│   │   ├── clap.py
-│   │   └── fake.py
-│   ├── experiments/
-│   │   ├── baselines.py
-│   │   ├── pq.py
-│   │   ├── opq_ablation.py
-│   │   ├── paired_recall_eval.py
-│   │   └── sweeps.py
+│   │   └── clotho.py
 │   ├── features/
 │   │   ├── loader.py
 │   │   ├── cache.py
@@ -64,13 +72,11 @@ PMC/
 │   │   └── synthetic.py
 │   ├── io/
 │   │   └── bigann.py
-│   ├── runtime/
-│   │   └── config.py
 │   └── utils.py
 ├── tests/
-│   ├── conftest.py
 │   ├── test_pmc.py
 │   ├── test_metrics.py
+│   ├── test_ranking_metrics.py
 │   └── test_utils.py
 └── requirements.txt
 ```
@@ -79,39 +85,40 @@ PMC/
 
 | Package | Responsibility |
 |---|---|
-| `src/core/` | PMC transforms (`pmc.py`), recall metric functions (`metrics.py`), and ANN index wrappers (`index_wrappers.py`). |
-| `src/datasets/` | MSCOCO, Flickr30K, AudioCaps, and Clotho loaders, item records, and download helpers. |
-| `src/encoders/` | CLIP, ImageBind, and CLAP feature encoders, plus a `fake` encoder for tests. |
-| `src/experiments/` | Experiment drivers: baselines, IVFPQ/OPQ ablations, paired recall evaluation, and alpha sweeps. |
+| `src/core/` | PMC transforms (`pmc.py`), recall and ranking metric functions (`metrics.py`: recall@k, mAP@k, nDCG@k), and ANN index wrappers (`index_wrappers.py`). |
+| `src/datasets/` | MSCOCO, Flickr30K, AudioCaps, and Clotho loaders and download helpers. |
 | `src/features/` | Feature cache format (`cache.py`), feature loader (`loader.py`), and extraction job orchestration (`jobs.py`). |
 | `src/fixtures/` | Synthetic test fixtures for unit tests (no external datasets required). |
-| `src/io/` | Binary vector file readers (BIGANN format) for LAION-400M scale data. |
-| `src/runtime/` | Runtime/path configuration resolution. |
+| `src/io/` | Binary vector file readers (BIGANN format). |
 | `src/utils.py` | Shared utility functions. |
 
 ## Script Families
 
-All reproduction scripts live in `scripts/`. The canonical script-to-paper-element
-mapping is maintained in the README "Reproduction" table; the current paper has five
-tables (Table 1: sign-bit methods, Table 2: main PMC results, Table 3: mechanism checks,
-Table 4: additional IVF-RaBitQ controls, Table 5: multi-bit generality).
+All reproduction scripts live in `final/scripts/`. Each script corresponds to one or more paper elements:
 
 | Script | Paper Element |
 |---|---|
-| `reproduce_table1_signbit.py` | Table 1 — sign-bit methods (R@100, Vanilla/PMC) |
-| `reproduce_table2_main_aggregator.py` | Table 2 — main PMC results (IVF-RaBitQFastScan) |
-| `reproduce_laion400m.py` | Table 2 — LAION-400M large-scale row (`n_list=80K`, `n_probe=256`) |
-| `reproduce_table3_pq_sweep.py` | PMC + PQ alpha sweep (feeds Table 5; Fig. 3a) |
-| `reproduce_table5_multibit.py` | Table 5 — multi-bit IVFPQ/OPQ generality |
-| `reproduce_mechanism_controls.py` | Tables 3-4 — bit-flip/J@100, exact control, component ablation, calibration sensitivity |
-| `reproduce_mechanism_additional_controls.py` | Table 4 — additional IVF-RaBitQ controls |
-| `reproduce_tab2_rerank.py` | Table 2 — "With reranking (K'=400)" column group (§4.3) |
-| `reproduce_ablation_rerank.py` | §4.3 rerank K'-sweep / LAION-400M deployable-recall ablation |
-| `reproduce_audiocaps.py` | AudioCaps audio retrieval (R@1) |
-| `reproduce_clotho.py` | Clotho audio retrieval (R@1) |
-| `reproduce_figure_c.py` | Selective PMC analysis curve (`selective_pmc_rabitq.csv`) |
-| `reproduce_qps_pareto.py` | QPS vs Recall Pareto curve |
-| `generate_figure.py` | Combined figure assets for the paper |
+| `reproduce_tab1_signbit_methods.py` | Table 1 (`tab:signbit_methods`) — BQ methods on MSCOCO and AudioCaps |
+| `reproduce_tab2_main.py` | Table 2 (`tab:mainresults`) — main PMC results, No-reranking columns |
+| `reproduce_tab2_rerank.py` | Table 2 (`tab:mainresults`) — main PMC results, With-reranking columns (K'=400) |
+| `reproduce_ablation_rerank.py` | LAION-400M K'-sweep reranking ablation (repo-only) |
+| `analysis/verify_signbit_analysis.py` | Table 3 (`tab:mechanism`) — sign-bit Flip% and J@100 metrics |
+| `analysis/verify_calibration.py` | Table 3 (`tab:mechanism`) — calibration cosine (cos@25); backs the calibration prose |
+| `reproduce_tab3_mech_extra.py` | Table 4 (`tab:mech_extra`) — component ablation and IVF-RaBitQ controls (filename keeps legacy `tab3` prefix) |
+| `reproduce_mechanism_controls.py` | Source CSVs for Tables 3–4 (bit-flip, exact control, component ablation, calibration sensitivity) |
+| `reproduce_mechanism_additional_controls.py` | Table 4 additional IVF-RaBitQ controls |
+| `reproduce_gapcal_comparison.py` | Centroid-alignment strategy comparison (validates the DB-side build-time choice) |
+| `reproduce_tab4_multibit.py` | Table 5 (`tab:multibit`) — multi-bit generality aggregator (filename keeps legacy `tab4` prefix) |
+| `reproduce_map_ndcg.py` | mAP/nDCG ranking-quality sweep across the six small-corpus rows; exploratory, not tied to a paper element |
+| `reproduce_table3_pq_sweep.py` | IVFPQ/OPQ alpha sweep (produces the PQ CSVs feeding Table 5 and Fig. 3a) |
+| `reproduce_audiocaps.py` | Table 2 AudioCaps rows |
+| `reproduce_clotho.py` | Table 2 Clotho rows |
+| `reproduce_laion400m.py` | Table 2 LAION-400M large-scale row |
+| `reproduce_gap_energy.py` | Method-section gap-energy concentration claim |
+| `reproduce_fig3_analysis_bcd.py` | `fig:analysis-bcd` — alpha sweep, selective PMC, and QPS Pareto panels |
+| `reproduce_figure_c.py` | Analysis source for selective PMC curve (`selective_pmc_rabitq.csv`) |
+| `reproduce_qps_pareto.py` | Analysis source for QPS Pareto curve (`pmc_qps_pareto_clip_mscoco_seed42.csv`) |
+| `paper/figures/fig3_analysis.py` | Renders split figure assets (`fig_gap_vs_gain`, `fig_analysis_bcd`) and legacy `fig_combined_1x4` |
 
 ## Runtime Paths
 

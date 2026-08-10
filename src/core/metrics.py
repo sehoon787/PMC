@@ -104,3 +104,88 @@ def recall_dict(
 ) -> "dict[int, float]":
     """Compute recall@k for multiple k values. Returns {k: recall}."""
     return {k: round(recall_at_k(retrieved_ids, gt_ids, k), 6) for k in ks}
+
+
+# ---------------------------------------------------------------------------
+# Ranking-quality metrics (binary graded relevance over the top_k ground truth)
+# ---------------------------------------------------------------------------
+
+def average_precision_at_k(retrieved_ids: np.ndarray, gt_ids: np.ndarray, k: int) -> float:
+    """Average precision@K for ONE query, with all gt items equally relevant.
+
+        AP@K = sum_r [ rel(r) * hits(r) / r ] / min(|gt|, K)
+
+    where r runs over the first K retrieved ranks, rel(r) is 1 when rank r
+    holds a ground-truth item, and hits(r) is the number of ground-truth items
+    seen up to and including rank r.  The min(|gt|, K) normalizer is the number
+    of hits a perfect ranking could achieve, so a perfect ranking scores 1.0.
+
+    Parameters
+    ----------
+    retrieved_ids : (top_k,) int array of retrieved neighbor IDs for one query.
+    gt_ids        : (n_gt,) int array of ground-truth IDs for the same query.
+    k             : Number of retrieved ranks to consider.
+    """
+    gt = set(int(x) for x in gt_ids if x >= 0)
+    if not gt:
+        return 0.0
+    hits = 0
+    precision_sum = 0.0
+    for rank, doc_id in enumerate(retrieved_ids[:k], start=1):
+        doc = int(doc_id)
+        if doc >= 0 and doc in gt:
+            hits += 1
+            precision_sum += hits / rank
+    return precision_sum / min(len(gt), k)
+
+
+def map_at_k(retrieved_ids: np.ndarray, gt_ids: np.ndarray, k: int) -> float:
+    """Mean average precision@K: average_precision_at_k averaged over queries.
+
+    Parameters
+    ----------
+    retrieved_ids : (Q, top_k) int array of retrieved neighbor IDs.
+    gt_ids        : (Q, n_gt) int array of ground-truth neighbor IDs.
+    k             : Number of retrieved ranks to consider.
+    """
+    q = len(retrieved_ids)
+    if q == 0:
+        return 0.0
+    total = sum(
+        average_precision_at_k(retrieved_ids[i], gt_ids[i], k) for i in range(q)
+    )
+    return total / q
+
+
+def ndcg_at_k(retrieved_ids: np.ndarray, gt_ids: np.ndarray, k: int) -> float:
+    """nDCG@K with binary gains (gain 1 per ground-truth hit).
+
+        DCG  = sum_r rel(r) / log2(r + 1)          over the first K ranks
+        IDCG = sum_{r=1..min(|gt|, K)} 1 / log2(r + 1)
+
+    Averaged over queries; a perfect ranking scores 1.0.
+
+    Parameters
+    ----------
+    retrieved_ids : (Q, top_k) int array of retrieved neighbor IDs.
+    gt_ids        : (Q, n_gt) int array of ground-truth neighbor IDs.
+    k             : Number of retrieved ranks to consider.
+    """
+    q = len(retrieved_ids)
+    if q == 0:
+        return 0.0
+    discounts = 1.0 / np.log2(np.arange(1, k + 1) + 1.0)
+    ideal_cum = np.cumsum(discounts)
+    total = 0.0
+    for i in range(q):
+        gt = set(int(x) for x in gt_ids[i] if x >= 0)
+        if not gt:
+            continue
+        dcg = 0.0
+        for rank, doc_id in enumerate(retrieved_ids[i, :k], start=1):
+            doc = int(doc_id)
+            if doc >= 0 and doc in gt:
+                dcg += discounts[rank - 1]
+        idcg = float(ideal_cum[min(len(gt), k) - 1])
+        total += dcg / idcg
+    return total / q
