@@ -182,29 +182,55 @@ Expected outputs in `results/`:
 
 ## Data Requirements
 
-Scripts expect pre-extracted features under `data/features/`. This directory is not included in the repo (features can be several GB).
+The reproduce scripts for the paper's tables read committed CSVs in `results/` and
+run straight from a clone. Everything else — the `emit_*.py` builders and the
+dataset-specific scripts — needs pre-extracted features under `data/features/`,
+which are not in the repo (several GB).
 
-**Directory layout:**
+**Feature files are flat, not nested**, and names encode dataset, split, encoder,
+modality and seed:
+
 ```
 data/features/
-  mscoco/
-    clip-b32/   ← image_db.npy, text_queries.npy
-    clip-l14/
-  flickr30k/
-    clip-l14/
-  audiocaps/
-    imagebind/
-  laion400m/
-    clip-b32/
+  mscoco_karpathy_val5k_clip_image_seed42.npy
+  mscoco_karpathy_val5k_clip_text_seed42.npy
+  mscoco_karpathy_val5k_clip-l_image_seed42.npy
+  flickr30k_full_clip-l_image_seed42.npy
+  audiocaps_test_imagebind_audio_seed42.npy
+  clotho_all_imagebind_text_seed42.npy
+  ...
 ```
 
-To reproduce from scratch:
+Point `features_dir` at that directory in `config/paths.yaml`, or override it with
+`PMC_FEATURES_DIR`. A script that cannot find a file prints the exact path it
+expected, which is the quickest way to check your layout.
 
-1. Extract CLIP-ViT-B/32, CLIP-ViT-L/14, or ImageBind embeddings for the target dataset.
-2. Place `.npy` files under the corresponding subdirectory.
-3. Override paths in `config/paths.yaml` if your layout differs.
+### Getting the source datasets
 
-Supported datasets: MSCOCO val5k, Flickr30K, AudioCaps test, Clotho test, LAION-400M.
+No downloader ships for MSCOCO, Flickr30K, AudioCaps or Clotho — obtain them from
+their official distributions (Flickr30K requires accepting a usage agreement, and
+AudioCaps audio must be fetched from YouTube, where clip availability changes over
+time). `scripts/download_laion400m.py` covers LAION-400M.
+
+### Extracting features
+
+There is no command-line entry point; call the library directly.
+
+- **CLIP on MSCOCO / Flickr30K** — `src.features.jobs.run_clip_feature_extraction`
+  with a `FeatureExtractionSpec`. It looks for raw data under `CFG.raw_dir /
+  "mscoco_karpathy"` or `"flickr30k"` unless you pass `raw_dir` explicitly.
+- **ImageBind on AudioCaps / Clotho** — `src.features.cache.encode_dataset` with
+  `ImageBindEncoder`; set `audiocaps_dir` and `audiocaps_metadata_csv` in
+  `config/paths.yaml` for AudioCaps.
+
+Encoders are frozen and never fine-tuned, so results depend on the checkpoint
+version you extract with.
+
+> Re-extraction will not reproduce the paper's numbers exactly. AudioCaps in
+> particular drifts as YouTube clips are removed: the paper's run covered 672 clips
+> and 3,346 captions, while the current metadata yields 884 and 4,415. This is why
+> the committed CSVs in `results/`, not the raw data, are the canonical source of
+> truth — see `docs/PAPER_RESULT_PROVENANCE.md`.
 
 ---
 
