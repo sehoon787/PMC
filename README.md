@@ -212,13 +212,13 @@ a `__main__` guard and runs from the repo root.
 
 | Stage | Script | Covers |
 |-------|--------|--------|
-| Download | `22_download_audiocaps.py` | AudioCaps audio via yt-dlp |
-| Download | `22_audiocaps_official_hf.py` | AudioCaps from the HuggingFace mirror (more reliable) |
-| Download | `22_clotho_allsplits_download.py` | Clotho v2, all splits, from Zenodo |
-| Extract (CLIP) | `16_extract_features.py` | MSCOCO and Flickr30K, CLIP-B/32 and CLIP-L/14 |
-| Extract (CLIP) | `17_extract_flickr30k_full.py` | Flickr30K full 31K split |
-| Extract (ImageBind) | `20_imagebind_feature_extraction.py` | MSCOCO and AudioCaps |
-| Extract (ImageBind) | `21_audiocaps_imagebind_only.py` | AudioCaps alone |
+| Download | `download_audiocaps_ytdlp.py` | AudioCaps audio via yt-dlp |
+| Download | `download_audiocaps_hf.py` | AudioCaps from the HuggingFace mirror (more reliable) |
+| Download | `download_clotho.py` | Clotho v2, all splits, from Zenodo |
+| Extract (CLIP) | `extract_clip_features.py` | MSCOCO and Flickr30K, CLIP-B/32 and CLIP-L/14 |
+| Extract (CLIP) | `extract_clip_flickr30k_full.py` | Flickr30K full 31K split |
+| Extract (ImageBind) | `extract_imagebind_features.py` | MSCOCO and AudioCaps |
+| Extract (ImageBind) | `extract_imagebind_audiocaps.py` | AudioCaps alone |
 | Download | `download_laion400m.py` | LAION-400M embeddings |
 
 MSCOCO and Flickr30K images are not downloaded for you: fetch them from their

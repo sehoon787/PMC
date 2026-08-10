@@ -1,5 +1,5 @@
 """
-17_extract_flickr30k_full.py -- Extract CLIP-L features for Flickr30K full (31K).
+extract_clip_flickr30k_full.py -- Extract CLIP-L features for Flickr30K full (31K).
 
 Processes images in batches to avoid OOM on machines with limited RAM.
 

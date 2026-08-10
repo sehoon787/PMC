@@ -1,5 +1,5 @@
 """
-16_extract_features.py -- Extract CLIP features for PMC experiments.
+extract_clip_features.py -- Extract CLIP features for PMC experiments.
 
 Extracts image and text embeddings using CLIPEncoder (sentence-transformers)
 and saves them as .npy files in data/features/.

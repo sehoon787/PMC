@@ -1,5 +1,5 @@
 """
-20_imagebind_feature_extraction.py -- Extract ImageBind features for PQ/OPQ experiments.
+extract_imagebind_features.py -- Extract ImageBind features for PQ/OPQ experiments.
 
 Downloads MSCOCO val2017 if needed, then extracts ImageBind (d=1024) features:
   - MSCOCO val5K: image + text embeddings

@@ -1,5 +1,5 @@
 """
-22_download_audiocaps.py -- Download AudioCaps test split audio files.
+download_audiocaps_ytdlp.py -- Download AudioCaps test split audio files.
 
 Downloads:
   1. AudioCaps test.csv metadata from HuggingFace

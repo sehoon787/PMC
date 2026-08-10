@@ -1,5 +1,5 @@
 """
-21_audiocaps_imagebind_only.py -- Fast AudioCaps-only ImageBind feature extraction (CUDA).
+extract_imagebind_audiocaps.py -- Fast AudioCaps-only ImageBind feature extraction (CUDA).
 
 Extracts ImageBind (d=1024) features for AudioCaps test set only:
   - AudioCaps test: audio + text embeddings
