@@ -189,8 +189,8 @@ python3 scripts/reproduce_gap_energy.py                   # §3 Method gap-energ
 Each script exits non-zero / prints `# REPRODUCE-MISMATCH` if a committed CSV no
 longer backs the paper value. Large-dataset regeneration from raw embeddings
 (Flickr30K-31K, LAION-400M, Yandex) requires external data and is out of scope for
-the cached path; see `docs/EXPERIMENTS.md` for the full FAISS-bound script
-inventory.
+the cached path; the `emit_*.py` builders listed above are the FAISS-bound entry
+points for it.
 
 ## Not a paper element
 

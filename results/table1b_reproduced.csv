@@ -1,3 +1,6 @@
+# Protocol: nlist=64 (fixed). The paper's Table 2 uses nlist=ceil(sqrt(n)) with
+# n_probe~nlist/4, so these R@100 values differ by ~0.01-0.02. Superseded by
+# results/tab2_main_reproduced.csv, which is the artifact behind Table 2.
 Dataset,Enc,gap,q_r10_van,q_r10_pmc,q_r100_van,q_r100_pmc,q_delta,db_r10_van,db_r10_pmc,db_r100_van,db_r100_pmc,db_delta
 MSCOCO,CLIP,.82,.39,.46,.57,.63,+10%,.28,.38,.49,.60,+22%
 MSCOCO,CL-L,.82,.36,.48,.54,.65,+20%,.26,.44,.46,.63,+37%
