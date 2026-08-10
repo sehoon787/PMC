@@ -14,7 +14,7 @@ Data layout:
   E:/laion400m/img_emb/img_emb_{0..409}.npy   float16 (N_shard, 512)
   E:/laion400m/text_emb/text_emb_{0..9}.npy   float16 (N_shard, 512)
 
-Output: results/pmc_laion400m_nlist80k_seed42.csv
+Output: results/pmc_laion400m_seed42.csv
 
 Usage
 -----
@@ -80,7 +80,7 @@ N_IMG_SHARDS = 410
 N_TEXT_SHARDS = 10
 N_QUERIES = 10_000
 TOP_K = 100
-NLIST = 80_000          # ~4*sqrt(407M); paper operating point
+NLIST = 20_000          # approx sqrt(400M)
 NPROBE_VALUES = [1, 2, 4, 8, 16, 32, 64, 128, 256]
 N_WARMUP = 1
 N_TIMED = 5
@@ -477,7 +477,7 @@ def check_laion400m_csv_summary() -> bool:
     Invoked via:
       python scripts/reproduce_laion400m.py --summary
     """
-    csv_path = RESULTS_DIR / f"pmc_laion400m_nlist80k_seed{SEED}.csv"
+    csv_path = RESULTS_DIR / f"pmc_laion400m_seed{SEED}.csv"
     if not csv_path.exists():
         print(f"  SKIP: {csv_path} not found")
         return False
@@ -548,7 +548,7 @@ def main(gt_only: bool = False) -> None:
 
     # Paths for ground truth and results
     gt_path = LAION_DIR / f"groundtruth.laion400m.{N_QUERIES // 1000}K.npy"
-    out_csv = RESULTS_DIR / f"pmc_laion400m_nlist80k_seed{SEED}.csv"
+    out_csv = RESULTS_DIR / f"pmc_laion400m_seed{SEED}.csv"
 
     # Load queries
     queries = load_queries()

@@ -1,7 +1,7 @@
 """
 Reproduce PMC mechanism/control experiments with original exact-IP GT protocol.
 
-Outputs (under results/):
+Outputs (under final/results):
 - mechanism_bitflip.csv
 - mechanism_exact_control.csv
 - mechanism_component_ablation.csv
@@ -9,7 +9,7 @@ Outputs (under results/):
 
 Feature directory resolution:
 1) $PMC_FEATURES_DIR (if set)
-2) data/features
+2) final/data/features
 """
 
 from __future__ import annotations

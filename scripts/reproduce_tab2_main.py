@@ -1,7 +1,7 @@
-"""Lightweight Table 2 (main results) reproduction/validation aggregator.
+"""Reproduce tab:main (base-regime main results, no rerank).
 
-This script does not run FAISS or any heavy experiment.  For the 6 small-dataset
-rows it reads results/nprobe_sweep_pivot.csv (nlist_setting == "sqrtN") at an
+This script runs NO FAISS or heavy experiment.  For the 6 small-dataset rows
+it reads results/nprobe_sweep_pivot.csv (nlist_setting == "sqrtN") at an
 nprobe chosen by the matched-budget ρ¼ rule (one per direction):
 
   nprobe = round_half_up(nlist / 4)
@@ -12,13 +12,16 @@ nprobe chosen by the matched-budget ρ¼ rule (one per direction):
   for each direction (text→audio nlist=26, audio→text nlist=58), nprobe is
   computed separately per direction.
 
-The LAION-400M row is read from:
-  results/pmc_laion400m_nlist80k_seed42.csv        (forward,  nprobe=256)
-  results/pmc_laion400m_reverse_nlist80k_seed42.csv (reverse, nprobe=256)
+The LAION-400M row is unchanged: read from
+  results/pmc_laion400m_nlist80k_seed42.csv   (forward, nprobe=256)
+  results/pmc_laion400m_reverse_nlist80k_seed42.csv  (reverse, nprobe=256)
+
+Table 2's reranked R@100 columns are reproduced by reproduce_tab2_rerank.py;
+the rerank K'-sweep ablation is in reproduce_ablation_rerank.py.
 
 Outputs:
   - stdout (markdown table)
-  - results/table2_main_reproduced.csv
+  - results/tab2_main_reproduced.csv
 """
 
 from __future__ import annotations
@@ -37,7 +40,7 @@ def find_project_root() -> Path:
 
 PROJECT_ROOT = find_project_root()
 RESULTS_DIR = PROJECT_ROOT / "results"
-OUTPUT_CSV = RESULTS_DIR / "table2_main_reproduced.csv"
+OUTPUT_CSV = RESULTS_DIR / "tab2_main_reproduced.csv"
 
 # Required source files -- checked at startup.
 SOURCE_FILES = [
@@ -47,10 +50,8 @@ SOURCE_FILES = [
 
 FIELDNAMES = [
     "Dataset", "Enc", "gap",
-    "q_r10_van", "q_r10_ms", "q_r10_pmc",
     "q_r100_van", "q_r100_ms", "q_r100_pmc",
     "q_delta_vp", "q_delta_mp",
-    "db_r10_van", "db_r10_ms", "db_r10_pmc",
     "db_r100_van", "db_r100_ms", "db_r100_pmc",
     "db_delta_vp", "db_delta_mp",
 ]
@@ -169,12 +170,6 @@ def pick_pivot(
     return matched[0]
 
 
-def _pivot_tuple(row: dict[str, str], col: str) -> tuple[float, float]:
-    """Return (R10, R100) for a pivot row using the given R100 column prefix."""
-    r10_col = col.replace("R100", "R10")
-    return (float(row[r10_col]), float(row[col]))
-
-
 def build_row(
     dataset: str,
     enc: str,
@@ -193,17 +188,11 @@ def build_row(
         "Dataset": dataset,
         "Enc": enc,
         "gap": GAPS[(dataset, enc)],
-        "q_r10_van": fmt_recall(q_van[0], digits),
-        "q_r10_ms": fmt_recall(q_ms[0], digits) if q_ms is not None else "",
-        "q_r10_pmc": fmt_recall(q_pmc[0], digits),
         "q_r100_van": fmt_recall(q_van[1], digits),
         "q_r100_ms": fmt_recall(q_ms[1], digits) if q_ms is not None else "",
         "q_r100_pmc": fmt_recall(q_pmc[1], digits),
         "q_delta_vp": q_delta_vp,
         "q_delta_mp": q_delta_mp,
-        "db_r10_van": "",
-        "db_r10_ms": "",
-        "db_r10_pmc": "",
         "db_r100_van": "",
         "db_r100_ms": "",
         "db_r100_pmc": "",
@@ -213,15 +202,18 @@ def build_row(
     if db_van is not None and db_pmc is not None:
         db_delta_vp = fmt_delta(db_van[1], db_pmc[1], digits=digits)
         db_delta_mp = fmt_delta(db_ms[1], db_pmc[1], digits=digits) if db_ms is not None else ""
-        row["db_r10_van"] = fmt_recall(db_van[0], digits)
-        row["db_r10_ms"] = fmt_recall(db_ms[0], digits) if db_ms is not None else ""
-        row["db_r10_pmc"] = fmt_recall(db_pmc[0], digits)
         row["db_r100_van"] = fmt_recall(db_van[1], digits)
         row["db_r100_ms"] = fmt_recall(db_ms[1], digits) if db_ms is not None else ""
         row["db_r100_pmc"] = fmt_recall(db_pmc[1], digits)
         row["db_delta_vp"] = db_delta_vp
         row["db_delta_mp"] = db_delta_mp
     return row
+
+
+def _pivot_tuple(row: dict[str, str], col: str) -> tuple[float, float]:
+    """Return (R10, R100) for a pivot row using the given R100 column prefix."""
+    r10_col = col.replace("R100", "R10")
+    return (float(row[r10_col]), float(row[col]))
 
 
 def build_small_row_from_pivot(
@@ -310,7 +302,7 @@ def compute_table_rows(pivot: list[dict[str, str]]) -> list[dict[str, str]]:
         q_direction="text->audio", db_direction="audio->text",
     ))
 
-    # --- LAION-400M -- CLIP (nlist=80K, nprobe=256, 3 decimals) ---
+    # --- LAION-400M -- CLIP (unchanged; nprobe=256, 3 decimals) ---
     laion = read_csv_rows(RESULTS_DIR / "pmc_laion400m_nlist80k_seed42.csv")
     laion_van = pick_one(laion, method="vanilla_rabitq", alpha="0.0", nprobe="256")
     laion_pmc = pick_one(laion, method="pmc_1.00", alpha="1.0", nprobe="256")

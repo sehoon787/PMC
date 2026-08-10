@@ -1,0 +1,7 @@
+part,index_type,direction,vanilla,query_only,db_only,both,random_direction_same_norm,shuffled_gap,sign_flipped_gap,db_only_no_norm
+b,binary_flat,text2image,.507,.569,.570,.570,,,,
+b,binary_flat,image2text,.458,.571,.568,.569,,,,
+b,ivf_rabitq,text2image,.578,.541,.637,.599,,,,
+b,ivf_rabitq,image2text,.515,.495,.608,.554,,,,
+c,ivf_rabitq,text2image,.578,,.637,,.562+/-.009,.552+/-.006,.514,.555
+c,ivf_rabitq,image2text,.515,,.608,,.564+/-.009,.559+/-.009,.491,.520

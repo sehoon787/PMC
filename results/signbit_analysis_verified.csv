@@ -1,0 +1,5 @@
+dataset,direction,label,bin_van,bin_pmc,flip_pct,j100,n25_cos
+mscoco,text2image,MSCOCO t->i,.5073,.5697,16.14,.5848,.9860
+mscoco,image2text,MSCOCO i->t,.4579,.5675,15.99,.5420,.9862
+audiocaps,text2audio,AudioCaps t->a,.6298,.6597,14.34,.8014,.9711
+audiocaps,audio2text,AudioCaps a->t,.5143,.6442,17.84,.7986,.9552

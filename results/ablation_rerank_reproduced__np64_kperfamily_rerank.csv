@@ -1,0 +1,15 @@
+dataset,enc,direction_role,direction,nprobe,rerank_k,r100_van,r100_ms,r100_pmc,delta_vp,delta_mp,qps_cellmean,minK_van,minK_ms,minK_pmc
+MSCOCO,CLIP,q->db,text->image,64,500,.84,.82,.92,+10%,+12%,2751,1000,1000,500
+MSCOCO,CLIP,db->q,image->text,64,500,.76,.77,.90,+18%,+17%,3099,--,--,500
+MSCOCO,CL-L,q->db,text->image,64,500,.82,.79,.93,+13%,+18%,1042,1000,--,500
+MSCOCO,CL-L,db->q,image->text,64,500,.69,.77,.92,+33%,+19%,1075,--,--,500
+MSCOCO,IB,q->db,text->image,64,500,.94,.89,.98,+4%,+10%,758,500,1000,200
+MSCOCO,IB,db->q,image->text,64,500,.93,.90,.96,+3%,+7%,863,500,500,200
+Flickr30K,CL-L,q->db,text->image,64,500,.94,.89,.99,+5%,+11%,1119,500,1000,500
+Flickr30K,CL-L,db->q,image->text,64,500,.85,.88,.98,+15%,+11%,1231,1000,1000,500
+Clotho,IB,q->db,text->audio,64,200,.96,.87,.97,+1%,+11%,2346,200,500,200
+Clotho,IB,db->q,audio->text,64,200,.81,.72,.91,+12%,+26%,2291,500,500,200
+AudioCaps,IB,q->db,text->audio,64,200,.90,.78,.92,+2%,+18%,2217,200,500,200
+AudioCaps,IB,db->q,audio->text,64,200,.80,.72,.89,+11%,+24%,2111,500,1000,500
+LAION-400M,CLIP,q->db,forward,64,500,.147,.159,.280,+90%,+76%,,--,--,--
+LAION-400M,CLIP,db->q,reverse,64,500,.158,.080,.139,-12%,+74%,,--,--,--

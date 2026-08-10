@@ -1,7 +1,7 @@
 """Compatibility wrapper for paper figure generation.
 
 Delegates rendering to the canonical split-figure generator at:
-paper/figures/fig3_analysis.py
+final/paper/figures/fig3_analysis.py
 """
 
 from pathlib import Path

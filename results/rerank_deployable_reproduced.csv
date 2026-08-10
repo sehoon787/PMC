@@ -1,0 +1,13 @@
+dataset,enc,direction_role,direction,nprobe,rerank_k,r100_van,r100_ms,r100_pmc,delta_vp,delta_mp,qps_cellmean,minK_van,minK_ms,minK_pmc
+MSCOCO,CLIP,q->db,text->image,64,400,.81,.79,.90,+11%,+14%,4154,--,--,400
+MSCOCO,CLIP,db->q,image->text,64,400,.72,.74,.87,+21%,+18%,4494,--,--,500
+MSCOCO,CL-L,q->db,text->image,64,400,.79,.77,.91,+15%,+18%,1951,--,--,400
+MSCOCO,CL-L,db->q,image->text,64,400,.66,.73,.89,+35%,+22%,1958,--,--,500
+MSCOCO,IB,q->db,text->image,64,400,.93,.87,.97,+4%,+11%,1600,400,--,200
+MSCOCO,IB,db->q,image->text,64,400,.93,.88,.95,+2%,+8%,1484,400,500,200
+Flickr30K,CL-L,q->db,text->image,32,400,.91,.85,.97,+7%,+14%,2417,400,--,400
+Flickr30K,CL-L,db->q,image->text,32,400,.81,.82,.96,+19%,+17%,2389,--,--,400
+Clotho,IB,q->db,text->audio,32,400,1.00,.96,1.00,+0%,+4%,1906,200,400,200
+Clotho,IB,db->q,audio->text,64,400,.92,.87,.98,+7%,+13%,1380,400,500,200
+AudioCaps,IB,q->db,text->audio,64,400,.98,.88,.98,+0%,+11%,1527,200,500,200
+AudioCaps,IB,db->q,audio->text,64,400,.90,.84,.97,+8%,+15%,1525,400,--,400

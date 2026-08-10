@@ -8,7 +8,7 @@
 
 ---
 
-PMC is a **zero-cost preprocessing step** that fixes the modality gap problem in binary quantized retrieval (RaBitQ). A one-line vector shift applied at index build time closes the gap between text and image centroids, recovering up to **+48% R@100** with no change in memory or throughput.
+PMC is a **zero-cost preprocessing step** that fixes the modality gap problem in binary quantized retrieval (RaBitQ). A one-line vector shift applied at index build time closes the gap between text and image centroids, recovering up to **+45% R@100** with no change in memory or throughput.
 
 <p align="center">
   <img src="paper/figures/fig1_tsne_6groups.png" width="720" />
@@ -22,24 +22,24 @@ PMC is a **zero-cost preprocessing step** that fixes the modality gap problem in
 
 ## Key Results
 
-### Sign-bit retrieval — IVF-RaBitQFastScan
+### Binary-quantized retrieval — IVF-RaBitQFastScan
 
-R@100, reported as **Vanilla / MeanShift / PMC**. `q→db` = text→image/audio; `db→q` = reverse. Δ = relative R@100 gain (Vanilla→PMC).
+R@100, reported as **Vanilla / MeanShift / PMC**. `q→db` = text→image/audio; `db→q` = reverse. Δ = relative R@100 gain (Vanilla→PMC). Index: IVF-RaBitQFastScan with `n_list = ceil(sqrt(n))` (the FAISS IVF sizing heuristic) and a matched query budget of `n_probe ≈ n_list/4`.
 
 | Dataset | Enc. | ‖g‖ | Dir. | Vanilla | MeanShift | PMC | Δ |
 |---------|------|-----|------|---------|-----------|------|---|
-| MSCOCO val5k | CLIP-ViT-B/32 | 0.82 | q→db | 0.57 | 0.53 | **0.63** | +10% |
-| MSCOCO val5k | CLIP-ViT-B/32 | 0.82 | db→q | 0.49 | 0.49 | **0.60** | +22% |
-| MSCOCO val5k | CLIP-ViT-L/14 | 0.82 | q→db | 0.54 | 0.53 | **0.65** | +20% |
-| MSCOCO val5k | CLIP-ViT-L/14 | 0.82 | db→q | 0.46 | 0.50 | **0.63** | +37% |
+| MSCOCO val5k | CLIP-ViT-B/32 | 0.82 | q→db | 0.58 | 0.54 | **0.63** | +9% |
+| MSCOCO val5k | CLIP-ViT-B/32 | 0.82 | db→q | 0.50 | 0.49 | **0.60** | +20% |
+| MSCOCO val5k | CLIP-ViT-L/14 | 0.82 | q→db | 0.55 | 0.53 | **0.65** | +18% |
+| MSCOCO val5k | CLIP-ViT-L/14 | 0.82 | db→q | 0.47 | 0.51 | **0.63** | +34% |
 | MSCOCO val5k | ImageBind | 0.70 | q→db | 0.67 | 0.62 | **0.75** | +12% |
-| MSCOCO val5k | ImageBind | 0.70 | db→q | 0.70 | 0.66 | **0.75** | +7% |
-| Flickr30K | CLIP-ViT-L/14 | 0.77 | q→db | 0.39 | 0.34 | **0.48** | +23% |
-| Flickr30K | CLIP-ViT-L/14 | 0.77 | db→q | 0.31 | 0.35 | **0.46** | +48% |
-| Clotho | ImageBind | 0.61 | q→db | 0.72 | 0.60 | **0.73** | +2% |
-| Clotho | ImageBind | 0.61 | db→q | 0.62 | 0.51 | **0.68** | +11% |
-| AudioCaps | ImageBind | 0.61 | q→db | 0.75 | 0.78 | **0.79** | +5% |
-| AudioCaps | ImageBind | 0.61 | db→q | 0.82 | 0.82 | **0.83** | +1% |
+| MSCOCO val5k | ImageBind | 0.70 | db→q | 0.71 | 0.66 | **0.75** | +6% |
+| Flickr30K | CLIP-ViT-L/14 | 0.77 | q→db | 0.41 | 0.34 | **0.48** | +17% |
+| Flickr30K | CLIP-ViT-L/14 | 0.77 | db→q | 0.33 | 0.37 | **0.48** | +45% |
+| Clotho | ImageBind | 0.61 | q→db | 0.72 | 0.60 | **0.73** | +1% |
+| Clotho | ImageBind | 0.61 | db→q | 0.62 | 0.51 | **0.69** | +11% |
+| AudioCaps | ImageBind | 0.61 | q→db | 0.75 | 0.78 | **0.78** | +4% |
+| AudioCaps | ImageBind | 0.61 | db→q | 0.83 | 0.83 | **0.83** | +0% |
 
 ### LAION-400M (407M vectors, CLIP-ViT-B/32)
 
@@ -48,7 +48,7 @@ R@100 at `n_list=80K, n_probe=256`, single-thread CPU (i7-12700F):
 | Dir. | Vanilla | MeanShift | PMC | Δ |
 |------|---------|-----------|------|---|
 | q→db (text→image) | 0.108 | 0.074 | **0.143** | +32% |
-| db→q (image→text) | 0.058 | 0.042 | **0.072** | +24% |
+| db→q (image→text) | 0.069 | 0.043 | **0.073** | +6% |
 
 > PMC adds **zero memory** and keeps query throughput within **1%** of vanilla RaBitQ across all configurations.
 
@@ -76,7 +76,7 @@ With `α = 1`, the full correction is absorbed into the index at build time (zer
 </p>
 
 <p align="center"><em>
-  <b>Figure 3.</b> <b>(a)</b> Sign-bit α sweep — R@100 improves monotonically with α across all backbones and index types (RaBitQ, IVFPQ, OPQ); α=1 is optimal. <b>(b)</b> Selective PMC — correcting only the top-5% gap-energy dimensions already recovers peak recall on MSCOCO; low-gap Clotho needs broader correction. <b>(c)</b> R@100–QPS Pareto — PMC dominates vanilla and mean shift at every operating point.
+  <b>Figure 3.</b> <b>(a)</b> Binary-quantization α sweep — R@100 improves monotonically with α across all backbones and index types (RaBitQ, IVFPQ, OPQ); α=1 is optimal. <b>(b)</b> Selective PMC — correcting only the top-5% gap-energy dimensions already recovers peak recall on MSCOCO; low-gap Clotho needs broader correction. <b>(c)</b> R@100–QPS Pareto — PMC dominates vanilla and mean shift at every operating point.
 </em></p>
 
 ---
@@ -98,15 +98,13 @@ Each script maps to one paper element. Run from the repo root.
 
 | Script | Paper Element |
 |--------|---------------|
-| `scripts/reproduce_table1_signbit.py` | Table 1: Sign-bit methods (R@100, Vanilla/PMC) |
+| `scripts/reproduce_table1_signbit.py` | Table 1: Binary-quantization methods (R@100, Vanilla/PMC) |
 | `scripts/reproduce_table2_main_aggregator.py` | Table 2: Main PMC results (IVF-RaBitQFastScan) |
 | `scripts/reproduce_laion400m.py` | Table 2: LAION-400M large-scale row |
 | `scripts/reproduce_table3_pq_sweep.py` | PMC + PQ alpha sweep (feeds Table 5; Fig. 3a) |
 | `scripts/reproduce_table5_multibit.py` | Table 5: Multi-bit IVFPQ/OPQ generality |
 | `scripts/reproduce_mechanism_controls.py` | Tables 3-4: bit-flip/J@100, exact control, component ablation, calibration sensitivity |
 | `scripts/reproduce_mechanism_additional_controls.py` | Table 4: Additional IVF-RaBitQ controls |
-| `scripts/reproduce_tab2_rerank.py` | Table 2: "With reranking (K'=400)" column group (§4.3) |
-| `scripts/reproduce_ablation_rerank.py` | §4.3 rerank K'-sweep / LAION-400M deployable-recall ablation |
 | `scripts/reproduce_figure_c.py` | Figure: Selective PMC analysis |
 | `scripts/reproduce_qps_pareto.py` | QPS vs Recall Pareto plot |
 | `scripts/reproduce_clotho.py` | Clotho audio retrieval (R@1) |
@@ -183,11 +181,11 @@ PMC/
 ## Citation
 
 ```bibtex
-@inproceedings{anonymous2026pmc,
+@inproceedings{kim2026pmc,
   title     = {{PMC}: Build-Time Per-Modality Centroid Correction
                for Cross-Modal Binary-Quantized Retrieval},
-  author    = {Anonymous},
-  booktitle = {Proceedings of the 32nd ACM International Conference on
+  author    = {Kim, Se Hoon and Lee, Jun Hyung and Jung, Soonyoung},
+  booktitle = {Proceedings of the 35th ACM International Conference on
                Information and Knowledge Management (CIKM)},
   year      = {2026}
 }

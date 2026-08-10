@@ -1,4 +1,4 @@
-\documentclass[sigconf,natbib=true,anonymous=true]{acmart}
+\documentclass[sigconf,natbib=true]{acmart}
 
 \acmConference[CIKM '26]{The 35th ACM International Conference on Information and Knowledge Management}{November 7--11, 2026}{Rome, Italy}
 \acmYear{2026}
@@ -10,7 +10,7 @@
     pdfborder={0 0 0},
     colorlinks=false,
     pdftitle={PMC: Build-Time Per-Modality Centroid Correction for Cross-Modal Binary-Quantized Retrieval},
-    pdfauthor={Anonymous Author(s)},
+    pdfauthor={Se Hoon Kim, Jun Hyung Lee, Soonyoung Jung},
     pdfsubject={CIKM 2026 Short Paper},
     pdfkeywords={cross-modal retrieval, modality gap, approximate nearest neighbor search, binary quantization}
 }
@@ -27,10 +27,33 @@
 
 \title{PMC: Build-Time Per-Modality Centroid Correction for Cross-Modal Binary-Quantized Retrieval}
 
-\author{Anonymous Author(s)}
+\author{Se Hoon Kim}
 \affiliation{%
-  \institution{Anonymous Institution}
+  \department{Department of Computer Science}
+  \institution{Korea University}
+  \city{Seoul}
+  \country{South Korea}
 }
+\email{sehoon787@korea.ac.kr}
+
+\author{Jun Hyung Lee}
+\affiliation{%
+  \department{Department of Computer Science}
+  \institution{Korea University}
+  \city{Seoul}
+  \country{South Korea}
+}
+\email{junicus@korea.ac.kr}
+
+\author{Soonyoung Jung}
+\authornote{Corresponding author.}
+\affiliation{%
+  \department{Department of Computer Science}
+  \institution{Korea University}
+  \city{Seoul}
+  \country{South Korea}
+}
+\email{jsy@korea.ac.kr}
 
 \setlength{\textfloatsep}{2pt plus 1pt minus 1pt}
 \setlength{\floatsep}{6pt plus 1pt minus 1pt}
@@ -79,6 +102,11 @@
 \input{sections/02_method}
 \input{sections/03_experiments}
 \input{sections/04_conclusion}
+
+\begin{acks}
+This work was supported by the National Research Foundation of Korea (NRF)
+grant funded by the Korean government (MSIT) (No.~00359638).
+\end{acks}
 
 \section*{GenAI Usage Disclosure}
 Generative AI tools (Claude) were used for code scaffolding and LaTeX formatting.

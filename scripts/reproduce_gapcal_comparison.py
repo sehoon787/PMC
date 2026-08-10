@@ -7,7 +7,7 @@ IVFRaBitQFastScan to validate PMC's design choice of DB-side build-time
 correction.
 
 Usage:
-    # from the repository root
+    cd current/pmc_crossmodal
     python3 scripts/reproduce_gapcal_comparison.py
 """
 

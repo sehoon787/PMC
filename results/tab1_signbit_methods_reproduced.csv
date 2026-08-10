@@ -1,0 +1,17 @@
+method,direction,r100_vanilla,r100_pmc
+BinaryFlat,text2image,.51,.57
+BinaryFlat,image2text,.46,.57
+BinaryFlat,text2audio,.63,.66
+BinaryFlat,audio2text,.51,.64
+BinaryIVF,text2image,.51,.57
+BinaryIVF,image2text,.47,.57
+BinaryIVF,text2audio,.59,.61
+BinaryIVF,audio2text,.50,.63
+RotatedBinary,text2image,.29,.58
+RotatedBinary,image2text,.21,.57
+RotatedBinary,text2audio,.65,.70
+RotatedBinary,audio2text,.63,.69
+RaBitQ,text2image,.58,.64
+RaBitQ,image2text,.52,.61
+RaBitQ,text2audio,.75,.75
+RaBitQ,audio2text,.67,.75

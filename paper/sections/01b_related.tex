@@ -15,24 +15,23 @@ these lines, the standard assumption is that query and database statistics are
 in-distribution and approximately centroid-aligned.
 
 \textbf{Cross-modal and OOD retrieval.}
-Cross-modal and OOD retrieval methods usually intervene outside compressed code
-formation. OOD-DiskANN~\cite{jaiswal2022ood,subramanya2019diskann} augments
+Cross-modal and OOD retrieval methods usually intervene outside compressed code formation.
+OOD-DiskANN~\cite{jaiswal2022ood,subramanya2019diskann} augments
 graph search for distribution shift; RoarGraph/DEG~\cite{chen2024roargraph,yin2025deg}
 modify graph connectivity; DeDrift~\cite{baranchuk2023dedrift} and
 TCR~\cite{li2025tcr} use test-time adaptation or retraining-style updates to
 counter drift. They are effective but usually assume uncompressed vectors, additional graph
-structures, or online serving updates. PMC is complementary and not a direct
+structures, or online serving updates. PMC is complementary, not a direct
 baseline: one offline centroid correction in the 1-bit compressed regime, with
-no added index-time memory or required retraining.
+no added index-time memory or retraining.
 
 \textbf{Modality gap.}
 Mind-the-Gap~\cite{liang2022mind} shows that cross-modal embedding spaces often
 exhibit stable centroid offsets between modalities. Follow-up analyses attribute
 this behavior to training dynamics~\cite{schrodi2025twoeffects}, characterize
 its geometry~\cite{levi2025doubleellipsoid}, and study mean-subtraction effects~\cite{zhang2024c3}.
-Other work either preserves the gap~\cite{ramasinghe2024acceptgap}, reduces it
-through encoder retraining~\cite{eslami2025alignclip}, or exploits gap-aware
-calibration for \emph{uncompressed} ranking~\cite{li2025grclip}; see also the
+Other work either preserves the gap~\cite{ramasinghe2024acceptgap} or reduces it
+through encoder retraining~\cite{eslami2025alignclip}; see also the
 recent survey~\cite{wang2024crossmodal}. No prior work addresses how the
 modality gap degrades \emph{compressed} ANN indexes, where centroid
 misalignment corrupts both IVF routing and quantized codes; this is our focus.

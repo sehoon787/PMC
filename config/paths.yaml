@@ -1,5 +1,5 @@
 # Default path configuration for PMC experiments.
-# Relative paths are resolved from the repository root.
+# Relative paths are resolved from current/pmc_crossmodal/.
 #
 # Create config/paths.local.yaml for machine-specific overrides.
 # You can also point PMC_PATHS_YAML to another YAML file, or override
