@@ -25,6 +25,7 @@ Usage:
 
 from __future__ import annotations
 
+import os
 import csv
 import sys
 import warnings
@@ -47,7 +48,7 @@ from src.runtime.config import CFG  # noqa: E402
 # ---------------------------------------------------------------------------
 # LAION path
 # ---------------------------------------------------------------------------
-LAION_DIR = Path("E:/laion400m")
+LAION_DIR = Path(os.environ.get("LAION400M_DIR", "E:/laion400m"))
 
 # ---------------------------------------------------------------------------
 # Small-dataset specs: (label, backbone, db_file, query_file)

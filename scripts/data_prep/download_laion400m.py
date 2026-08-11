@@ -16,6 +16,7 @@ Usage
 """
 from __future__ import annotations
 
+import os
 import argparse
 import sys
 import time
@@ -26,7 +27,7 @@ from pathlib import Path
 BASE_URL = "https://deploy.laion.ai/8f83b608504d46bb81708ec86e912220/embeddings"
 N_IMG_SHARDS = 410
 N_TEXT_SHARDS = 410  # full text embeddings for bidirectional eval
-TARGET_DIR = Path("E:/laion400m")
+TARGET_DIR = Path(os.environ.get("LAION400M_DIR", "E:/laion400m"))
 
 
 def download_shard(kind: str, idx: int, target_dir: Path) -> tuple[int, bool, str]:

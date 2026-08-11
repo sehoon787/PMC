@@ -147,30 +147,33 @@ python -m pytest tests/ -x -q
 
 ## Reproduction
 
-Each script maps to one paper element. Run from the repo root.
+Each script maps to one paper element. Run from the repo root. Unmarked scripts read the
+committed CSVs in `results/` and run on a bare clone; † marks scripts that rebuild indexes
+from `data/features/` (see Data Requirements). LAION scripts honour `LAION400M_DIR`.
 
 | Script | Paper Element |
 |--------|---------------|
 | `scripts/reproduce_tab1_signbit_methods.py` | Table 1: Binary-quantization methods (R@100, Vanilla/PMC) |
 | `scripts/reproduce_tab2_main.py` | Table 2: Main PMC results (IVF-RaBitQFastScan), No-reranking columns |
 | `scripts/reproduce_tab2_rerank.py` | Table 2: Main PMC results, With-reranking columns (K'=400) |
-| `scripts/reproduce_laion400m.py` | Table 2: LAION-400M large-scale row |
+| `scripts/reproduce_laion400m.py`† | Table 2: LAION-400M large-scale row |
 | `scripts/reproduce_ablation_rerank.py` | LAION-400M K'-sweep reranking ablation (repo-only) |
 | `scripts/analysis/verify_signbit_analysis.py` | Table 3: sign-bit mechanism metrics (Flip%, J@100) |
 | `scripts/analysis/verify_calibration.py` | Table 3: calibration cosine (cos@25); §4.4 calibration prose |
-| `scripts/reproduce_mechanism_controls.py` | Tables 3-4: bit-flip/J@100, exact control, component ablation, calibration sensitivity |
+| `scripts/reproduce_mechanism_controls.py`† | Tables 3-4: bit-flip/J@100, exact control, component ablation, calibration sensitivity |
 | `scripts/reproduce_tab3_mech_extra.py` | Table 4: component ablation + IVF-RaBitQ controls (filename keeps legacy `tab3` prefix) |
-| `scripts/reproduce_mechanism_additional_controls.py` | Table 4: Additional IVF-RaBitQ controls |
-| `scripts/reproduce_gapcal_comparison.py` | Centroid-alignment strategy comparison (validates DB-side build-time correction) |
+| `scripts/reproduce_mechanism_additional_controls.py`† | Table 4: Additional IVF-RaBitQ controls |
+| `scripts/reproduce_gapcal_comparison.py`† | Centroid-alignment strategy comparison (validates DB-side build-time correction) |
 | `scripts/reproduce_tab4_multibit.py` | Table 5: Multi-bit IVFPQ/OPQ generality (filename keeps legacy `tab4` prefix) |
-| `scripts/reproduce_table3_pq_sweep.py` | PMC + PQ alpha sweep (feeds Table 5; Fig. 3a) |
+| `scripts/reproduce_table3_pq_sweep.py`† | PMC + PQ alpha sweep (feeds Table 5; Fig. 3a) |
 | `scripts/reproduce_fig3_analysis_bcd.py` | Figure 3: alpha sweep, selective PMC, QPS Pareto panels |
-| `scripts/reproduce_figure_c.py` | Figure: Selective PMC analysis |
-| `scripts/reproduce_qps_pareto.py` | QPS vs Recall Pareto plot |
-| `scripts/reproduce_gap_energy.py` | Method: gap-energy concentration claim |
-| `scripts/reproduce_clotho.py` | Clotho audio retrieval (R@1) |
-| `scripts/reproduce_audiocaps.py` | AudioCaps audio retrieval (R@1) |
-| `scripts/emit_map_ndcg.py` | mAP/nDCG ranking-quality sweep (exploratory; not a paper element; FAISS-bound, needs `data/features/`) → `results/map_ndcg_seed42.csv` |
+| `scripts/reproduce_figure1_tsne.py`† | Figure 1: t-SNE of ImageBind embeddings |
+| `scripts/reproduce_figure_c.py`† | Figure: Selective PMC analysis |
+| `scripts/reproduce_qps_pareto.py`† | QPS vs Recall Pareto plot |
+| `scripts/reproduce_gap_energy.py`† | Method: gap-energy concentration claim |
+| `scripts/reproduce_clotho.py`† | Clotho audio retrieval (R@1) |
+| `scripts/reproduce_audiocaps.py`† | AudioCaps audio retrieval (R@1) |
+| `scripts/emit_map_ndcg.py`† | mAP/nDCG ranking-quality sweep (exploratory, not a paper element) → `results/map_ndcg_seed42.csv` |
 | `scripts/generate_figure.py` | Combined figure for paper |
 
 ### Quick mechanism check (no GPU required)

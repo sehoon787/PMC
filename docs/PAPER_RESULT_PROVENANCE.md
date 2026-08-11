@@ -81,8 +81,10 @@ encoders and datasets. Verified via:
 * `scripts/reproduce_tab4_multibit.py` (script filename keeps legacy `tab4` prefix)
 
 ### Figures
-`fig:modality-gap` (Fig 1) and `fig:pmc-overview` (Fig 2) are schematic; no
-reproduce script. `fig:analysis-bcd` (Fig 3) panels: α-sweep, selective PMC,
+`fig:modality-gap` (Fig 1) is data-driven: `paper/figures/fig1_tsne.py`, wrapped by
+`scripts/reproduce_figure1_tsne.py`, t-SNEs ImageBind embeddings and therefore needs
+`data/features/`. `fig:pmc-overview` (Fig 2) is schematic; no reproduce script.
+`fig:analysis-bcd` (Fig 3) panels: α-sweep, selective PMC,
 QPS Pareto. Verified via:
 * `scripts/reproduce_fig3_analysis_bcd.py`
 * `scripts/emit_fig_alpha_sweep.py`
@@ -144,6 +146,12 @@ per-direction rows held at full precision in `results/rerank_multibit_seed42.csv
 per-direction breakdown is `results/tab4_multibit_reproduced__np16_k0.csv`. The
 reproduce script prints `# AVG-LATEX-NOTE` lines for any averaged cell that differs
 from the printed table cell.
+
+### Table 6 — `tab:r10`
+R@10 at Table 2's no-reranking operating points, Vanilla/MeanShift/PMC. Same sources,
+same rows and same round-half-up convention as Table 2: `scripts/reproduce_tab2_main.py`
+emits the `q_r10_*` / `db_r10_*` columns of `results/tab2_main_reproduced.csv` alongside
+the R@100 ones.
 
 ---
 
