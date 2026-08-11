@@ -52,7 +52,7 @@ R@100 at `n_list=80K, n_probe=256`, single-thread CPU (i7-12700F):
 
 ### Early-rank quality — R@10
 
-R@10 at the same operating points and index protocol as the R@100 table above. PMC is best in all 14 dataset×direction configurations.
+R@10 at the same operating points and index protocol as the R@100 table above, from the same sources and the same round-half-up convention. PMC is best in all 14 dataset×direction configurations. Regenerate with `python scripts/reproduce_tab2_main.py` — the `q_r10_*` / `db_r10_*` columns of `results/tab2_main_reproduced.csv`.
 
 | Dataset | Enc. | ‖g‖ | Dir. | Vanilla | MeanShift | PMC | Δ |
 |---------|------|-----|------|---------|-----------|------|---|
@@ -68,7 +68,7 @@ R@10 at the same operating points and index protocol as the R@100 table above. P
 | Clotho | ImageBind | 0.61 | db→q | 0.48 | 0.35 | **0.54** | +12% |
 | AudioCaps | ImageBind | 0.61 | q→db | 0.39 | 0.43 | **0.44** | +12% |
 | AudioCaps | ImageBind | 0.61 | db→q | 0.44 | 0.46 | **0.48** | +9% |
-| LAION-400M | CLIP-ViT-B/32 | 0.72 | q→db | 0.075 | 0.037 | **0.086** | +14% |
+| LAION-400M | CLIP-ViT-B/32 | 0.72 | q→db | 0.075 | 0.038 | **0.086** | +14% |
 | LAION-400M | CLIP-ViT-B/32 | 0.72 | db→q | 0.035 | 0.028 | **0.048** | +38% |
 
 ### Ranking quality — mAP and nDCG

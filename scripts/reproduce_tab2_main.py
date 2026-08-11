@@ -50,8 +50,10 @@ SOURCE_FILES = [
 
 FIELDNAMES = [
     "Dataset", "Enc", "gap",
+    "q_r10_van", "q_r10_ms", "q_r10_pmc",
     "q_r100_van", "q_r100_ms", "q_r100_pmc",
     "q_delta_vp", "q_delta_mp",
+    "db_r10_van", "db_r10_ms", "db_r10_pmc",
     "db_r100_van", "db_r100_ms", "db_r100_pmc",
     "db_delta_vp", "db_delta_mp",
 ]
@@ -188,11 +190,17 @@ def build_row(
         "Dataset": dataset,
         "Enc": enc,
         "gap": GAPS[(dataset, enc)],
+        "q_r10_van": fmt_recall(q_van[0], digits),
+        "q_r10_ms": fmt_recall(q_ms[0], digits) if q_ms is not None else "",
+        "q_r10_pmc": fmt_recall(q_pmc[0], digits),
         "q_r100_van": fmt_recall(q_van[1], digits),
         "q_r100_ms": fmt_recall(q_ms[1], digits) if q_ms is not None else "",
         "q_r100_pmc": fmt_recall(q_pmc[1], digits),
         "q_delta_vp": q_delta_vp,
         "q_delta_mp": q_delta_mp,
+        "db_r10_van": "",
+        "db_r10_ms": "",
+        "db_r10_pmc": "",
         "db_r100_van": "",
         "db_r100_ms": "",
         "db_r100_pmc": "",
@@ -202,6 +210,9 @@ def build_row(
     if db_van is not None and db_pmc is not None:
         db_delta_vp = fmt_delta(db_van[1], db_pmc[1], digits=digits)
         db_delta_mp = fmt_delta(db_ms[1], db_pmc[1], digits=digits) if db_ms is not None else ""
+        row["db_r10_van"] = fmt_recall(db_van[0], digits)
+        row["db_r10_ms"] = fmt_recall(db_ms[0], digits) if db_ms is not None else ""
+        row["db_r10_pmc"] = fmt_recall(db_pmc[0], digits)
         row["db_r100_van"] = fmt_recall(db_van[1], digits)
         row["db_r100_ms"] = fmt_recall(db_ms[1], digits) if db_ms is not None else ""
         row["db_r100_pmc"] = fmt_recall(db_pmc[1], digits)

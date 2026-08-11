@@ -2,7 +2,7 @@
 
 \subsection{Setup}\label{sec:exp-setup}
 
-We evaluate three frozen backbones---CLIP ViT-B/32 ($d{=}512$)~\cite{radford2021clip}, CLIP ViT-L/14 ($d{=}768$), ImageBind ($d{=}1024$)~\cite{girdhar2023imagebind}---on image--text and audio--text retrieval: MSCOCO 5K~\cite{lin2014coco}, Flickr30K ($n{=}31$K)~\cite{young2014flickr30k}, AudioCaps~\cite{kim2019audiocaps} (884 clips, 4{,}415 captions; audio DB), Clotho v2 ($n{=}5{,}926$)~\cite{drossos2020clotho}, and LAION-400M (407M vectors, 410 shards; exact inner-product (IP) ground truth for 10K random queries per direction via per-shard IndexFlatIP merged into a global top-100---a full-corpus brute-force scan)~\cite{schuhmann2021laion}. Indexes use FAISS~\cite{johnson2021faiss,douze2024faiss}: IVFRaBitQFastScan (1-bit, 33--136\,B/vec) and IVFPQ/OPQ~\cite{jegou2011pq,ge2013opq} ($m{=}16$, 64\,B/vec); per FAISS's IVF heuristic, $n_\mathrm{list}{=}\lceil\sqrt{n}\,\rceil$ and $n_\mathrm{probe}{\approx}n_\mathrm{list}/4$, matched across methods; with reranking (Sec.~\ref{sec:rerank}) we set $n_\mathrm{probe}{\approx}n_\mathrm{list}$ and exact-rerank the top $K'{=}400$; LAION uses $n_\mathrm{list}{=}80\mathrm{K}{\approx}4\sqrt{N}$, $n_\mathrm{probe}{=}256$, 30.4\,GB at 72\,B/vec ($28\times$); PMC leaves bytes/vector identical to Vanilla; BQ baselines: BinaryFlat, BinaryIVF, rotated BinaryFlat (BBQ-style). We report R@100 against exact-IP ground truth on original (unshifted) embeddings---PMC modifies only the index-internal representation (analogous to OPQ rotation), so gains reflect better approximation, not redefined relevance---and QPS (queries per second) as the single-threaded median over 5 runs. All runs use a single Intel Core i7-12700F, 32\,GB RAM, CPU-only.\looseness=-1
+We evaluate three frozen backbones---CLIP ViT-B/32 ($d{=}512$)~\cite{radford2021clip}, CLIP ViT-L/14 ($d{=}768$), ImageBind ($d{=}1024$)~\cite{girdhar2023imagebind}---on image--text and audio--text retrieval: MSCOCO 5K~\cite{lin2014coco}, Flickr30K ($n{=}31$K)~\cite{young2014flickr30k}, AudioCaps~\cite{kim2019audiocaps} (884 clips, 4{,}415 captions; audio DB), Clotho v2 ($n{=}5{,}926$)~\cite{drossos2020clotho}, and LAION-400M (407M vectors, 410 shards; exact inner-product (IP) ground truth for 10K random queries per direction via per-shard IndexFlatIP merged into a global top-100---a full-corpus brute-force scan)~\cite{schuhmann2021laion}. Indexes use FAISS~\cite{johnson2021faiss,douze2024faiss}: IVFRaBitQFastScan (1-bit, 33--136\,B/vec) and IVFPQ/OPQ~\cite{jegou2011pq,ge2013opq} ($m{=}16$, 64\,B/vec); per FAISS's IVF heuristic, $n_\mathrm{list}{=}\lceil\sqrt{n}\,\rceil$ and $n_\mathrm{probe}{\approx}n_\mathrm{list}/4$, matched across methods; with reranking (Sec.~\ref{sec:rerank}) we set $n_\mathrm{probe}{\approx}n_\mathrm{list}$ and exact-rerank the top $K'{=}400$; LAION uses $n_\mathrm{list}{=}80\mathrm{K}{\approx}4\sqrt{N}$, $n_\mathrm{probe}{=}256$, 30.4\,GB at 72\,B/vec ($28\times$); PMC leaves bytes/vector identical to Vanilla; BQ baselines: BinaryFlat, BinaryIVF, rotated BinaryFlat (BBQ-style). We report R@100 against exact-IP ground truth on original (unshifted) embeddings, except AudioCaps, which uses standard caption annotations (one clip per caption; that clip's captions in reverse)---PMC modifies only the index-internal representation (analogous to OPQ rotation), so gains reflect better approximation, not redefined relevance---and QPS (queries per second) as the single-threaded median over 5 runs. All runs use a single Intel Core i7-12700F, 32\,GB RAM, CPU-only.\looseness=-1
 
 \begin{table}[t]
 \caption{Mechanism/control checks ($\alpha{=}1$). $J@100$: top-100 Jaccard vs.\ exact-IP GT; cos@25: calibration cosine at $n_\mathrm{calib}{=}25$.}\label{tab:mechanism}
@@ -55,7 +55,7 @@ i$\to$t & .515 & \textbf{.608} & .564$\pm$.009 & .559$\pm$.009 & .491 & .520 \\
 \subsection{Main Results}\label{sec:results}
 %% ---------------------------------------------------------------
 
-PMC improves RaBitQ recall in nearly all tested configurations, with gains scaling with gap magnitude (Table~\ref{tab:mainresults}): Flickr30K i$\to$t reaches $+$45\% and MSCOCO CLIP-L i$\to$t $+$34\%. MeanShift can hurt---it leaves IVF centroids misaligned, degrading routing---while PMC improves or matches both directions. Across all 16 BQ method $\times$ direction configurations, PMC improves or matches R@100 without exception (Table~\ref{tab:signbit_methods}); the same ordering holds at R@10, where PMC is best in all 14 dataset $\times$ direction configurations.
+PMC improves RaBitQ recall in nearly all tested configurations, with gains scaling with gap magnitude (Table~\ref{tab:mainresults}): Flickr30K i$\to$t reaches $+$45\% and MSCOCO CLIP-L i$\to$t $+$34\%. MeanShift can hurt---it leaves IVF centroids misaligned, degrading routing---while PMC improves or matches both directions. Across all 16 BQ method $\times$ direction configurations, PMC improves or matches R@100 without exception (Table~\ref{tab:signbit_methods}); the same ordering holds at R@10, where PMC is best in all 14 dataset $\times$ direction configurations (Table~\ref{tab:r10}), so the gain is not confined to deep result lists.
 PMC adds no per-query work, so QPS tracks Vanilla across all $n_\mathrm{probe}$ (Figure~\ref{fig:analysis-bcd}c).\looseness=-1
 
 \textbf{{\boldmath$\|\mathbf{g}\|$} as predictor.}
@@ -102,3 +102,24 @@ Calibration is stable from $n_\mathrm{calib}{=}25$ (cosine $0.955$--$0.986$ acro
 %% ---------------------------------------------------------------
 
 {\emergencystretch=1em PMC generalizes beyond 1-bit: averaged over both directions it improves IVFPQ and OPQ across all encoders and datasets (audio omitted; $n_\mathrm{db}$ too small for codebook training), with the gap-proportional trend persisting (Table~\ref{tab:multibit}). OPQ's learned rotation partly absorbs the shift, giving smaller but complementary gains; IVFPQ lacks this and benefits more.\looseness=-1\par}
+
+\begin{table}[t]
+\caption{R@10 at the no-reranking operating points of Table~\ref{tab:mainresults}. Each cell Vanilla\,/\,MeanShift\,/\,PMC; \textbf{bold}\,=\,best per cell.}\label{tab:r10}
+\vspace{2pt}
+\centering
+{\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}ll cc@{}}
+\toprule
+\textbf{Dataset} & \textbf{Enc.} & $q{\to}db$ & $db{\to}q$ \\
+\midrule
+MSCOCO     & CLIP & .40\,/\,.38\,/\,\textbf{.46} & .29\,/\,.30\,/\,\textbf{.39} \\
+           & CL-L & .36\,/\,.37\,/\,\textbf{.48} & .26\,/\,.35\,/\,\textbf{.44} \\
+           & IB   & .55\,/\,.51\,/\,\textbf{.63} & .57\,/\,.54\,/\,\textbf{.64} \\
+Flickr30K  & CL-L & .31\,/\,.26\,/\,\textbf{.38} & .22\,/\,.29\,/\,\textbf{.38} \\
+Clotho     & IB   & .59\,/\,.45\,/\,\textbf{.60} & .48\,/\,.35\,/\,\textbf{.54} \\
+AudioCaps  & IB   & .39\,/\,.43\,/\,\textbf{.44} & .44\,/\,.46\,/\,\textbf{.48} \\
+LAION-400M & CLIP & .075\,/\,.038\,/\,\textbf{.086} & .035\,/\,.028\,/\,\textbf{.048} \\
+\bottomrule
+\end{tabular*}}
+\end{table}
