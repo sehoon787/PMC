@@ -50,6 +50,15 @@ R@100 at `n_list=80K, n_probe=256`, single-thread CPU (i7-12700F):
 | q→db (text→image) | 0.108 | 0.074 | **0.143** | +32% |
 | db→q (image→text) | 0.069 | 0.043 | **0.073** | +6% |
 
+With exact reranking at `K'=400`, from `results/pmc_laion400m_rerank_nlist80k_k400_seed42.csv` and its `reverse` counterpart. The forward direction keeps PMC's lead at both cutoffs; the reverse direction is the one regime where uncorrected codes win, which the paper reports and attributes to scan depth — LAION probes only 0.32% of its lists, so PMC's flatter candidate pool covers fewer true positives once exact rescoring runs deep.
+
+| Dir. | Metric | Vanilla | MeanShift | PMC |
+|------|--------|---------|-----------|------|
+| q→db (text→image) | R@10 | 0.302 | 0.206 | **0.390** |
+| q→db (text→image) | R@100 | 0.198 | 0.149 | **0.277** |
+| db→q (image→text) | R@10 | **0.243** | 0.109 | 0.194 |
+| db→q (image→text) | R@100 | **0.158** | 0.080 | 0.140 |
+
 ### Early-rank quality — R@10
 
 R@10 at the same operating points and index protocol as the R@100 table above, from the same sources and the same round-half-up convention. PMC is best in all 14 dataset×direction configurations. Regenerate with `python scripts/reproduce_tab2_main.py` — the `q_r10_*` / `db_r10_*` columns of `results/tab2_main_reproduced.csv`.

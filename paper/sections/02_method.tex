@@ -24,7 +24,7 @@ Under smooth symmetric residual densities $p_i$ near the decision boundary, a fi
   \mathbb{E}[F]\;\approx\;\alpha\sum_i p_i(0)\,|g_i|\,,
 \end{equation}
 a density-weighted $\ell_1$ norm of the gap. Eq.~\eqref{eq:ratio-form} shows that flip risk in dimension~$i$ grows with $|\alpha g_i|/|\delta_i|$. When gap energy is concentrated---in CLIP-L on MSCOCO, top 10\% of dimensions carry ${\approx}90$\% of $\|\mathbf{g}\|^2$---corruption is \emph{structured} rather than random, biasing Hamming distance estimates systematically. The same offset misaligns IVF cluster assignments, compounding routing errors with code corruption. Eq.~\eqref{eq:expected-flips} formalizes this scaling, explaining the gap-proportional gains in Table~\ref{tab:mainresults} and the top-5\% selective PMC result on concentrated-gap encoders (Figure~\ref{fig:analysis-bcd}b).
-Multi-bit quantization (IVFPQ~\cite{jegou2011pq}, OPQ~\cite{ge2013opq}) partially absorbs displacement through wider error margins; BQ is maximally vulnerable and is the focus of our main claims (multi-bit: Section~\ref{sec:multibit}). PMC applies to all $\mathrm{sign}(\cdot{-}c)$ methods and analogous schemes such as LSH~\cite{wang2018hashsurvey}.\looseness=-1
+Multi-bit quantization (IVFPQ~\cite{jegou2011pq}, OPQ~\cite{ge2013opq}) partially absorbs displacement through wider error margins; BQ is maximally vulnerable and is the focus of our main claims (multi-bit: Section~\ref{sec:multibit}). PMC applies to all $\mathrm{sign}(\cdot{-}c)$ methods (BinaryFlat, BinaryIVF, BBQ, RaBitQ) and analogous schemes such as LSH~\cite{wang2018hashsurvey}.\looseness=-1
 
 \subsection{PMC Correction}\label{sec:pmc}
 
