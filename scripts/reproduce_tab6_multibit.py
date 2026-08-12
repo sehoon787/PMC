@@ -52,7 +52,7 @@ DIRECTIONS = [("t->i", "text->image"), ("i->t", "image->text")]
 # Paper values for verification: (van_r100, pmc_r100, delta_pct) per
 # (enc, dataset, family, dir_label).
 #
-# REPRODUCE-MISMATCH (source CSV vs paper, all <= 0.01 / 1 delta point; the
+# REPRODUCE-MISMATCH (source CSV vs paper, all <= 0.01 recall / <= 3 delta points; the
 # paper used a slightly different seed/protocol for these cells -- flagged at
 # runtime, never silently overwritten):
 #   CLIP/MSCOCO/IVFPQ/i->t : van .4933->.49  (paper .50);  delta still +30%
