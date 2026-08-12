@@ -39,8 +39,8 @@ final/
 │   ├── reproduce_tab1_signbit_methods.py
 │   ├── reproduce_tab2_main.py
 │   ├── reproduce_tab2_rerank.py
-│   ├── reproduce_tab3_mech_extra.py
-│   ├── reproduce_tab4_multibit.py
+│   ├── reproduce_tab5_mech_extra.py
+│   ├── reproduce_tab6_multibit.py
 │   ├── emit_map_ndcg.py
 │   ├── reproduce_table3_pq_sweep.py
 │   ├── reproduce_ablation_rerank.py
@@ -103,16 +103,16 @@ All reproduction scripts live in `final/scripts/`. Each script corresponds to on
 | `reproduce_tab2_main.py` | Table 2 (`tab:mainresults`) — main PMC results, No-reranking columns |
 | `reproduce_tab2_rerank.py` | Table 2 (`tab:mainresults`) — main PMC results, With-reranking columns (K'=400) |
 | `reproduce_ablation_rerank.py` | LAION-400M K'-sweep reranking ablation (repo-only) |
-| `analysis/verify_signbit_analysis.py` | Table 3 (`tab:mechanism`) — sign-bit Flip% and J@100 metrics |
-| `analysis/verify_calibration.py` | Table 3 (`tab:mechanism`) — calibration cosine (cos@25); backs the calibration prose |
-| `reproduce_tab3_mech_extra.py` | Table 4 (`tab:mech_extra`) — component ablation and IVF-RaBitQ controls (filename keeps legacy `tab3` prefix) |
+| `analysis/verify_signbit_analysis.py` | Table 4 (`tab:mechanism`) — sign-bit Flip% and J@100 metrics |
+| `analysis/verify_calibration.py` | Table 4 (`tab:mechanism`) — calibration cosine (cos@25); backs the calibration prose |
+| `reproduce_tab5_mech_extra.py` | Table 5 (`tab:mech_extra`) — component ablation and IVF-RaBitQ controls (filename keeps legacy `tab3` prefix) |
 | `reproduce_mechanism_controls.py` | Source CSVs for Tables 3–4 (bit-flip, exact control, component ablation, calibration sensitivity) |
-| `reproduce_mechanism_additional_controls.py` | Table 4 additional IVF-RaBitQ controls |
+| `reproduce_mechanism_additional_controls.py` | Table 5 additional IVF-RaBitQ controls |
 | `reproduce_gapcal_comparison.py` | Centroid-alignment strategy comparison (validates the DB-side build-time choice) |
-| `reproduce_tab4_multibit.py` | Table 5 (`tab:multibit`) — multi-bit generality aggregator (filename keeps legacy `tab4` prefix) |
+| `reproduce_tab6_multibit.py` | Table 6 (`tab:multibit`) — multi-bit generality aggregator (filename keeps legacy `tab4` prefix) |
 | `data_prep/*.py` | Dataset download and feature extraction: AudioCaps/Clotho download, CLIP and ImageBind extraction. Produces `data/features/`, which every FAISS-bound script consumes. |
 | `emit_map_ndcg.py` | mAP/nDCG ranking-quality sweep across the six small-corpus rows; FAISS-bound, requires `data/features/`; exploratory, not tied to a paper element |
-| `reproduce_table3_pq_sweep.py` | IVFPQ/OPQ alpha sweep (produces the PQ CSVs feeding Table 5 and Fig. 3a) |
+| `reproduce_table3_pq_sweep.py` | IVFPQ/OPQ alpha sweep (produces the PQ CSVs feeding Table 6 and Fig. 3a) |
 | `reproduce_audiocaps.py` | Table 2 AudioCaps rows |
 | `reproduce_clotho.py` | Table 2 Clotho rows |
 | `reproduce_laion400m.py` | Table 2 LAION-400M large-scale row |

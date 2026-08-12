@@ -1,7 +1,7 @@
 """Verify §3.4 Ablation prose claims for calibration sensitivity.
 
 This script runs NO FAISS. It backs the §3.4 prose claims (panel removed from
-Table 3 / tab:mech_extra):
+Table 5 / tab:mech_extra):
   - Calibration is stable from n_calib=25 (cosine ~= 0.986)
   - R@100 flat within .001 up to n_calib=400
 

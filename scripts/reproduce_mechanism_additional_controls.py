@@ -1,9 +1,9 @@
-"""Reproduce Table 4 additional mechanism controls.
+"""Reproduce Table 5 additional mechanism controls.
 
 Outputs:
 - mechanism_additional_controls.csv
 
-This lightweight MSCOCO/CLIP-B32 script records the controls used in Table 4:
+This lightweight MSCOCO/CLIP-B32 script records the controls used in Table 5:
 component ablation, no-normalization, sign-flipped gap, same-norm random shift,
 and shuffled gap. Recall is evaluated against original exact-IP ground truth.
 """
@@ -230,7 +230,7 @@ def validate_table5_controls(results_path: Path) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Reproduce Table 4 additional mechanism controls")
+    parser = argparse.ArgumentParser(description="Reproduce Table 5 additional mechanism controls")
     parser.add_argument("--features-dir", type=Path, default=None)
     parser.add_argument("--results-dir", type=Path, default=None)
     parser.add_argument("--validate-paper", action="store_true")

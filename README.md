@@ -158,14 +158,14 @@ from `data/features/` (see Data Requirements). LAION scripts honour `LAION400M_D
 | `scripts/reproduce_tab2_rerank.py` | Table 2: Main PMC results, With-reranking columns (K'=400) |
 | `scripts/reproduce_laion400m.py`† | Table 2: LAION-400M large-scale row |
 | `scripts/reproduce_ablation_rerank.py` | LAION-400M K'-sweep reranking ablation (repo-only) |
-| `scripts/analysis/verify_signbit_analysis.py` | Table 3: sign-bit mechanism metrics (Flip%, J@100) |
-| `scripts/analysis/verify_calibration.py` | Table 3: calibration cosine (cos@25); §4.4 calibration prose |
+| `scripts/analysis/verify_signbit_analysis.py` | Table 4: sign-bit mechanism metrics (Flip%, J@100) |
+| `scripts/analysis/verify_calibration.py` | Table 4: calibration cosine (cos@25); §4.4 calibration prose |
 | `scripts/reproduce_mechanism_controls.py`† | Tables 3-4: bit-flip/J@100, exact control, component ablation, calibration sensitivity |
-| `scripts/reproduce_tab3_mech_extra.py` | Table 4: component ablation + IVF-RaBitQ controls (filename keeps legacy `tab3` prefix) |
-| `scripts/reproduce_mechanism_additional_controls.py`† | Table 4: Additional IVF-RaBitQ controls |
+| `scripts/reproduce_tab5_mech_extra.py` | Table 5: component ablation + IVF-RaBitQ controls (filename keeps legacy `tab3` prefix) |
+| `scripts/reproduce_mechanism_additional_controls.py`† | Table 5: Additional IVF-RaBitQ controls |
 | `scripts/reproduce_gapcal_comparison.py`† | Centroid-alignment strategy comparison (validates DB-side build-time correction) |
-| `scripts/reproduce_tab4_multibit.py` | Table 5: Multi-bit IVFPQ/OPQ generality (filename keeps legacy `tab4` prefix) |
-| `scripts/reproduce_table3_pq_sweep.py`† | PMC + PQ alpha sweep (feeds Table 5; Fig. 3a) |
+| `scripts/reproduce_tab6_multibit.py` | Table 6: Multi-bit IVFPQ/OPQ generality (filename keeps legacy `tab4` prefix) |
+| `scripts/reproduce_table3_pq_sweep.py`† | PMC + PQ alpha sweep (feeds Table 6; Fig. 3a) |
 | `scripts/reproduce_fig3_analysis_bcd.py` | Figure 3: alpha sweep, selective PMC, QPS Pareto panels |
 | `scripts/reproduce_figure1_tsne.py`† | Figure 1: t-SNE of ImageBind embeddings |
 | `scripts/reproduce_figure_c.py`† | Figure: Selective PMC analysis |
