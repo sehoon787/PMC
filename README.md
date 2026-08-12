@@ -284,6 +284,7 @@ PMC/
   author    = {Kim, Se Hoon and Lee, Jun Hyung and Jung, Soonyoung},
   booktitle = {Proceedings of the 35th ACM International Conference on
                Information and Knowledge Management (CIKM)},
-  year      = {2026}
+  year      = {2026},
+  doi       = {10.1145/3799682.3840007}
 }
 ```

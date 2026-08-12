@@ -40,11 +40,8 @@ A closely related line, gap-aware calibration for mixed-modality ranking~\cite{l
 
 \begin{table}[t]
 \caption{BQ methods (R@100, Vanilla\,/\,PMC) on MSCOCO (CLIP-B/32) and AudioCaps (IB). RotatedBinary\,=\,rotated BinaryFlat (BBQ-style).}\label{tab:signbit_methods}
-\vspace{2pt}
 \centering
 {\footnotesize
-\setlength{\tabcolsep}{4pt}
-\renewcommand{\arraystretch}{1.0}
 \begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}l cc cc@{}}
 \toprule
 & \multicolumn{2}{c}{\textbf{MSCOCO}} & \multicolumn{2}{c}{\textbf{AudioCaps}} \\
@@ -84,11 +81,8 @@ RaBitQ        & .58\,/\,\textbf{.64} & .52\,/\,\textbf{.61} & \textbf{.75}\,/\,\
 
 \begin{table*}[t]
 \caption{PMC main retrieval results (R@100, $\alpha{=}1$, IVFRaBitQFastScan) at the two operating points of Sec.~\ref{sec:exp-setup}: \emph{No reranking} and \emph{With reranking}. Each cell Vanilla\,/\,MeanShift\,/\,PMC; \textbf{bold}\,=\,best per cell.}\label{tab:mainresults}
-\vspace{2pt}
 \centering
 {\footnotesize
-\setlength{\tabcolsep}{2pt}
-\renewcommand{\arraystretch}{1.0}
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}llc ccc ccc@{}}
 \toprule
  & & & \multicolumn{3}{c}{\textbf{No reranking}} & \multicolumn{3}{c}{\textbf{With reranking ($K'{=}400$)}} \\

@@ -6,10 +6,8 @@ We evaluate three frozen backbones---CLIP ViT-B/32 ($d{=}512$)~\cite{radford2021
 
 \begin{table}[t]
 \caption{R@10 at the no-reranking operating points of Table~\ref{tab:mainresults}. Each cell Vanilla\,/\,MeanShift\,/\,PMC; \textbf{bold}\,=\,best per cell.}\label{tab:r10}
-\vspace{2pt}
 \centering
 {\footnotesize
-\setlength{\tabcolsep}{3pt}
 \begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}ll cc@{}}
 \toprule
 \textbf{Dataset} & \textbf{Enc.} & $q{\to}db$ & $db{\to}q$ \\
@@ -46,8 +44,6 @@ AudioCaps a$\to$t & 17.84 & .799 & .514\,$\to$\,.644 & .955 \\
 \caption{MSCOCO/CLIP-B/32: component ablation and IVF-RaBitQ controls. Rand/Shuf are mean$\pm$std over 5 seeds.}\label{tab:mech_extra}
 \centering
 {\footnotesize
-\setlength{\tabcolsep}{1.5pt}
-\renewcommand{\arraystretch}{0.92}
 \begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}llcccc@{}}
 \toprule
 \multicolumn{6}{@{}l}{\textbf{Component ablation}}\\
@@ -72,7 +68,6 @@ i$\to$t & .515 & \textbf{.608} & .564$\pm$.009 & .559$\pm$.009 & .491 & .520 \\
 \end{table}
 
 %% ---------------------------------------------------------------
-\vspace{-3pt}
 \subsection{Main Results}\label{sec:results}
 %% ---------------------------------------------------------------
 
@@ -82,7 +77,6 @@ PMC adds no per-query work, so QPS tracks Vanilla across all $n_\mathrm{probe}$ 
 \textbf{{\boldmath$\|\mathbf{g}\|$} as predictor.}
 The ratio condition~\eqref{eq:ratio-form} implies more flips at higher gap, and R@100 gains track $\|\mathbf{g}\|$: MSCOCO CL-L ($\|\mathbf{g}\|{=}.82$) and Flickr30K CL-L ($\|\mathbf{g}\|{=}.77$) show the largest gains, whereas AudioCaps ($\|\mathbf{g}\|{=}.61$) gains only marginally---its gap is small relative to intra-class variance. Direct bit-level checks corroborate this (Table~\ref{tab:mechanism}): PMC induces 14--18\% sign-bit flips while preserving nontrivial ground-truth top-100 overlap ($J@100{=}0.54$--$0.80$) and repairs BinaryFlat R@100 in every direction.\looseness=-1
 
-\enlargethispage{\baselineskip}
 At 407M-vector deployment scale, LAION-400M ($\|\mathbf{g}\|{=}.72$) confirms the gap-proportional pattern in both directions (Table~\ref{tab:mainresults}).\looseness=-1
 
 %% ---------------------------------------------------------------
@@ -97,7 +91,6 @@ With reranking~\cite{wang2011cascade} we exact-rescore the top-$K'$ candidates (
 
 \begin{table}[t]
 \caption{PMC generality on IVFPQ and OPQ across encoders (R@100 Vanilla\,/\,\textbf{PMC}, mean over both directions; per-direction omitted).}\label{tab:multibit}
-\vspace{2pt}
 \centering
 {\footnotesize
 \begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}ll cccc@{}}
