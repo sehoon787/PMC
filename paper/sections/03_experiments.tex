@@ -7,7 +7,7 @@ We evaluate three frozen backbones---CLIP ViT-B/32 ($d{=}512$)~\cite{radford2021
 \begin{table}[t]
 \caption{R@10 at the no-reranking operating points of Table~\ref{tab:mainresults}. Each cell Vanilla\,/\,MeanShift\,/\,PMC; \textbf{bold}\,=\,best per cell.}\label{tab:r10}
 \centering
-{\footnotesize
+{\small
 \begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}ll cc@{}}
 \toprule
 \textbf{Dataset} & \textbf{Enc.} & $q{\to}db$ & $db{\to}q$ \\
@@ -26,7 +26,7 @@ LAION-400M & CLIP & .075\,/\,.038\,/\,\textbf{.086} & .035\,/\,.028\,/\,\textbf{
 \begin{table}[t]
 \caption{Mechanism/control checks ($\alpha{=}1$). $J@100$: top-100 Jaccard vs.\ exact-IP GT; cos@25: calibration cosine at $n_\mathrm{calib}{=}25$.}\label{tab:mechanism}
 \centering
-{\footnotesize
+{\small
 \begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lcccc@{}}
 \toprule
 \textbf{Direction} & \textbf{Flip\%} & \textbf{$J@100$} & \textbf{BinaryFlat R@100} & \textbf{cos@25} \\
@@ -43,7 +43,7 @@ AudioCaps a$\to$t & 17.84 & .799 & .514\,$\to$\,.644 & .955 \\
 \begin{table}[t]
 \caption{MSCOCO/CLIP-B/32: component ablation and IVF-RaBitQ controls. Rand/Shuf are mean$\pm$std over 5 seeds.}\label{tab:mech_extra}
 \centering
-{\footnotesize
+{\small
 \begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}llcccc@{}}
 \toprule
 \multicolumn{6}{@{}l}{\textbf{Component ablation}}\\
@@ -92,7 +92,7 @@ With reranking~\cite{wang2011cascade} we exact-rescore the top-$K'$ candidates (
 \begin{table}[t]
 \caption{PMC generality on IVFPQ and OPQ across encoders (R@100 Vanilla\,/\,\textbf{PMC}, mean over both directions; per-direction omitted).}\label{tab:multibit}
 \centering
-{\footnotesize
+{\small
 \begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}ll cccc@{}}
 \toprule
 \textbf{Dataset} & \textbf{Enc.} & \multicolumn{2}{c}{\textbf{IVFPQ}} & \multicolumn{2}{c}{\textbf{OPQ}} \\
