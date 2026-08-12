@@ -74,14 +74,35 @@ def text(slide, x, y, w, h, paras, align=PP_ALIGN.LEFT, anchor=MSO_ANCHOR.TOP,
         p.space_after = Pt(space_after)
         for run in para:
             t, size, bold, color = run[:4]
-            r = p.add_run()
-            r.text = t
-            r.font.size = Pt(size)
-            r.font.bold = bold
-            r.font.italic = run[4] if len(run) > 4 else False
-            r.font.color.rgb = color
-            r.font.name = SERIF
+            italic = run[4] if len(run) > 4 else False
+            # "_{q}" marks a subscript, so mu_q reads as the paper sets it.
+            for chunk, is_sub in _split_subscripts(t):
+                r = p.add_run()
+                r.text = chunk
+                r.font.size = Pt(size * 0.72 if is_sub else size)
+                r.font.bold = bold
+                r.font.italic = italic
+                r.font.color.rgb = color
+                r.font.name = SERIF
+                if is_sub:
+                    r.font._rPr.set("baseline", "-25000")
     return tb
+
+
+def _split_subscripts(t):
+    """Yield (text, is_subscript) pairs, splitting on the _{...} marker."""
+    out, i = [], 0
+    while True:
+        j = t.find("_{", i)
+        if j < 0:
+            if t[i:]:
+                out.append((t[i:], False))
+            return out
+        k = t.find("}", j)
+        if t[i:j]:
+            out.append((t[i:j], False))
+        out.append((t[j + 2:k], True))
+        i = k + 1
 
 
 def picture(slide, name, x, y, w):
@@ -89,6 +110,20 @@ def picture(slide, name, x, y, w):
     h = Emu(int(w / ASPECT[name]))
     slide.shapes.add_picture(str(HERE / name), x, y, w, h)
     return h
+
+
+def fraction(slide, x, y, w, num, den, size, color=INK):
+    """Stacked fraction with a rule sized to the wider of the two lines."""
+    h = Inches(size / 72 * 1.35)
+    # Times averages ~0.5 em per glyph; pad the longer line slightly.
+    bar_w = min(w, Inches(max(len(num), len(den)) * size / 72 * 0.56))
+    bx = x + Emu(int((w - bar_w) / 2))
+    text(slide, x, y, w, h, [[(num, size, True, color)]], align=PP_ALIGN.CENTER)
+    bar_y = y + h + Inches(0.05)
+    rule(slide, bx, bar_y, bar_w, Pt(2.4), color)
+    text(slide, x, bar_y + Inches(0.11), w, h,
+         [[(den, size, True, color)]], align=PP_ALIGN.CENTER)
+    return h * 2 + Inches(0.28)
 
 
 def heading(slide, x, y, w, num, label):
@@ -198,31 +233,43 @@ def build():
     text(slide, X1, y, W1, Inches(2.4),
          [[("The damage is structured. ", 24, True, INK),
            ("The top 10% of dimensions carry ≈90% of ‖g‖² on CLIP-L, and flip "
-            "risk grows with |gᵢ|:   E[F] ≈ α Σᵢ pᵢ(0)·|gᵢ|.", 24, False, INK)]],
+            "risk grows with |g_{i}|:   E[F] ≈ α Σ_{i} p_{i}(0)·|g_{i}|.", 24, False, INK)]],
          line_spacing=1.28)
 
     # ---- 2. Method ----
     y = heading(slide, X2, R1_Y, W2, "2", "PMC — correct at the source")
-    for i, (h1, h2, eq) in enumerate([
-            ("Calibrate", "estimate the gap from a small paired sample",
-             "g  =  μq − μx        (25 samples suffice)"),
-            ("Build  (offline)", "shift every database vector, then build the index",
-             "x′  =  (x + g) ⁄ ‖x + g‖"),
-            ("Serve  (online)", "search the corrected index — the query is untouched",
-             "q′  =  q")]):
-        solid(slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, X2, y, Pt(5.0), Inches(3.1)),
-              BLUE)
+    STEP_H = Inches(3.45)
+    for i, (h1, h2) in enumerate([
+            ("Calibrate", "estimate the gap from a small paired sample"),
+            ("Build  (offline)", "shift every database vector, then build the index"),
+            ("Serve  (online)", "search the corrected index — the query is untouched")]):
+        solid(slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, X2, y, Pt(5.0), STEP_H), BLUE)
         text(slide, X2 + Inches(0.5), y - Inches(0.06), W2 - Inches(0.55), Inches(0.95),
              [[(f"{i + 1}    ", 38, True, BLUE), (h1, 38, True, INK)]])
         text(slide, X2 + Inches(0.5), y + Inches(0.95), W2 - Inches(0.55), Inches(0.85),
              [[(h2, 25, False, GRAY)]], line_spacing=1.15)
-        text(slide, X2 + Inches(0.5), y + Inches(1.95), W2 - Inches(0.55), Inches(1.0),
-             [[(eq, 30, True, INK)]])
-        y += Inches(3.1)
+        eq_y = y + Inches(1.85)
+        eq_x, eq_w = X2 + Inches(0.5), W2 - Inches(1.0)
+        if i == 0:      # g = mu_q - mu_x   (Sec. 3.1)
+            text(slide, eq_x, eq_y + Inches(0.25), eq_w, Inches(1.0),
+                 [[("g  =  μ_{q} − μ_{x}", 32, True, INK),
+                   ("        (25 samples suffice)", 24, False, GRAY)]])
+        elif i == 1:    # x' = (x + alpha g) / ||x + alpha g||   (Eq. 3)
+            text(slide, eq_x, eq_y + Inches(0.32), Inches(1.5), Inches(0.9),
+                 [[("x′  =", 32, True, INK)]])
+            fraction(slide, eq_x + Inches(1.45), eq_y - Inches(0.05),
+                     Inches(4.6), "x + α g", "‖x + α g‖", 30)
+        else:           # q' = q at alpha = 1
+            text(slide, eq_x, eq_y + Inches(0.25), eq_w, Inches(1.0),
+                 [[("q′  =  q", 32, True, INK),
+                   ("        (at α = 1)", 24, False, GRAY)]])
+        y += STEP_H
         if i < 2:
-            text(slide, X2 + Inches(0.02), y - Inches(0.12), Inches(1.0), Inches(0.8),
-                 [[("↓", 34, True, HAIR)]])
-            y += Inches(0.8)
+            ar = slide.shapes.add_shape(MSO_SHAPE.DOWN_ARROW,
+                                        X2 + Emu(int(W2 / 2)) - Inches(0.6),
+                                        y + Inches(0.12), Inches(1.2), Inches(0.85))
+            solid(ar, BLUE)
+            y += Inches(1.15)
 
     y += Inches(0.5)
     solid(slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, X2, y, W2, Inches(2.05)), BLUE)
@@ -231,12 +278,18 @@ def build():
           [("zero query-time transform, zero extra memory.", 29, True, WHITE)]],
          line_spacing=1.3)
     y += Inches(2.55)
-    text(slide, X2, y, W2, Inches(4.2),
-         [[("General form   x′ = (x + αg) ⁄ ‖x + αg‖,   α ∈ [0, 1].", 25, False, INK)],
-          [("α = 0 is query-only mean shift: it leaves IVF centroids and quantized "
+    text(slide, X2, y, W2, Inches(0.6),
+         [[("The query side carries the complement:", 25, False, INK)]])
+    y += Inches(0.75)
+    text(slide, X2 + Inches(0.15), y + Inches(0.3), Inches(1.5), Inches(0.9),
+         [[("q′  =", 28, True, INK)]])
+    y += fraction(slide, X2 + Inches(1.45), y, Inches(6.2),
+                  "q − (1 − α) g", "‖q − (1 − α) g‖", 26)
+    text(slide, X2, y, W2, Inches(4.0),
+         [[("α = 0 is query-only mean shift: it leaves IVF centroids and quantized "
             "codes misaligned, and can lower recall.", 25, False, INK)],
-          [("α = 1 rewrites the centroid where it plays both of its roles — routing "
-            "pivot and code boundary.", 25, True, INK)],
+          [("α = 1 makes q′ = q and rewrites the centroid where it plays both of "
+            "its roles — routing pivot and code boundary.", 25, True, INK)],
           [("The α-sweep confirms α = 1 best or near-best in every setting.",
             25, False, BLUE)]],
          line_spacing=1.28, space_after=12)
@@ -280,7 +333,7 @@ def build():
     y += Inches(2.35)
     y += picture(slide, "asset_fig3c.png", X3, y, W3) + Inches(0.2)
     text(slide, X3, y, W3, Inches(0.9),
-         [[("QPS tracks Vanilla at every n_probe — PMC adds no per-query work.",
+         [[("QPS tracks Vanilla at every n_{probe} — PMC adds no per-query work.",
             21, False, GRAY, True)]], line_spacing=1.15)
 
     # ================= Row 2 =================
@@ -303,7 +356,7 @@ def build():
     y += Inches(1.45)
     text(slide, X4, y, W4, Inches(2.4),
          [[("CLIP’s gap energy is concentrated (top 10% ≈ 86–92%), so selective PMC "
-            "on the highest-|gᵢ| dimensions recovers peak recall. ImageBind’s "
+            "on the highest-|g_{i}| dimensions recovers peak recall. ImageBind’s "
             "diffuse gap (≈72%) needs the full vector — exactly what the flip-risk "
             "analysis predicts.", 26, False, INK)]], line_spacing=1.32)
 
