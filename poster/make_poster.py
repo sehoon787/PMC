@@ -313,24 +313,51 @@ def build():
            (".277   (+40%)", 25, True, BLUE)]])
     y += Inches(1.1)
 
-    for label, v0, v1, d in [("MSCOCO · CLIP-L · i→t", ".47", ".63", "+34%"),
-                             ("Flickr30K · CLIP-L · i→t", ".33", ".48", "+45%"),
-                             ("MSCOCO · ImageBind · t→i", ".67", ".75", "+12%")]:
-        rule(slide, X3, y, W3, Pt(1.0), HAIR)
-        text(slide, X3, y + Inches(0.22), W3 - Inches(5.0), Inches(0.8),
-             [[(label, 24, False, INK)]])
-        text(slide, X3 + W3 - Inches(5.0), y + Inches(0.12), Inches(5.0), Inches(0.9),
-             [[(f"{v0} → ", 29, False, GRAY), (v1, 33, True, BLUE),
-               (f"    {d}", 27, True, BLUE)]], align=PP_ALIGN.RIGHT)
-        y += Inches(1.12)
-    rule(slide, X3, y, W3, Pt(1.0), HAIR)
-    y += Inches(0.4)
-    text(slide, X3, y, W3, Inches(1.9),
-         [[("5 benchmarks · 3 encoders · 4 BQ index types", 24, True, INK)],
-          [("R@100 improved or matched in all 16 BQ configurations;", 24, False, INK)],
-          [("best in all 14 configurations at R@10.", 24, True, BLUE)]],
-         line_spacing=1.32)
-    y += Inches(2.35)
+    # R@100 for all 14 configurations, ordered by modality gap. The ordering is
+    # the argument: as ||g|| falls down the table, so does the gain. Values are
+    # Table 2's, verbatim from results/tab2_main_reproduced.csv.
+    text(slide, X3, y, W3, Inches(0.75),
+         [[("Every configuration, ordered by modality gap", 26, True, INK)]])
+    y += Inches(0.85)
+    # Column widths are derived from W3 so the name column cannot be squeezed out.
+    COL_G, COL_N = Inches(0.85), Inches(3.0)
+    COL_D = Emu(int((W3 - COL_G - COL_N) / 2))   # each direction block
+    text(slide, X3, y, COL_G, Inches(0.6), [[("‖g‖", 22, True, GRAY)]])
+    text(slide, X3 + COL_G, y, COL_N, Inches(0.6),
+         [[("Dataset · Enc.", 22, True, GRAY)]])
+    for i, h in enumerate(("q→db", "db→q")):
+        text(slide, X3 + COL_G + COL_N + i * COL_D, y, COL_D, Inches(0.6),
+             [[(h, 22, True, GRAY)]], align=PP_ALIGN.RIGHT)
+    y += Inches(0.68)
+    rule(slide, X3, y, W3, Pt(1.6), INK)
+    y += Inches(0.16)
+    TABLE = [
+        (".82", "MSCOCO CL-L", ".55", ".65", "+18%", ".47", ".63", "+34%"),
+        (".82", "MSCOCO CLIP", ".58", ".63", "+9%", ".50", ".60", "+20%"),
+        (".77", "Flickr30K CL-L", ".41", ".48", "+17%", ".33", ".48", "+45%"),
+        (".72", "LAION-400M CLIP", ".108", ".143", "+32%", ".069", ".073", "+6%"),
+        (".70", "MSCOCO IB", ".67", ".75", "+12%", ".71", ".75", "+6%"),
+        (".61", "Clotho IB", ".72", ".73", "+1%", ".62", ".69", "+11%"),
+        (".61", "AudioCaps IB", ".75", ".78", "+4%", ".83", ".83", "+0%"),
+    ]
+    for g, name, qv, qp, qd, dv, dp, dd in TABLE:
+        text(slide, X3, y + Inches(0.06), COL_G, Inches(0.62),
+             [[(g, 24, True, CRIMSON)]])
+        text(slide, X3 + COL_G, y + Inches(0.06), COL_N, Inches(0.62),
+             [[(name, 22, False, INK)]])
+        for i, (v0, v1, d) in enumerate(((qv, qp, qd), (dv, dp, dd))):
+            text(slide, X3 + COL_G + COL_N + i * COL_D, y, COL_D, Inches(0.72),
+                 [[(f"{v0}→", 20, False, GRAY), (v1, 24, True, BLUE),
+                   (f" {d}", 20, True, BLUE)]], align=PP_ALIGN.RIGHT)
+        y += Inches(0.82)
+        rule(slide, X3, y - Inches(0.06), W3, Pt(0.8), HAIR)
+    y += Inches(0.3)
+    text(slide, X3, y, W3, Inches(1.6),
+         [[("The gain tracks the gap. ", 24, True, CRIMSON),
+           ("R@100 improved or matched in all 16 BQ configurations; best in all "
+            "14 at R@10.", 24, False, INK)]],
+         line_spacing=1.3)
+    y += Inches(1.85)
     y += picture(slide, "asset_fig3c.png", X3, y, W3) + Inches(0.2)
     text(slide, X3, y, W3, Inches(0.9),
          [[("QPS tracks Vanilla at every n_{probe} — PMC adds no per-query work.",
