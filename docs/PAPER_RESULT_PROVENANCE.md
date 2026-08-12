@@ -169,7 +169,7 @@ now shown in Table 4 (`tab:mechanism`). Their CSVs are kept verifiable.
 
 | Asset | Reproduce / render script | Source CSV(s) | Reproduced CSV |
 |---|---|---|---|
-| `fig:analysis-bcd` panels (a) alpha sweep, (b) selective PMC, (c) QPS Pareto | data: `scripts/figures/rederive_fig3_alpha_sweep.py` (+ verifier `scripts/reproduce_fig3_analysis_bcd.py`); render: `paper/figures/fig3_analysis.py` | `results/fig_alpha_sweep_rabitq.csv`, `results/selective_pmc_rabitq.csv`, `results/pmc_qps_pareto_clip_mscoco_seed42.csv` | `results/fig3_analysis_bcd_reproduced.csv` |
+| `fig:analysis-bcd` panels (a) alpha sweep, (b) selective PMC, (c) QPS Pareto | data: `scripts/emit_fig_alpha_sweep.py` (FAISS-bound builder; + verifier `scripts/reproduce_fig3_analysis_bcd.py`); render: `paper/figures/fig3_analysis.py` | `results/fig_alpha_sweep_rabitq.csv`, `results/selective_pmc_rabitq.csv`, `results/pmc_qps_pareto_clip_mscoco_seed42.csv` | `results/fig3_analysis_bcd_reproduced.csv` |
 | Gap-energy concentration (§Method "top 10% carry ≈90% of \|g\|²") | `scripts/reproduce_gap_energy.py` | `results/gap_energy_all_datasets.csv` | — |
 
 ---
