@@ -39,8 +39,12 @@ calibration~\cite{li2025grclip}, but none targets compressed ANN indexes
 where centroid misalignment corrupts both Inverted File (IVF) routing and binary
 codes.\looseness=-1
 
-In this paper, we analyze how the modality gap degrades BQ ANN indexes at two coupled stages---IVF routing and binary
-code formation---and, guided by this analysis, propose Per-Modality Centroid Correction
+In this paper, we first analyze how the modality gap degrades BQ ANN indexes at two coupled stages---IVF routing and binary
+code formation---and show that dimensions with concentrated gap energy
+are most vulnerable to boundary crossing; a selective correction test
+confirms that correcting only the highest-gap dimensions recovers most
+of the gain.
+Based on this analysis, we propose Per-Modality Centroid Correction
 (PMC), a one-time build-time alignment that shifts database vectors
 toward the query centroid before index construction. Unlike query-only
 mean shift, which leaves IVF centroids and quantized codes misaligned,
