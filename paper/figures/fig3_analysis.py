@@ -321,8 +321,13 @@ def plot_qps(ax, panel_label: str = "c") -> None:
     # MS 1642), so one line + a black top label reads it as a common point.
     np16_x = 1500
     ax.axvline(np16_x, color="0.5", linewidth=0.7, linestyle="--", zorder=0)
-    ax.text(np16_x, 0.633, r"$n_p{=}16$", fontsize=9.0, fontweight="bold",
-            color="0.15", ha="center", va="bottom")
+    # Label sits in the empty lower-middle region (clear of the curves above
+    # and the legend at lower left), slightly raised off the x-axis, with a
+    # white box so the dashed reference line does not strike through it.
+    ax.text(np16_x, 0.415, r"$\bf{n_p{=}16}$", fontsize=10.5,
+            color="0.15", ha="center", va="center",
+            bbox=dict(facecolor="white", edgecolor="none", alpha=0.85,
+                      boxstyle="round,pad=0.15"))
 
 
 def save_split_figures(outdir: Path) -> None:
