@@ -1,0 +1,5 @@
+dataset,direction,flip_pct,j100,n25_cos
+mscoco,text2image,16.14,0.5848,0.9860
+mscoco,image2text,15.99,0.5420,0.9862
+audiocaps,text2audio,14.34,0.8014,0.9711
+audiocaps,audio2text,17.84,0.7986,0.9552
