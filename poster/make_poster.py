@@ -299,9 +299,15 @@ def build():
     text(slide, X3, y - Inches(0.15), W3, Inches(2.0),
          [[("407 M", 92, True, CRIMSON), ("   vectors", 32, False, GRAY)]],
          line_spacing=0.95)
-    y += Inches(1.85)
+    y += Inches(1.6)
+    # Scale context, so the low absolute recall below reads as the difficulty of
+    # the task rather than a weakness of the method.
     text(slide, X3, y, W3, Inches(0.6),
-         [[("LAION-400M · CLIP · R@100, no reranking", 23, True, INK)]])
+         [[("LAION-400M  ·  29.3 GB at 72 B/vec  ·  28× compressed",
+            24, True, GRAY)]])
+    y += Inches(0.8)
+    text(slide, X3, y, W3, Inches(0.6),
+         [[("CLIP · R@100, no reranking", 23, True, INK)]])
     y += Inches(0.75)
     bw = W3 - Inches(2.0)
     hbar(slide, X3, y, bw, 0.108 / 0.143, Inches(0.8), GRAY, "Vanilla", ".108")
