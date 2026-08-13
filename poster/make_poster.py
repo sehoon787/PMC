@@ -287,6 +287,8 @@ def build():
     head.gap(0.08)
     head.text([[("Department of Computer Science and Engineering, Korea University  ·  "
                  "Intelligence Engineering Lab", 22, False, GRAY)]], after=0)
+    head.gap(0.06)
+    head.text([[("{sehoon787, junicus, jsy}@korea.ac.kr", 20, False, GRAY, True)]], after=0)
     solid(slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, M, HEADER_H, CW, Pt(3.0)), CRIMSON)
 
     # ============================= abstract ===========================
