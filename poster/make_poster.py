@@ -285,7 +285,7 @@ def build():
          [[("q′  =", 28, True, INK)]])
     y += fraction(slide, X2 + Inches(1.45), y, Inches(6.2),
                   "q − (1 − α) g", "‖q − (1 − α) g‖", 26)
-    text(slide, X2, y, W2, Inches(4.0),
+    text(slide, X2, y, W2, Inches(2.9),
          [[("α = 0 is query-only mean shift: it leaves IVF centroids and quantized "
             "codes misaligned, and can lower recall.", 25, False, INK)],
           [("α = 1 makes q′ = q and rewrites the centroid where it plays both of "
@@ -363,11 +363,20 @@ def build():
            ("R@100 improved or matched in all 16 BQ configurations; best in all "
             "14 at R@10.", 24, False, INK)]],
          line_spacing=1.3)
-    y += Inches(1.85)
-    y += picture(slide, "asset_fig3c.png", X3, y, W3) + Inches(0.2)
-    text(slide, X3, y, W3, Inches(0.9),
+    y += Inches(1.55)
+    # Size the QPS panel to the room left in the column and centre it. At full
+    # column width it stood 7.2 in tall and ran under the row-2 cards.
+    CAP_H = Inches(0.95)
+    fig_h = (R1_Y + R1_H) - y - CAP_H - Inches(0.2)
+    fig_w = Emu(int(fig_h * ASPECT["asset_fig3c.png"]))
+    if fig_w > W3:
+        fig_w, fig_h = W3, Emu(int(W3 / ASPECT["asset_fig3c.png"]))
+    slide.shapes.add_picture(str(HERE / "asset_fig3c.png"),
+                             X3 + Emu(int((W3 - fig_w) / 2)), y, fig_w, fig_h)
+    y += fig_h + Inches(0.12)
+    text(slide, X3, y, W3, CAP_H,
          [[("QPS tracks Vanilla at every n_{probe} — PMC adds no per-query work.",
-            21, False, GRAY, True)]], line_spacing=1.15)
+            21, False, GRAY, True)]], line_spacing=1.15, align=PP_ALIGN.CENTER)
 
     # ================= Row 2 =================
     R2_Y = R1_Y + R1_H + Inches(0.85)
