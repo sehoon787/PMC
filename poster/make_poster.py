@@ -299,21 +299,21 @@ def build():
     text(slide, X3, y - Inches(0.15), W3, Inches(2.0),
          [[("407 M", 92, True, CRIMSON), ("   vectors", 32, False, GRAY)]],
          line_spacing=0.95)
-    y += Inches(1.6)
+    y += Inches(1.42)
     # Scale context, so the low absolute recall below reads as the difficulty of
     # the task rather than a weakness of the method.
     text(slide, X3, y, W3, Inches(0.6),
          [[("LAION-400M  ·  29.3 GB at 72 B/vec  ·  28× compressed",
             24, True, GRAY)]])
-    y += Inches(0.8)
+    y += Inches(0.70)
     text(slide, X3, y, W3, Inches(0.6),
          [[("CLIP · R@100, no reranking", 23, True, INK)]])
     y += Inches(0.75)
     bw = W3 - Inches(2.0)
     hbar(slide, X3, y, bw, 0.108 / 0.143, Inches(0.8), GRAY, "Vanilla", ".108")
-    y += Inches(0.98)
+    y += Inches(0.92)
     hbar(slide, X3, y, bw, 1.0, Inches(0.8), BLUE, "PMC   (+32%)", ".143")
-    y += Inches(1.12)
+    y += Inches(1.02)
     text(slide, X3, y, W3, Inches(0.6),
          [[("with exact reranking K′ = 400:   .198 → ", 25, False, INK),
            (".277   (+40%)", 25, True, BLUE)]])
@@ -355,7 +355,7 @@ def build():
             text(slide, X3 + COL_G + COL_N + i * COL_D, y, COL_D, Inches(0.72),
                  [[(f"{v0}→", 20, False, GRAY), (v1, 24, True, BLUE),
                    (f" {d}", 20, True, BLUE)]], align=PP_ALIGN.RIGHT)
-        y += Inches(0.82)
+        y += Inches(0.76)
         rule(slide, X3, y - Inches(0.06), W3, Pt(0.8), HAIR)
     y += Inches(0.3)
     text(slide, X3, y, W3, Inches(1.6),
@@ -363,10 +363,10 @@ def build():
            ("R@100 improved or matched in all 16 BQ configurations; best in all "
             "14 at R@10.", 24, False, INK)]],
          line_spacing=1.3)
-    y += Inches(1.55)
+    y += Inches(1.15)
     # Size the QPS panel to the room left in the column and centre it. At full
     # column width it stood 7.2 in tall and ran under the row-2 cards.
-    CAP_H = Inches(0.95)
+    CAP_H = Inches(0.72)
     fig_h = (R1_Y + R1_H) - y - CAP_H - Inches(0.2)
     fig_w = Emu(int(fig_h * ASPECT["asset_fig3c.png"]))
     if fig_w > W3:
