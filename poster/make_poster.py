@@ -49,6 +49,9 @@ GRAY = RGBColor(0x6F, 0x6F, 0x6F)
 HAIR = RGBColor(0xC8, 0xC8, 0xC8)
 CARD = RGBColor(0xF6, 0xF5, 0xF3)
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)
+GRAY_LT = RGBColor(0xC6, 0xC6, 0xC6)
+BLUE_LT = RGBColor(0x8F, 0xAE, 0xD9)
+BLUE_PALE = RGBColor(0xE6, 0xED, 0xF7)
 SERIF = "Times New Roman"
 
 PAGE_W, PAGE_H = Inches(33.11), Inches(46.81)
@@ -243,7 +246,7 @@ class Col:
               WHITE, HAIR, Pt(1.0))
         solid(self.s.shapes.add_shape(MSO_SHAPE.RECTANGLE, self.x, self.y,
                                       Emu(int(lane_w * frac)), h), color)
-        cell(self.s, [(label, 24, False, WHITE if frac > 0.45 else INK)],
+        cell(self.s, [(label, 24, False, INK)],
              self.x + Inches(0.18), self.y, lane_w - Inches(0.3), h)
         cell(self.s, [(value, 24, True, INK)],
              self.x + lane_w + Inches(0.14), self.y, Inches(val_w - 0.14), h)
@@ -561,10 +564,10 @@ def build():
     R.text([[("Where to correct  ", 24, True, INK),
              ("(MSCOCO · CLIP-B/32 · R@100 t→i)", 20, False, GRAY)]], after=0)
     R.gap(0.14)
-    for label, v, col, val in (("Vanilla", 0.578, GRAY, ".578"),
-                               ("Query-only", 0.541, GRAY, ".541"),
-                               ("Both sides", 0.599, GRAY, ".599"),
-                               ("DB-only  (PMC)", 0.637, BLUE, ".637")):
+    for label, v, col, val in (("Vanilla", 0.578, GRAY_LT, ".578"),
+                               ("Query-only", 0.541, GRAY_LT, ".541"),
+                               ("Both sides", 0.599, GRAY_LT, ".599"),
+                               ("DB-only  (PMC)", 0.637, BLUE_LT, ".637")):
         R.hbar((v - 0.45) / (0.637 - 0.45), col, label, val, h_in=0.50)
     R.gap(0.06)
     R.text([[("Shifting both sides re-displaces the routing pivot, and random, "
@@ -574,12 +577,14 @@ def build():
              ("Correct the centroid where it controls both routing and code "
               "formation.", 22, True, CRIMSON)]], size=22)
     R.gap(0.20)
-    R.band([[("Correct the index, not the query:  a one-time, database-side "
-              "centroid correction repairs IVF routing and binary quantization "
-              "together — zero query-time transform, zero extra index memory, "
-              "QPS unchanged at every n_{probe}.", 23, True, WHITE)],
-            [("Future work: drift-adaptive α, graph-based ANN, billion-scale "
-              "deployment.", 20, False, WHITE)]], pad=0.26)
+    R._boxed([[("Correct the index, not the query:  ", 23, True, BLUE),
+               ("a one-time, database-side centroid correction repairs IVF "
+                "routing and binary quantization together — zero query-time "
+                "transform, zero extra index memory, QPS unchanged at every "
+                "n_{probe}.", 23, True, INK)],
+              [("Future work: drift-adaptive α, graph-based ANN, billion-scale "
+                "deployment.", 20, False, GRAY)]],
+             23, BLUE_PALE, 0.26, INK, False, None)
 
     print(f"  L: {(L.y - TOP) / 914400.0:5.2f} / {(BOT - TOP) / 914400.0:5.2f} in"
           f"  ({(L.y - TOP) / (BOT - TOP) * 100:4.1f}%)"
@@ -601,10 +606,8 @@ def build():
     ft.text([[("The 35th ACM International Conference on Information and Knowledge "
                "Management  ·  November 07–11, 2026  ·  Rome, Italy", 21, True, INK)]],
             after=2)
-    ft.text([[("DOI 10.1145/3799682.3840007   ·   CC-BY 4.0   ·   Supported by the "
-               "National Research Foundation of Korea (MSIT), No. 00359638   ·   "
-               "Code and reproduction package: github.com/sehoon787/PMC",
-               18, False, GRAY)]], size=18, after=0)
+    ft.text([[("CC-BY 4.0   ·   Code and reproduction package:  "
+               "github.com/sehoon787/PMC", 18, False, GRAY)]], size=18, after=0)
 
     out = HERE / "PMC_CIKM2026_poster.pptx"
     prs.save(str(out))
