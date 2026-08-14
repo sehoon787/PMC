@@ -114,7 +114,7 @@ def add_runs(p, text, size, bold, color, italic=False):
             continue
         r = p.add_run()
         r.text = part
-        r.font.size = Pt(size * 0.82) if i % 2 else Pt(size)
+        r.font.size = Pt(size * 0.90) if i % 2 else Pt(size)
         r.font.bold, r.font.italic, r.font.name = bold, italic, SERIF
         r.font.color.rgb = color
         if i % 2:
@@ -340,13 +340,13 @@ def build():
               "shifting the centroid by αg flips dimension i's sign iff",
               22, False, INK)]], size=22)
     equation(L, [("δ_{i} (δ_{i} − α g_{i})  <  0 ,      i.e.,      "
-                  "0  <  δ_{i} / (α g_{i})  <  1", 27, True, INK)],
+                  "0  <  δ_{i} / (α g_{i})  <  1", 30, True, INK)],
              note="δ_{i}: residual x_{i} − c_{i}   ·   g_{i}: gap component   ·   "
                   "α: shift strength")
     L.text([[("Under smooth symmetric residual densities, a first-order expansion "
               "gives the expected number of flipped bits,", 22, False, INK)]],
            size=22)
-    equation(L, [("E[F]  ≈  α Σ_{i} p_{i}(0) |g_{i}|", 30, True, INK)],
+    equation(L, [("E[F]  ≈  α Σ_{i} p_{i}(0) |g_{i}|", 34, True, INK)],
              note="E[F]: expected bit flips   ·   p_{i}(0): residual density at "
                   "the code boundary")
     L.text([[("a density-weighted ℓ₁ norm of the gap: flip risk grows with |g_{i}|. "
@@ -367,7 +367,7 @@ def build():
               "database vectors toward the query centroid:", 22, False, INK)]],
            size=22)
     equation(L, [("x′ = (x + α g) / ‖x + α g‖ ,      "
-                  "q′ = (q − (1−α) g) / ‖q − (1−α) g‖", 27, True, INK)],
+                  "q′ = (q − (1−α) g) / ‖q − (1−α) g‖", 30, True, INK)],
              note="x: database vector   ·   q: query   ·   g: modality gap   ·"
                   "   α ∈ [0,1]: shift strength  (α = 1  →  q′ = q)")
     L.text([[("α interpolates between full query-side correction (α = 0, mean "
@@ -408,11 +408,11 @@ def build():
              ("Correction restricted to the top-P% of dimensions ranked by "
               "|g_{i}|,", 22, False, INK)]], size=22)
     equation(L, [("g_{sel,i} = g_{i}  if  |g_{i}| ≥ |g|_{(P)} ,  0  otherwise ;      "
-                  "x′_{sel} = (x + α g_{sel}) / ‖x + α g_{sel}‖", 25, True, INK)],
+                  "x′_{sel} = (x + α g_{sel}) / ‖x + α g_{sel}‖", 28, True, INK)],
              note="g_{sel}: truncated gap   ·   |g|_{(P)}: top-P% magnitude "
                   "threshold")
     equation(L, [("E(P)  =  Σ_{i ∈ S(P)} g_{i}²  /  ‖g‖² ,      "
-                  "S(P) = { i : |g_{i}| ≥ |g|_{(P)} }", 25, True, INK)],
+                  "S(P) = { i : |g_{i}| ≥ |g|_{(P)} }", 28, True, INK)],
              note="E(P): captured gap-energy fraction   ·   S(P): top-P% "
                   "index set")
     L.text([[("isolates the mechanism. Since flip risk concentrates in high-|g_{i}| "
