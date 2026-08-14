@@ -326,6 +326,43 @@ def build():
                                  R.x - Emu(int(GUT / 2)), TOP, Pt(1.0), BOT - TOP),
           HAIR)
 
+    def eqfrac(col, segments, size=30, note=None):
+        """Display equation with true stacked fractions.
+        segments: ("text", s) or ("frac", numerator, denominator)."""
+        col.gap(0.14)
+        H = Pt(size * 2.5)
+        widths = []
+        for seg in segments:
+            if seg[0] == "text":
+                widths.append(_width_pt(plain(seg[1]), size, True))
+            else:
+                widths.append(max(_width_pt(plain(seg[1]), size, True),
+                                  _width_pt(plain(seg[2]), size, True))
+                              + size * 0.5)
+        x = col.x + Emu(int((col.w - Pt(sum(widths))) / 2))
+        y0 = col.y
+        for seg, w in zip(segments, widths):
+            wE = Pt(w)
+            if seg[0] == "text":
+                cell(col.s, [(seg[1], size, True, INK)], x, y0, wE, H,
+                     PP_ALIGN.CENTER)
+            else:
+                hh = Emu(int(H * 0.44))
+                cell(col.s, [(seg[1], size, True, INK)], x, y0, wE, hh,
+                     PP_ALIGN.CENTER)
+                bar = Emu(int(wE * 0.94))
+                solid(col.s.shapes.add_shape(
+                    MSO_SHAPE.RECTANGLE, x + Emu(int((wE - bar) / 2)),
+                    y0 + Emu(int(H * 0.485)), bar, Pt(2.2)), INK)
+                cell(col.s, [(seg[2], size, True, INK)], x,
+                     y0 + Emu(int(H * 0.56)), wE, hh, PP_ALIGN.CENTER)
+            x += wE
+        col.y += H
+        if note:
+            col.text([[(note, 20, False, GRAY, True)]], size=20,
+                     align=PP_ALIGN.CENTER, after=0)
+        col.gap(0.14)
+
     def equation(col, runs, size=28, note=None):
         col.gap(0.16)
         col.text([runs], size=size, align=PP_ALIGN.CENTER, after=0)
@@ -347,7 +384,7 @@ def build():
              ("  g = μ_{q} − μ_{x}  is stable and large, ‖g‖ = .61–.82 on our "
               "benchmarks.", 22, False, INK)]], size=22)
     L.gap(0.14)
-    L.figure("asset_fig1.png", 0.93)
+    L.figure("asset_fig1.png", 0.80)
     L.gap(0.08)
     L.text([[("t-SNE of ImageBind embeddings: each modality forms its own cluster; "
               "after PMC the paired points overlap.", 20, False, GRAY, True)]],
@@ -360,10 +397,11 @@ def build():
               "and routing at once. Let δ_{i} = x_{i} − c_{i} be the residual; "
               "shifting the centroid by αg flips dimension i's sign iff",
               22, False, INK)]], size=22)
-    equation(L, [("δ_{i} (δ_{i} − α g_{i})  <  0 ,      i.e.,      "
-                  "0  <  δ_{i} / (α g_{i})  <  1", 30, True, INK)],
-             note="δ_{i}: residual x_{i} − c_{i}   ·   g_{i}: gap component   ·   "
-                  "α: shift strength")
+    eqfrac(L, [("text", "δ_{i} (δ_{i} − α g_{i})  <  0 ,     i.e.,     0  <  "),
+               ("frac", "δ_{i}", "α g_{i}"),
+               ("text", "  <  1")], size=30,
+           note="δ_{i}: residual x_{i} − c_{i}   ·   g_{i}: gap component   ·   "
+                "α: shift strength")
     L.text([[("Under smooth symmetric residual densities, a first-order expansion "
               "gives the expected number of flipped bits,", 22, False, INK)]],
            size=22)
@@ -387,10 +425,12 @@ def build():
               "construction. From a small paired sample we compute g and shift "
               "database vectors toward the query centroid:", 22, False, INK)]],
            size=22)
-    equation(L, [("x′ = (x + α g) / ‖x + α g‖ ,      "
-                  "q′ = (q − (1−α) g) / ‖q − (1−α) g‖", 30, True, INK)],
-             note="x: database vector   ·   q: query   ·   g: modality gap   ·"
-                  "   α ∈ [0,1]: shift strength  (α = 1  →  q′ = q)")
+    eqfrac(L, [("text", "x′  =  "),
+               ("frac", "x + α g", "‖x + α g‖"),
+               ("text", " ,       q′  =  "),
+               ("frac", "q − (1−α) g", "‖q − (1−α) g‖")], size=30,
+           note="x: database vector   ·   q: query   ·   g: modality gap   ·"
+                "   α ∈ [0,1]: shift strength  (α = 1  →  q′ = q)")
     L.text([[("α interpolates between full query-side correction (α = 0, mean "
               "shift) and full database-side alignment (α = 1). The BQ index is "
               "built on {x′}; at α = 1 the query-time transform is identity, so "
@@ -420,22 +460,24 @@ def build():
             [("6:  I ← BuildIndex({x′})        — RaBitQ · BBQ · BinaryFlat",
               21, False, INK)],
             [("7:  return I, g", 21, False, INK)]],
-           size=21, spacing=1.30, after=3)
+           size=21, spacing=1.24, after=3)
     L.gap(0.08)
     solid(slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, L.x, L.y, L.w, Pt(2.2)), INK)
-    L.gap(0.32)
+    L.gap(0.24)
 
     L.text([[("Selective PMC as a mechanism test.  ", 22, True, INK),
              ("Correction restricted to the top-P% of dimensions ranked by "
               "|g_{i}|,", 22, False, INK)]], size=22)
-    equation(L, [("g_{sel,i} = g_{i}  if  |g_{i}| ≥ |g|_{(P)} ,  0  otherwise ;      "
-                  "x′_{sel} = (x + α g_{sel}) / ‖x + α g_{sel}‖", 28, True, INK)],
-             note="g_{sel}: truncated gap   ·   |g|_{(P)}: top-P% magnitude "
-                  "threshold")
-    equation(L, [("E(P)  =  Σ_{i ∈ S(P)} g_{i}²  /  ‖g‖² ,      "
-                  "S(P) = { i : |g_{i}| ≥ |g|_{(P)} }", 28, True, INK)],
-             note="E(P): captured gap-energy fraction   ·   S(P): top-P% "
-                  "index set")
+    eqfrac(L, [("text", "g_{sel,i} = g_{i}  if  |g_{i}| ≥ |g|_{(P)} ,  0  "
+                        "otherwise ;     x′_{sel}  =  "),
+               ("frac", "x + α g_{sel}", "‖x + α g_{sel}‖")], size=28,
+           note="g_{sel}: truncated gap   ·   |g|_{(P)}: top-P% magnitude "
+                "threshold")
+    eqfrac(L, [("text", "E(P)  =  "),
+               ("frac", "Σ_{i ∈ S(P)} g_{i}²", "‖g‖²"),
+               ("text", " ,      S(P) = { i : |g_{i}| ≥ |g|_{(P)} }")], size=28,
+           note="E(P): captured gap-energy fraction   ·   S(P): top-P% "
+                "index set")
     L.text([[("isolates the mechanism. Since flip risk concentrates in high-|g_{i}| "
               "dimensions, correcting only the highest-energy ones suffices: for "
               "CLIP the top 10% carry 86–92% of gap energy, so P = 5% already "
