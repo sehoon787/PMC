@@ -239,16 +239,25 @@ class Col:
     def band(self, paras, size=24, pad=0.26):
         self._boxed(paras, size, BLUE, pad, WHITE, True, None)
 
-    def hbar(self, frac, color, label, value, h_in=0.68, val_w=1.70):
+    def hbar(self, frac, color, label, value, h_in=0.68, val_w=1.70,
+             bold=False, star=False):
         h = Inches(h_in)
         lane_w = self.w - Inches(val_w)
         solid(self.s.shapes.add_shape(MSO_SHAPE.RECTANGLE, self.x, self.y, lane_w, h),
               WHITE, HAIR, Pt(1.0))
         solid(self.s.shapes.add_shape(MSO_SHAPE.RECTANGLE, self.x, self.y,
                                       Emu(int(lane_w * frac)), h), color)
-        cell(self.s, [(label, 24, False, INK)],
-             self.x + Inches(0.18), self.y, lane_w - Inches(0.3), h)
-        cell(self.s, [(value, 24, True, INK)],
+        tx = 0.18
+        if star:
+            s = Inches(0.34)
+            solid(self.s.shapes.add_shape(MSO_SHAPE.STAR_5_POINT,
+                                          self.x + Inches(0.16),
+                                          self.y + Emu(int((h - s) / 2)), s, s),
+                  CRIMSON)
+            tx = 0.62
+        cell(self.s, [(label, 24, bold, INK)],
+             self.x + Inches(tx), self.y, lane_w - Inches(tx + 0.12), h)
+        cell(self.s, [(value, 24, bold, INK)],
              self.x + lane_w + Inches(0.14), self.y, Inches(val_w - 0.14), h)
         self.y += h + Inches(0.10)
 
@@ -568,7 +577,9 @@ def build():
                                ("Query-only", 0.541, GRAY_LT, ".541"),
                                ("Both sides", 0.599, GRAY_LT, ".599"),
                                ("DB-only  (PMC)", 0.637, BLUE_LT, ".637")):
-        R.hbar((v - 0.45) / (0.637 - 0.45), col, label, val, h_in=0.50)
+        best = label.startswith("DB-only")
+        R.hbar((v - 0.45) / (0.637 - 0.45), col, label, val, h_in=0.50,
+               bold=best, star=best)
     R.gap(0.06)
     R.text([[("Shifting both sides re-displaces the routing pivot, and random, "
               "shuffled or sign-flipped directions of the same norm all fall "
