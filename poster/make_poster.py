@@ -430,38 +430,57 @@ def build():
               "72–136 B/vec, n_{list} = ⌈√n⌉, n_{probe} ≈ n_{list}/4; R@100 "
               "against exact ground truth, single-thread CPU.",
               21, False, GRAY)]], size=21)
-    R.gap(0.16)
+    R.gap(0.12)
     R.text([[("Every configuration, ordered by ‖g‖  ", 24, True, INK),
-             ("(R@100, Vanilla → PMC)", 20, False, GRAY)]], after=0)
-    R.gap(0.14)
-    COL_G, COL_N = Inches(0.95), Inches(3.30)
-    COL_D = Emu(int((R.w - COL_G - COL_N) / 2))
+             ("(Vanilla → PMC)", 20, False, GRAY)]], after=0)
+    R.gap(0.12)
+    COL_G, COL_N, R10_W = Inches(0.85), Inches(2.85), Inches(2.05)
+    R100_W = Emu(int((R.w - COL_G - COL_N - 2 * R10_W) / 2))
+    x0 = R.x + COL_G + COL_N
+    cell(slide, [("q→db", 21, True, GRAY)], x0, R.y, R10_W + R100_W,
+         Inches(0.42), PP_ALIGN.CENTER)
+    cell(slide, [("db→q", 21, True, GRAY)], x0 + R10_W + R100_W, R.y,
+         R10_W + R100_W, Inches(0.42), PP_ALIGN.CENTER)
+    R.y += Inches(0.44)
     for t, xx, ww, al in (("‖g‖", R.x, COL_G, PP_ALIGN.LEFT),
                           ("Dataset · Enc.", R.x + COL_G, COL_N, PP_ALIGN.LEFT),
-                          ("q→db", R.x + COL_G + COL_N, COL_D, PP_ALIGN.RIGHT),
-                          ("db→q", R.x + COL_G + COL_N + COL_D, COL_D,
+                          ("R@10", x0, R10_W, PP_ALIGN.RIGHT),
+                          ("R@100", x0 + R10_W, R100_W, PP_ALIGN.RIGHT),
+                          ("R@10", x0 + R10_W + R100_W, R10_W, PP_ALIGN.RIGHT),
+                          ("R@100", x0 + 2 * R10_W + R100_W, R100_W,
                            PP_ALIGN.RIGHT)):
-        cell(slide, [(t, 21, True, GRAY)], xx, R.y, ww, Inches(0.48), al)
-    R.y += Inches(0.50)
+        cell(slide, [(t, 20, True, GRAY)], xx, R.y, ww, Inches(0.42), al)
+    R.y += Inches(0.44)
     R.rule(Pt(1.5), INK, pad=0.02)
-    for g, name, qv, qp, qd, dv, dp, dd in [
-            (".82", "MSCOCO CL-L", ".55", ".65", "+18%", ".47", ".63", "+34%"),
-            (".82", "MSCOCO CLIP", ".58", ".63", "+9%", ".50", ".60", "+20%"),
-            (".77", "Flickr30K CL-L", ".41", ".48", "+17%", ".33", ".48", "+45%"),
-            (".72", "LAION-400M CLIP", ".108", ".143", "+32%", ".069", ".073",
-             "+6%"),
-            (".70", "MSCOCO IB", ".67", ".75", "+12%", ".71", ".75", "+6%"),
-            (".61", "Clotho IB", ".72", ".73", "+1%", ".62", ".69", "+11%"),
-            (".61", "AudioCaps IB", ".75", ".78", "+4%", ".83", ".83", "+0%")]:
+    for (g, name, q10v, q10p, qv, qp, qd,
+         d10v, d10p, dv, dp, dd) in [
+            (".82", "MSCOCO CL-L", ".36", ".48", ".55", ".65", "+18%",
+             ".26", ".44", ".47", ".63", "+34%"),
+            (".82", "MSCOCO CLIP", ".40", ".46", ".58", ".63", "+9%",
+             ".29", ".39", ".50", ".60", "+20%"),
+            (".77", "Flickr30K CL-L", ".31", ".38", ".41", ".48", "+17%",
+             ".22", ".38", ".33", ".48", "+45%"),
+            (".72", "LAION-400M CLIP", ".075", ".086", ".108", ".143", "+32%",
+             ".035", ".048", ".069", ".073", "+6%"),
+            (".70", "MSCOCO IB", ".55", ".63", ".67", ".75", "+12%",
+             ".57", ".64", ".71", ".75", "+6%"),
+            (".61", "Clotho IB", ".59", ".60", ".72", ".73", "+1%",
+             ".48", ".54", ".62", ".69", "+11%"),
+            (".61", "AudioCaps IB", ".39", ".44", ".75", ".78", "+4%",
+             ".44", ".48", ".83", ".83", "+0%")]:
         rh = Inches(0.50)
-        cell(slide, [(g, 23, True, CRIMSON)], R.x, R.y, COL_G, rh)
-        cell(slide, [(name, 22, False, INK)], R.x + COL_G, R.y, COL_N, rh)
-        cell(slide, [(f"{qv}→", 20, False, GRAY), (qp, 23, True, BLUE),
-                     (f" {qd}", 20, True, BLUE)],
-             R.x + COL_G + COL_N, R.y, COL_D, rh, PP_ALIGN.RIGHT)
-        cell(slide, [(f"{dv}→", 20, False, GRAY), (dp, 23, True, BLUE),
-                     (f" {dd}", 20, True, BLUE)],
-             R.x + COL_G + COL_N + COL_D, R.y, COL_D, rh, PP_ALIGN.RIGHT)
+        cell(slide, [(g, 22, True, CRIMSON)], R.x, R.y, COL_G, rh)
+        cell(slide, [(name, 21, False, INK)], R.x + COL_G, R.y, COL_N, rh)
+        cell(slide, [(f"{q10v}→", 18, False, GRAY), (q10p, 21, True, BLUE)],
+             x0, R.y, R10_W, rh, PP_ALIGN.RIGHT)
+        cell(slide, [(f"{qv}→", 18, False, GRAY), (qp, 21, True, BLUE),
+                     (f" {qd}", 18, True, BLUE)],
+             x0 + R10_W, R.y, R100_W, rh, PP_ALIGN.RIGHT)
+        cell(slide, [(f"{d10v}→", 18, False, GRAY), (d10p, 21, True, BLUE)],
+             x0 + R10_W + R100_W, R.y, R10_W, rh, PP_ALIGN.RIGHT)
+        cell(slide, [(f"{dv}→", 18, False, GRAY), (dp, 21, True, BLUE),
+                     (f" {dd}", 18, True, BLUE)],
+             x0 + 2 * R10_W + R100_W, R.y, R100_W, rh, PP_ALIGN.RIGHT)
         R.y += rh
         solid(slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, R.x, R.y, R.w,
                                      Pt(0.8)), HAIR)
@@ -521,7 +540,7 @@ def build():
               "so the same one-line fix serves every sign(x − c) method. "
               "Multi-bit quantizers (IVFPQ, OPQ) absorb part of the displacement "
               "yet still gain +1–56%.", 22, False, INK)]], size=22)
-    R.gap(0.18)
+    R.gap(0.12)
     R.text([[("Where to correct  ", 24, True, INK),
              ("(MSCOCO · CLIP-B/32 · R@100 t→i)", 20, False, GRAY)]], after=0)
     R.gap(0.14)
