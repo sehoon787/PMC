@@ -250,12 +250,13 @@ class Col:
         solid(self.s.shapes.add_shape(MSO_SHAPE.RECTANGLE, self.x, self.y,
                                       Emu(int(lane_w * frac)), h), color)
         if star:
-            s = Inches(0.46)
-            solid(self.s.shapes.add_shape(MSO_SHAPE.STAR_5_POINT,
-                                          self.x + Emu(int(lane_w * frac))
-                                          - Inches(0.66),
-                                          self.y + Emu(int((h - s) / 2)), s, s),
-                  GOLD, GOLD_DK, Pt(2.4))
+            s = Inches(0.48)
+            st = self.s.shapes.add_shape(MSO_SHAPE.STAR_5_POINT,
+                                         self.x + Emu(int(lane_w * frac))
+                                         - Inches(0.68),
+                                         self.y + Emu(int((h - s) / 2)), s, s)
+            st.adjustments[0] = 0.32      # fatter points
+            solid(st, GOLD, GOLD_DK, Pt(2.4))
         cell(self.s, [(label, 24, bold, INK)],
              self.x + Inches(0.18), self.y, lane_w - Inches(0.3), h)
         cell(self.s, [(value, 24, bold, INK)],
