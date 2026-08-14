@@ -434,24 +434,25 @@ def build():
     R.text([[("Every configuration, ordered by ‖g‖  ", 24, True, INK),
              ("(Vanilla → PMC)", 20, False, GRAY)]], after=0)
     R.gap(0.12)
-    COL_G, COL_N, R10_W = Inches(0.75), Inches(2.60), Inches(2.65)
-    R100_W = Emu(int((R.w - COL_G - COL_N - 2 * R10_W) / 2))
+    COL_G, R10_W, R100_W, GAPG = (Inches(0.75), Inches(2.35), Inches(2.35),
+                                  Inches(0.90))
     GRP_W = R10_W + R100_W
+    COL_N = R.w - COL_G - 2 * GRP_W - GAPG
     x0 = R.x + COL_G + COL_N
-    for gt, gx in (("q→db", x0), ("db→q", x0 + GRP_W)):
+    x1 = x0 + GRP_W + GAPG
+    for gt, gx in (("q→db", x0), ("db→q", x1)):
         cell(slide, [(gt, 21, True, INK)], gx, R.y, GRP_W, Inches(0.40),
              PP_ALIGN.CENTER)
         solid(slide.shapes.add_shape(
-            MSO_SHAPE.RECTANGLE, gx + Inches(0.30), R.y + Inches(0.42),
-            GRP_W - Inches(0.60), Pt(1.2)), GRAY)
+            MSO_SHAPE.RECTANGLE, gx + Inches(0.20), R.y + Inches(0.42),
+            GRP_W - Inches(0.40), Pt(1.2)), GRAY)
     R.y += Inches(0.46)
     for t, xx, ww, al in (("‖g‖", R.x, COL_G, PP_ALIGN.LEFT),
                           ("Dataset · Enc.", R.x + COL_G, COL_N, PP_ALIGN.LEFT),
                           ("R@10", x0, R10_W, PP_ALIGN.RIGHT),
                           ("R@100", x0 + R10_W, R100_W, PP_ALIGN.RIGHT),
-                          ("R@10", x0 + GRP_W, R10_W, PP_ALIGN.RIGHT),
-                          ("R@100", x0 + GRP_W + R10_W, R100_W,
-                           PP_ALIGN.RIGHT)):
+                          ("R@10", x1, R10_W, PP_ALIGN.RIGHT),
+                          ("R@100", x1 + R10_W, R100_W, PP_ALIGN.RIGHT)):
         cell(slide, [(t, 20, True, GRAY)], xx, R.y, ww, Inches(0.40), al)
     R.y += Inches(0.42)
     R.rule(Pt(1.5), INK, pad=0.02)
@@ -477,8 +478,8 @@ def build():
         for vv, pp, dd_, xx, ww in (
                 (q10v, q10p, q10d, x0, R10_W),
                 (qv, qp, qd, x0 + R10_W, R100_W),
-                (d10v, d10p, d10d, x0 + GRP_W, R10_W),
-                (dv, dp, dd, x0 + GRP_W + R10_W, R100_W)):
+                (d10v, d10p, d10d, x1, R10_W),
+                (dv, dp, dd, x1 + R10_W, R100_W)):
             cell(slide, [(f"{vv}→", 17, False, GRAY), (pp, 20, True, BLUE),
                          (f" {dd_}", 17, True, BLUE)],
                  xx, R.y, ww, rh, PP_ALIGN.RIGHT)
