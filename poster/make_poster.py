@@ -449,10 +449,10 @@ def build():
     R.y += Inches(0.46)
     for t, xx, ww, al in (("‖g‖", R.x, COL_G, PP_ALIGN.LEFT),
                           ("Dataset · Enc.", R.x + COL_G, COL_N, PP_ALIGN.LEFT),
-                          ("R@10", x0, R10_W, PP_ALIGN.RIGHT),
-                          ("R@100", x0 + R10_W, R100_W, PP_ALIGN.RIGHT),
-                          ("R@10", x1, R10_W, PP_ALIGN.RIGHT),
-                          ("R@100", x1 + R10_W, R100_W, PP_ALIGN.RIGHT)):
+                          ("R@10", x0, R10_W, PP_ALIGN.CENTER),
+                          ("R@100", x0 + R10_W, R100_W, PP_ALIGN.CENTER),
+                          ("R@10", x1, R10_W, PP_ALIGN.CENTER),
+                          ("R@100", x1 + R10_W, R100_W, PP_ALIGN.CENTER)):
         cell(slide, [(t, 20, True, GRAY)], xx, R.y, ww, Inches(0.40), al)
     R.y += Inches(0.42)
     R.rule(Pt(1.5), INK, pad=0.02)
@@ -480,9 +480,9 @@ def build():
                 (qv, qp, qd, x0 + R10_W, R100_W),
                 (d10v, d10p, d10d, x1, R10_W),
                 (dv, dp, dd, x1 + R10_W, R100_W)):
-            cell(slide, [(f"{vv}→", 17, False, GRAY), (pp, 20, True, BLUE),
-                         (f" {dd_}", 17, True, BLUE)],
-                 xx, R.y, ww, rh, PP_ALIGN.RIGHT)
+            cell(slide, [(f"{vv}→", 17, False, GRAY), (pp, 20, True, INK),
+                         (f" {dd_}", 17, True, CRIMSON)],
+                 xx, R.y, ww, rh, PP_ALIGN.CENTER)
         R.y += rh
         solid(slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, R.x, R.y, R.w,
                                      Pt(0.8)), HAIR)
@@ -491,10 +491,10 @@ def build():
               "as Eq. (2) predicts. At 407 M vectors (LAION-400M, 29.3 GB of "
               "codes, 28× compressed) PMC lifts R@100 from .108 to ",
               22, False, INK),
-             (".143 (+32%)", 22, True, BLUE),
+             (".143 ", 22, True, INK), ("(+32%)", 22, True, CRIMSON),
              ("; with exact reranking the lead carries over, .198 → ", 22, False,
               INK),
-             (".277 (+40%)", 22, True, BLUE),
+             (".277 ", 22, True, INK), ("(+40%)", 22, True, CRIMSON),
              (". Exact rescoring cannot rescue Vanilla — it only re-scores what "
               "the corrupted codes already retrieved.", 22, False, INK)]],
            size=22)
@@ -527,9 +527,9 @@ def build():
                            ("RaBitQ", ".58", ".64", ".67", ".75")):
         rh = Inches(0.50)
         cell(slide, [(m, 22, False, INK)], R.x, R.y, Inches(3.2), rh)
-        cell(slide, [(f"{a} → ", 20, False, GRAY), (b, 23, True, BLUE)],
+        cell(slide, [(f"{a} → ", 20, False, GRAY), (b, 23, True, INK)],
              R.x + Inches(3.2), R.y, T1_W, rh, PP_ALIGN.RIGHT)
-        cell(slide, [(f"{c_} → ", 20, False, GRAY), (d, 23, True, BLUE)],
+        cell(slide, [(f"{c_} → ", 20, False, GRAY), (d, 23, True, INK)],
              R.x + Inches(3.2) + T1_W, R.y, T1_W, rh, PP_ALIGN.RIGHT)
         R.y += rh
         solid(slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, R.x, R.y, R.w,
