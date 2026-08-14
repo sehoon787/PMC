@@ -31,6 +31,16 @@ from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
 from pptx.util import Emu, Inches, Pt
 
 HERE = Path(__file__).resolve().parent
+ASSETS = HERE / "assets"
+
+
+def apath(name):
+    """Resolve an asset by name from assets/figures or assets/brand."""
+    for sub in ("figures", "brand"):
+        p = ASSETS / sub / name
+        if p.exists():
+            return str(p)
+    return str(HERE / name)
 
 CRIMSON = RGBColor(0x8B, 0x00, 0x29)
 BLUE = RGBColor(0x0D, 0x4D, 0xA3)
@@ -49,9 +59,6 @@ FOOTER_H = Inches(2.05)
 ASPECT = {                        # native pixel aspect of each embedded asset
     "asset_fig1.png": 2400 / 1193,
     "asset_fig2ov.png": 1537 / 1024,
-    "asset_fig3b.png": 1188 / 929,
-    "asset_fig3c.png": 1206 / 929,
-    "asset_gapgain.png": 989 / 657,
     "asset_fig3.png": 3616 / 933,
     "asset_ku.jpg": 157 / 49,
     "asset_ielab.png": 177 / 71,
@@ -206,7 +213,7 @@ class Col:
     def figure(self, name, frac=1.0):
         w = Emu(int(self.w * frac))
         h = Emu(int(w / ASPECT[name]))
-        self.s.shapes.add_picture(str(HERE / name),
+        self.s.shapes.add_picture(apath(name),
                                   self.x + Emu(int((self.w - w) / 2)), self.y, w, h)
         self.y += h
 
@@ -272,11 +279,11 @@ def build():
     KU_W = Emu(int(KU_H * ASPECT["asset_ku.jpg"]))
     IE_W = Emu(int(IE_H * ASPECT["asset_ielab.png"]))
     R = PAGE_W - M
-    slide.shapes.add_picture(str(HERE / "asset_ielab.png"), R - IE_W, Inches(0.65), IE_W, IE_H)
-    slide.shapes.add_picture(str(HERE / "asset_ku.jpg"),
+    slide.shapes.add_picture(apath("asset_ielab.png"), R - IE_W, Inches(0.65), IE_W, IE_H)
+    slide.shapes.add_picture(apath("asset_ku.jpg"),
                              R - IE_W - Inches(0.5) - KU_W, Inches(0.65), KU_W, KU_H)
     QR = Inches(2.05)
-    slide.shapes.add_picture(str(HERE / "asset_qr.png"), R - QR, Inches(2.20), QR, QR)
+    slide.shapes.add_picture(apath("asset_qr.png"), R - QR, Inches(2.20), QR, QR)
     cell(slide, [("Paper + code:  github.com/sehoon787/PMC", 17, False, GRAY)],
          R - Inches(6.5), Inches(4.35), Inches(6.5), Inches(0.45), PP_ALIGN.RIGHT)
 
@@ -587,7 +594,7 @@ def build():
     solid(slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, fy, PAGE_W, Pt(3.0)), CRIMSON)
     LOGO_H = Inches(1.30)
     LOGO_W = Emu(int(LOGO_H * ASPECT["asset_cikm.png"]))
-    slide.shapes.add_picture(str(HERE / "asset_cikm.png"), M, fy + Inches(0.36),
+    slide.shapes.add_picture(apath("asset_cikm.png"), M, fy + Inches(0.36),
                              LOGO_W, LOGO_H)
     ft = Col(slide, M + LOGO_W + Inches(0.65), CW - LOGO_W - Inches(0.65),
              fy + Inches(0.50), PAGE_H)
