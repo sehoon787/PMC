@@ -49,7 +49,8 @@ GRAY = RGBColor(0x6F, 0x6F, 0x6F)
 HAIR = RGBColor(0xC8, 0xC8, 0xC8)
 CARD = RGBColor(0xF6, 0xF5, 0xF3)
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)
-GOLD = RGBColor(0xF5, 0xC5, 0x18)
+GOLD = RGBColor(0xF0, 0xA2, 0x02)
+GOLD_DK = RGBColor(0x8A, 0x5A, 0x00)
 GRAY_LT = RGBColor(0xC6, 0xC6, 0xC6)
 BLUE_LT = RGBColor(0x8F, 0xAE, 0xD9)
 BLUE_PALE = RGBColor(0xE6, 0xED, 0xF7)
@@ -249,12 +250,12 @@ class Col:
         solid(self.s.shapes.add_shape(MSO_SHAPE.RECTANGLE, self.x, self.y,
                                       Emu(int(lane_w * frac)), h), color)
         if star:
-            s = Inches(0.36)
+            s = Inches(0.40)
             solid(self.s.shapes.add_shape(MSO_SHAPE.STAR_5_POINT,
                                           self.x + Emu(int(lane_w * frac))
-                                          - Inches(0.55),
+                                          - Inches(0.58),
                                           self.y + Emu(int((h - s) / 2)), s, s),
-                  GOLD)
+                  GOLD, GOLD_DK, Pt(1.4))
         cell(self.s, [(label, 24, bold, INK)],
              self.x + Inches(0.18), self.y, lane_w - Inches(0.3), h)
         cell(self.s, [(value, 24, bold, INK)],
