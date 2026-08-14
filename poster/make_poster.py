@@ -434,53 +434,54 @@ def build():
     R.text([[("Every configuration, ordered by ‖g‖  ", 24, True, INK),
              ("(Vanilla → PMC)", 20, False, GRAY)]], after=0)
     R.gap(0.12)
-    COL_G, COL_N, R10_W = Inches(0.85), Inches(2.85), Inches(2.05)
+    COL_G, COL_N, R10_W = Inches(0.75), Inches(2.60), Inches(2.65)
     R100_W = Emu(int((R.w - COL_G - COL_N - 2 * R10_W) / 2))
+    GRP_W = R10_W + R100_W
     x0 = R.x + COL_G + COL_N
-    cell(slide, [("q→db", 21, True, GRAY)], x0, R.y, R10_W + R100_W,
-         Inches(0.42), PP_ALIGN.CENTER)
-    cell(slide, [("db→q", 21, True, GRAY)], x0 + R10_W + R100_W, R.y,
-         R10_W + R100_W, Inches(0.42), PP_ALIGN.CENTER)
-    R.y += Inches(0.44)
+    for gt, gx in (("q→db", x0), ("db→q", x0 + GRP_W)):
+        cell(slide, [(gt, 21, True, INK)], gx, R.y, GRP_W, Inches(0.40),
+             PP_ALIGN.CENTER)
+        solid(slide.shapes.add_shape(
+            MSO_SHAPE.RECTANGLE, gx + Inches(0.30), R.y + Inches(0.42),
+            GRP_W - Inches(0.60), Pt(1.2)), GRAY)
+    R.y += Inches(0.46)
     for t, xx, ww, al in (("‖g‖", R.x, COL_G, PP_ALIGN.LEFT),
                           ("Dataset · Enc.", R.x + COL_G, COL_N, PP_ALIGN.LEFT),
                           ("R@10", x0, R10_W, PP_ALIGN.RIGHT),
                           ("R@100", x0 + R10_W, R100_W, PP_ALIGN.RIGHT),
-                          ("R@10", x0 + R10_W + R100_W, R10_W, PP_ALIGN.RIGHT),
-                          ("R@100", x0 + 2 * R10_W + R100_W, R100_W,
+                          ("R@10", x0 + GRP_W, R10_W, PP_ALIGN.RIGHT),
+                          ("R@100", x0 + GRP_W + R10_W, R100_W,
                            PP_ALIGN.RIGHT)):
-        cell(slide, [(t, 20, True, GRAY)], xx, R.y, ww, Inches(0.42), al)
-    R.y += Inches(0.44)
+        cell(slide, [(t, 20, True, GRAY)], xx, R.y, ww, Inches(0.40), al)
+    R.y += Inches(0.42)
     R.rule(Pt(1.5), INK, pad=0.02)
-    for (g, name, q10v, q10p, qv, qp, qd,
-         d10v, d10p, dv, dp, dd) in [
-            (".82", "MSCOCO CL-L", ".36", ".48", ".55", ".65", "+18%",
-             ".26", ".44", ".47", ".63", "+34%"),
-            (".82", "MSCOCO CLIP", ".40", ".46", ".58", ".63", "+9%",
-             ".29", ".39", ".50", ".60", "+20%"),
-            (".77", "Flickr30K CL-L", ".31", ".38", ".41", ".48", "+17%",
-             ".22", ".38", ".33", ".48", "+45%"),
-            (".72", "LAION-400M CLIP", ".075", ".086", ".108", ".143", "+32%",
-             ".035", ".048", ".069", ".073", "+6%"),
-            (".70", "MSCOCO IB", ".55", ".63", ".67", ".75", "+12%",
-             ".57", ".64", ".71", ".75", "+6%"),
-            (".61", "Clotho IB", ".59", ".60", ".72", ".73", "+1%",
-             ".48", ".54", ".62", ".69", "+11%"),
-            (".61", "AudioCaps IB", ".39", ".44", ".75", ".78", "+4%",
-             ".44", ".48", ".83", ".83", "+0%")]:
+    for (g, name, q10v, q10p, q10d, qv, qp, qd,
+         d10v, d10p, d10d, dv, dp, dd) in [
+            (".82", "MSCOCO CL-L", ".36", ".48", "+33%", ".55", ".65", "+18%",
+             ".26", ".44", "+69%", ".47", ".63", "+34%"),
+            (".82", "MSCOCO CLIP", ".40", ".46", "+15%", ".58", ".63", "+9%",
+             ".29", ".39", "+34%", ".50", ".60", "+20%"),
+            (".77", "Flickr30K CL-L", ".31", ".38", "+23%", ".41", ".48", "+17%",
+             ".22", ".38", "+73%", ".33", ".48", "+45%"),
+            (".72", "LAION-400M CLIP", ".075", ".086", "+15%", ".108", ".143",
+             "+32%", ".035", ".048", "+37%", ".069", ".073", "+6%"),
+            (".70", "MSCOCO IB", ".55", ".63", "+15%", ".67", ".75", "+12%",
+             ".57", ".64", "+12%", ".71", ".75", "+6%"),
+            (".61", "Clotho IB", ".59", ".60", "+2%", ".72", ".73", "+1%",
+             ".48", ".54", "+13%", ".62", ".69", "+11%"),
+            (".61", "AudioCaps IB", ".39", ".44", "+13%", ".75", ".78", "+4%",
+             ".44", ".48", "+9%", ".83", ".83", "+0%")]:
         rh = Inches(0.50)
         cell(slide, [(g, 22, True, CRIMSON)], R.x, R.y, COL_G, rh)
         cell(slide, [(name, 21, False, INK)], R.x + COL_G, R.y, COL_N, rh)
-        cell(slide, [(f"{q10v}→", 18, False, GRAY), (q10p, 21, True, BLUE)],
-             x0, R.y, R10_W, rh, PP_ALIGN.RIGHT)
-        cell(slide, [(f"{qv}→", 18, False, GRAY), (qp, 21, True, BLUE),
-                     (f" {qd}", 18, True, BLUE)],
-             x0 + R10_W, R.y, R100_W, rh, PP_ALIGN.RIGHT)
-        cell(slide, [(f"{d10v}→", 18, False, GRAY), (d10p, 21, True, BLUE)],
-             x0 + R10_W + R100_W, R.y, R10_W, rh, PP_ALIGN.RIGHT)
-        cell(slide, [(f"{dv}→", 18, False, GRAY), (dp, 21, True, BLUE),
-                     (f" {dd}", 18, True, BLUE)],
-             x0 + 2 * R10_W + R100_W, R.y, R100_W, rh, PP_ALIGN.RIGHT)
+        for vv, pp, dd_, xx, ww in (
+                (q10v, q10p, q10d, x0, R10_W),
+                (qv, qp, qd, x0 + R10_W, R100_W),
+                (d10v, d10p, d10d, x0 + GRP_W, R10_W),
+                (dv, dp, dd, x0 + GRP_W + R10_W, R100_W)):
+            cell(slide, [(f"{vv}→", 17, False, GRAY), (pp, 20, True, BLUE),
+                         (f" {dd_}", 17, True, BLUE)],
+                 xx, R.y, ww, rh, PP_ALIGN.RIGHT)
         R.y += rh
         solid(slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, R.x, R.y, R.w,
                                      Pt(0.8)), HAIR)
