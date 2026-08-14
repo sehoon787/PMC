@@ -189,9 +189,9 @@ class Col:
         return h
 
     def heading(self, num, title):
-        self.gap(0.16)
+        self.gap(0.08)
         self.text([[(f"{num}.  {title}", 35, True, CRIMSON)]], spacing=1.05, after=0)
-        self.rule(Pt(2.5), CRIMSON, pad=0.07)
+        self.rule(Pt(2.5), CRIMSON, pad=0.05)
 
     def bullets(self, items, size=21, marker=CRIMSON, gap_in=0.09):
         for it in items:
@@ -242,6 +242,23 @@ class Col:
         self.y += h + Inches(0.10)
 
 
+ABSTRACT = (
+    "Approximate nearest neighbor search is a core operator in large-scale retrieval, where"
+    " vector quantization is widely used to reduce memory cost. Binary quantization methods"
+    " encode each dimension as a single bit, but they assume queries and database vectors s"
+    "hare a common centroid. This assumption fails in cross-modal retrieval, where each mod"
+    "ality clusters around a different centroid, producing a modality gap that corrupts the"
+    " centroid's dual role as inverted-file routing pivot and sign-bit decision boundary. W"
+    "e propose Per-Modality Centroid Correction (PMC), which shifts database vectors toward"
+    " the query centroid at build time, rewriting routing and code boundaries at the source"
+    " rather than merely adjusting queries at serving time. A selective variant confirms th"
+    "at concentrated gap energy in a few dimensions drives most recall loss. PMC adds no in"
+    "dex memory or serving overhead; at α=1, the correction is fully absorbed into the inde"
+    "x with zero query-time cost. Experiments on five cross-modal benchmarks, three encoder"
+    "s, and four binary-quantized index types show gains over uncorrected and query-shifted"
+    " baselines that scale with modality-gap magnitude, up to a 400M-vector deployment.")
+
+
 def build():
     prs = Presentation()
     prs.slide_width, prs.slide_height = PAGE_W, PAGE_H
@@ -276,258 +293,256 @@ def build():
     head.text([[("{sehoon787, junicus, jsy}@korea.ac.kr", 20, False, GRAY, True)]], after=0)
     solid(slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, M, HEADER_H, CW, Pt(3.0)), CRIMSON)
 
-    # ========================= TL;DR band =============================
-    ab = Col(slide, M, CW, HEADER_H + Inches(0.42), PAGE_H)
-    ab.band([[("The modality gap breaks binary-quantized indexes.  PMC repairs it "
-               "at build time — for free.", 32, True, WHITE)],
-             [("Shift each database vector toward the query centroid before "
-               "indexing: zero query-time transform, zero extra memory, recall "
-               "gains that scale with the gap — validated at 407M vectors.",
-               25, False, WHITE)]], pad=0.34)
-
-    # ============================= columns ============================
-    TOP = ab.y + Inches(0.42)
+    # ================= two-column split =================================
+    TOP = HEADER_H + Inches(0.42)
     BOT = PAGE_H - FOOTER_H - Inches(0.30)
     GUT = Inches(0.70)
-    W = Emu(int((CW - 2 * GUT) / 3))
-    c1 = Col(slide, M, W, TOP, BOT)
-    c2 = Col(slide, M + W + GUT, W, TOP, BOT)
-    c3 = Col(slide, M + 2 * (W + GUT), W, TOP, BOT)
-    for cx in (c2.x - Emu(int(GUT / 2)), c3.x - Emu(int(GUT / 2))):
-        solid(slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, cx, TOP, Pt(1.0), BOT - TOP), HAIR)
+    W2 = Emu(int((CW - GUT) / 2))
+    L = Col(slide, M, W2, TOP, BOT)
+    R = Col(slide, M + W2 + GUT, W2, TOP, BOT)
+    solid(slide.shapes.add_shape(MSO_SHAPE.RECTANGLE,
+                                 R.x - Emu(int(GUT / 2)), TOP, Pt(1.0), BOT - TOP),
+          HAIR)
 
-    # ------------------------------ column 1 --------------------------
-    c1.heading("1", "Background")
-    c1.bullets([
-        [("One shared space (CLIP, ImageBind) — but 407M float vectors = ",
-          26, False, INK), ("833 GB.", 26, True, INK)],
-        [("Binary quantization:", 26, True, INK),
-         (" 1 bit per dimension, 32× smaller (RaBitQ, BBQ).", 26, False, INK)],
-        [("Every BQ method encodes ", 26, False, INK), ("sign(x − c)", 26, True, BLUE),
-         (" — the centroid c also routes IVF queries.", 26, False, INK)],
-    ], size=26, gap_in=0.22)
+    def equation(col, runs, size=28, note=None):
+        col.gap(0.16)
+        col.text([runs], size=size, align=PP_ALIGN.CENTER, after=0)
+        if note:
+            col.text([[(note, 20, False, GRAY, True)]], size=20,
+                     align=PP_ALIGN.CENTER, after=0)
+        col.gap(0.18)
 
-    c1.heading("2", "The problem: the modality gap")
-    c1.text([[("Queries and database vectors do ", 26, False, INK),
-              ("not", 26, True, CRIMSON),
-              (" share that centroid:", 26, False, INK)]], size=26)
-    c1.gap(0.12)
-    c1.text([[("g  =  μ_{q} − μ_{x}", 36, True, INK)]],
-            align=PP_ALIGN.CENTER, after=0)
-    c1.text([[("stable and large:  ‖g‖ = .61–.82", 21, False, GRAY, True)]],
-            size=21, align=PP_ALIGN.CENTER, after=0)
-    c1.gap(0.20)
-    c1.figure("asset_fig1.png", 1.0)
-    c1.gap(0.10)
-    c1.text([[("Each modality forms its own cluster; after PMC the pairs overlap.",
-               21, False, GRAY, True)]], size=21, spacing=1.15, after=0)
-    c1.gap(0.30)
-    c1.text([[("One gap, two failures", 30, True, CRIMSON)]], after=0)
-    c1.gap(0.16)
-    c1.bullets([
-        [("IVF routing", 26, True, INK),
-         ("  —  queries land in the wrong lists.", 26, False, INK)],
-        [("Sign bits", 26, True, INK),
-         ("  —  zero-margin boundary at c; the offset flips nearby bits:",
-          26, False, INK)],
-    ], size=26, gap_in=0.16)
-    c1.gap(0.12)
-    c1.text([[("E[F]  ≈  α Σᵢ pᵢ(0) · |gᵢ|", 34, True, INK)]],
-            align=PP_ALIGN.CENTER, after=0)
-    c1.text([[("expected bit flips — top 10% of dims carry ≈90% of ‖g‖²",
-               21, False, GRAY, True)]], size=21,
-            align=PP_ALIGN.CENTER, spacing=1.15, after=0)
-    c1.gap(0.26)
-    c1.card([[("Oracle test — MSCOCO, CLIP-L, RaBitQ", 24, True, INK)],
-             [("same-modality  (‖g‖ = 0)         R@100 = 0.71", 25, False, INK)],
-             [("cross-modal  (‖g‖ = .82)         R@100 = 0.54", 25, True, CRIMSON)],
-             [("The loss is the gap, not the quantizer.", 21, False, GRAY, True)]],
-            pad=0.30)
+    # ---------------------------- LEFT ---------------------------------
+    L.card([[("Abstract.  ", 22, True, CRIMSON), (ABSTRACT, 22, False, INK)]],
+           size=22, pad=0.30)
+    L.gap(0.22)
 
-    c1.heading("3", "Every binary index has the same wound")
-    c1.text([[("R@100, Vanilla → PMC", 21, False, GRAY)]], size=21, after=0)
-    c1.gap(0.14)
-    T1_W = Emu(int((c1.w - Inches(2.9)) / 2))
-    for t, xx, ww, al in (("Method", c1.x, Inches(2.9), PP_ALIGN.LEFT),
-                          ("MSCOCO t→i", c1.x + Inches(2.9), T1_W, PP_ALIGN.RIGHT),
-                          ("AudioCaps a→t", c1.x + Inches(2.9) + T1_W, T1_W,
+    L.heading("1", "The problem: the modality gap")
+    L.text([[("A frozen multimodal encoder φ maps both modalities into d-dimensional space: the "
+              "database holds modality-b embeddings, queries come from modality a. "
+              "Their means differ — the ", 22, False, INK),
+             ("modality gap", 22, True, CRIMSON),
+             ("  g = μ_{q} − μ_{x}  is stable and large, ‖g‖ = .61–.82 on our "
+              "benchmarks.", 22, False, INK)]], size=22)
+    L.gap(0.14)
+    L.figure("asset_fig1.png", 0.93)
+    L.gap(0.08)
+    L.text([[("t-SNE of ImageBind embeddings: each modality forms its own cluster; "
+              "after PMC the paired points overlap.", 20, False, GRAY, True)]],
+           size=20, spacing=1.15, after=0)
+    L.gap(0.20)
+    L.text([[("BQ encodes each dimension as  sign(x_{i} − c_{i})  relative to a "
+              "centroid c (RaBitQ, Lucene BBQ). With one bit the decision boundary "
+              "passes exactly through c with zero error margin — and the same "
+              "centroid routes queries to IVF lists, so one offset corrupts codes "
+              "and routing at once. Let δ_{i} = x_{i} − c_{i} be the residual; "
+              "shifting the centroid by αg flips dimension i's sign iff",
+              22, False, INK)]], size=22)
+    equation(L, [("δ_{i} (δ_{i} − α g_{i})  <  0 ,      i.e.,      "
+                  "0  <  δ_{i} / (α g_{i})  <  1", 27, True, INK)])
+    L.text([[("Under smooth symmetric residual densities, a first-order expansion "
+              "gives the expected number of flipped bits,", 22, False, INK)]],
+           size=22)
+    equation(L, [("E[F]  ≈  α Σ_{i} p_{i}(0) · |g_{i}|", 30, True, INK)])
+    L.text([[("a density-weighted ℓ₁ norm of the gap: flip risk grows with |g_{i}|. "
+              "On CLIP-L the top 10% of dimensions carry ≈90% of ‖g‖², so the "
+              "corruption is structured rather than random, biasing Hamming "
+              "distances systematically.", 22, False, INK)]], size=22)
+    L.gap(0.14)
+    L.card([[("Oracle test — MSCOCO, CLIP-L, RaBitQ.   ", 22, True, INK),
+             ("Same-modality queries (‖g‖ = 0) reach R@100 = 0.71; cross-modal "
+              "queries (‖g‖ = .82) fall to ", 22, False, INK),
+             ("0.54", 22, True, CRIMSON),
+             (". The loss is the gap, not the quantizer.", 22, False, INK)]],
+           size=22, pad=0.26)
+
+    L.heading("2", "Method: PMC correction")
+    L.text([[("PMC applies a one-time centroid alignment before index "
+              "construction. From a small paired sample we compute g and shift "
+              "database vectors toward the query centroid:", 22, False, INK)]],
+           size=22)
+    equation(L, [("x′ = (x + α g) / ‖x + α g‖ ,      "
+                  "q′ = (q − (1−α) g) / ‖q − (1−α) g‖", 27, True, INK)],
+             note="α ∈ [0,1];  α = 1  →  q′ = q")
+    L.text([[("α interpolates between full query-side correction (α = 0, mean "
+              "shift) and full database-side alignment (α = 1). The BQ index is "
+              "built on {x′}; at α = 1 the query-time transform is identity, so "
+              "serving incurs no extra cost. Per-vector renormalization preserves "
+              "the unit-norm structure, and the α-sweep confirms α = 1 is best or "
+              "near-best in every setting.", 22, False, INK)]], size=22)
+    L.gap(0.16)
+
+    # Algorithm 1 — exactly as in the paper
+    alg_top = L.y
+    solid(slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, L.x, L.y, L.w, Pt(2.2)), INK)
+    L.gap(0.10)
+    L.text([[("Algorithm 1  PMC Index Construction", 23, True, INK)]], after=0)
+    L.gap(0.08)
+    solid(slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, L.x, L.y, L.w, Pt(1.0)), INK)
+    L.gap(0.10)
+    L.text([[("Require:", 21, True, INK),
+             ("  database X (modality b), query sample Q (modality a), "
+              "interpolation α", 21, False, INK)],
+            [("Ensure:", 21, True, INK),
+             ("  IVF-based quantized index I and gap g", 21, False, INK)],
+            [("1:  μ_{q} ← mean(Q);   μ_{x} ← mean(X)", 21, False, INK)],
+            [("2:  g ← μ_{q} − μ_{x}", 21, False, INK)],
+            [("3:  for each x ∈ X do", 21, False, INK)],
+            [("4:      x′ ← normalize(x + α g)", 21, False, INK)],
+            [("5:  end for", 21, False, INK)],
+            [("6:  I ← BuildIndex({x′})        — RaBitQ · BBQ · BinaryFlat",
+              21, False, INK)],
+            [("7:  return I, g", 21, False, INK)]],
+           size=21, spacing=1.30, after=3)
+    L.gap(0.08)
+    solid(slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, L.x, L.y, L.w, Pt(2.2)), INK)
+    L.gap(0.32)
+
+    L.text([[("Selective PMC as a mechanism test.  ", 22, True, INK),
+             ("Correction restricted to the top-P% of dimensions ranked by "
+              "|g_{i}|,", 22, False, INK)]], size=22)
+    equation(L, [("g_{sel,i} = g_{i}  if  |g_{i}| ≥ |g|_{(P)} ,  else  0 ;      "
+                  "x′_{sel} = (x + α g_{sel}) / ‖x + α g_{sel}‖", 25, True, INK)])
+    L.text([[("isolates the mechanism. Since flip risk concentrates in high-|g_{i}| "
+              "dimensions, correcting only the highest-energy ones suffices: for "
+              "CLIP the top 10% carry 86–92% of gap energy, so P = 5% already "
+              "recovers peak recall; ImageBind's diffuse gap (≈72%) requires "
+              "full-vector correction.", 22, False, INK)]], size=22)
+
+    # ---------------------------- RIGHT --------------------------------
+    R.heading("3", "PMC workflow")
+    R.figure("asset_fig2ov.png", 0.86)
+    R.gap(0.10)
+    R.text([[("Calibration estimates μ_{q}, μ_{x} and g = μ_{q} − μ_{x}; the "
+              "offline build shifts and renormalizes database vectors before BQ "
+              "index construction; at α = 1 online serving uses q′ = q and "
+              "searches the corrected index — zero query-time transform, zero "
+              "extra index memory.", 22, False, INK)]], size=22)
+
+    R.heading("4", "Results")
+    R.text([[("Five benchmarks (MSCOCO, Flickr30K, Clotho, AudioCaps, LAION-400M — "
+              "up to 407 M vectors), three frozen encoders (CLIP-B/32, CLIP-L/14, "
+              "ImageBind) and four BQ index types; FAISS IVFRaBitQFastScan at "
+              "72–136 B/vec, n_{list} = ⌈√n⌉, n_{probe} ≈ n_{list}/4; R@100 "
+              "against exact ground truth, single-thread CPU.",
+              21, False, GRAY)]], size=21)
+    R.gap(0.16)
+    R.text([[("Every configuration, ordered by ‖g‖  ", 24, True, INK),
+             ("(R@100, Vanilla → PMC)", 20, False, GRAY)]], after=0)
+    R.gap(0.14)
+    COL_G, COL_N = Inches(0.95), Inches(3.30)
+    COL_D = Emu(int((R.w - COL_G - COL_N) / 2))
+    for t, xx, ww, al in (("‖g‖", R.x, COL_G, PP_ALIGN.LEFT),
+                          ("Dataset · Enc.", R.x + COL_G, COL_N, PP_ALIGN.LEFT),
+                          ("q→db", R.x + COL_G + COL_N, COL_D, PP_ALIGN.RIGHT),
+                          ("db→q", R.x + COL_G + COL_N + COL_D, COL_D,
                            PP_ALIGN.RIGHT)):
-        cell(slide, [(t, 22, True, GRAY)], xx, c1.y, ww, Inches(0.52), al)
-    c1.y += Inches(0.54)
-    c1.rule(Pt(1.5), INK, pad=0.02)
-    for m, a, b, c_, d in (("BinaryFlat", ".51", ".57", ".51", ".64"),
-                           ("BinaryIVF", ".51", ".57", ".50", ".63"),
-                           ("RotatedBinary", ".29", ".58", ".63", ".69"),
-                           ("RaBitQ", ".58", ".64", ".67", ".75")):
-        rh = Inches(0.66)
-        cell(slide, [(m, 24, False, INK)], c1.x, c1.y, Inches(2.9), rh)
-        cell(slide, [(f"{a} → ", 22, False, GRAY), (b, 25, True, BLUE)],
-             c1.x + Inches(2.9), c1.y, T1_W, rh, PP_ALIGN.RIGHT)
-        cell(slide, [(f"{c_} → ", 22, False, GRAY), (d, 25, True, BLUE)],
-             c1.x + Inches(2.9) + T1_W, c1.y, T1_W, rh, PP_ALIGN.RIGHT)
-        c1.y += rh
-        solid(slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, c1.x, c1.y, c1.w, Pt(0.8)), HAIR)
-    c1.gap(0.20)
-    c1.text([[("Improves or matches in all 16 configs. ", 26, True, INK),
-              ("The wound is the centroid, not the codec.", 26, False, INK)]],
-            size=26)
-
-    c1.heading("4", "Contributions")
-    c1.bullets([
-        [("The gap corrupts routing and codes ", 26, False, INK),
-         ("together", 26, True, INK), ("; loss scales with ‖g‖.", 26, False, INK)],
-        [("A few high-|gᵢ| dimensions carry most of the damage.", 26, False, INK)],
-        [("PMC:", 26, True, INK),
-         (" zero-cost, build-time, database-side correction.", 26, False, INK)],
-    ], marker=BLUE, size=26, gap_in=0.22)
-    c1.gap(0.30)
-    c1.card([[("Setup — ", 21, True, INK),
-              ("5 benchmarks (MSCOCO, Flickr30K, Clotho, AudioCaps, LAION-400M) · "
-               "3 frozen encoders (CLIP-B/32, CLIP-L/14, ImageBind) · 4 BQ index "
-               "types · FAISS, 72–136 B/vec · n_list = ⌈√n⌉ · R@100 vs exact ground "
-               "truth · single-thread CPU.", 21, False, GRAY)]], size=21, pad=0.26)
-
-    # ------------------------------ column 2 --------------------------
-    c2.heading("5", "PMC — correct at the source")
-    c2.figure("asset_fig2ov.png", 1.0)
-    c2.gap(0.10)
-    c2.text([[("Calibrate g from ~25 paired samples · shift the database offline · "
-               "serve with the query untouched.", 21, False, GRAY, True)]],
-            size=21, spacing=1.15, after=0)
-    c2.gap(0.26)
-    c2.card([[("Build  (offline)", 22, True, GRAY)],
-             [("x′  =  (x + α g)  /  ‖x + α g‖", 32, True, INK)],
-             [("", 10, False, INK)],
-             [("Serve  (online)", 22, True, GRAY)],
-             [("q′  =  (q − (1−α) g)  /  ‖q − (1−α) g‖", 32, True, INK)],
-             [("→   q′ = q   at α = 1", 27, True, BLUE)]], pad=0.32)
-    c2.gap(0.18)
-    c2.band([[("At α = 1 the correction is absorbed into the index:", 26, True, WHITE)],
-             [("zero query-time transform, zero extra index memory.", 26, True, WHITE)]])
-    c2.gap(0.20)
-    c2.bullets([
-        [("α = 0", 26, True, INK),
-         (" (query-only mean shift) leaves codes misaligned — recall can drop.",
-          26, False, INK)],
-        [("α = 1", 26, True, INK),
-         (" rewrites the centroid in both its roles; best in the α-sweep.",
-          26, False, INK)],
-    ], size=26, gap_in=0.20)
-
-    c2.heading("6", "Why it works: the gap is concentrated")
-    c2.figure("asset_fig3b.png", 0.94)
-    c2.gap(0.14)
-    c2.text([[("Correcting 5% of dimensions can already be enough.", 28, True, BLUE)]],
-            after=0)
-    c2.gap(0.12)
-    c2.text([[("CLIP's concentrated gap peaks at P = 5%; ImageBind's diffuse gap "
-               "needs all dims — just as E[F] predicts.", 26, False, INK)]], size=26)
-
-    c2.heading("7", "Beyond one bit")
-    c2.text([[("R@100, Vanilla → PMC, both directions averaged", 21, False, GRAY)]],
-            size=21, after=0)
-    c2.gap(0.14)
-    MB_W = Emu(int((c2.w - Inches(3.4)) / 2))
-    for t, xx, ww, al in (("Dataset · Enc.", c2.x, Inches(3.4), PP_ALIGN.LEFT),
-                          ("IVFPQ", c2.x + Inches(3.4), MB_W, PP_ALIGN.RIGHT),
-                          ("OPQ", c2.x + Inches(3.4) + MB_W, MB_W, PP_ALIGN.RIGHT)):
-        cell(slide, [(t, 22, True, GRAY)], xx, c2.y, ww, Inches(0.52), al)
-    c2.y += Inches(0.54)
-    c2.rule(Pt(1.5), INK, pad=0.02)
-    for name, a, b, ad, c_, d, dd in (
-            ("MSCOCO CLIP", ".52", ".64", "+23%", ".64", ".67", "+4%"),
-            ("MSCOCO CL-L", ".39", ".61", "+56%", ".57", ".67", "+17%"),
-            ("MSCOCO IB", ".59", ".69", "+17%", ".70", ".77", "+9%"),
-            ("Flickr30K CL-L", ".47", ".50", "+7%", ".51", ".52", "+1%")):
-        rh = Inches(0.66)
-        cell(slide, [(name, 24, False, INK)], c2.x, c2.y, Inches(3.4), rh)
-        cell(slide, [(f"{a}→", 21, False, GRAY), (b, 25, True, BLUE),
-                     (f" {ad}", 21, True, BLUE)],
-             c2.x + Inches(3.4), c2.y, MB_W, rh, PP_ALIGN.RIGHT)
-        cell(slide, [(f"{c_}→", 21, False, GRAY), (d, 25, True, BLUE),
-                     (f" {dd}", 21, True, BLUE)],
-             c2.x + Inches(3.4) + MB_W, c2.y, MB_W, rh, PP_ALIGN.RIGHT)
-        c2.y += rh
-        solid(slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, c2.x, c2.y, c2.w, Pt(0.8)), HAIR)
-    c2.gap(0.20)
-    c2.text([[("Multi-bit absorbs part of the shift — BQ is the deepest wound, but "
-               "PMC still helps.", 26, False, INK)]], size=26)
-
-    # ------------------------------ column 3 --------------------------
-    c3.heading("8", "Results")
-    c3.gap(0.02)
-    c3.text([[("407 M", 64, True, CRIMSON), ("  vectors", 26, False, GRAY)]],
-            spacing=0.95, after=0)
-    c3.gap(0.06)
-    c3.text([[("LAION-400M · 29.3 GB of codes · 28× compressed", 22, True, GRAY)]],
-            after=0)
-    c3.gap(0.22)
-    c3.hbar(0.108 / 0.143, GRAY, "Vanilla", ".108")
-    c3.hbar(1.0, BLUE, "PMC   (+32%)", ".143")
-    c3.text([[("R@100, no reranking · with exact reranking: ", 21, False, GRAY),
-              (".198 → .277 (+40%)", 21, True, BLUE)]], size=21, after=0)
-    c3.gap(0.30)
-
-    c3.text([[("Every configuration, ordered by ‖g‖", 27, True, INK)]], after=0)
-    c3.gap(0.18)
-    COL_G, COL_N = Inches(0.90), Inches(2.95)
-    COL_D = Emu(int((c3.w - COL_G - COL_N) / 2))
-    for t, xx, ww, al in (("‖g‖", c3.x, COL_G, PP_ALIGN.LEFT),
-                          ("Dataset · Enc.", c3.x + COL_G, COL_N, PP_ALIGN.LEFT),
-                          ("q→db", c3.x + COL_G + COL_N, COL_D, PP_ALIGN.RIGHT),
-                          ("db→q", c3.x + COL_G + COL_N + COL_D, COL_D, PP_ALIGN.RIGHT)):
-        cell(slide, [(t, 22, True, GRAY)], xx, c3.y, ww, Inches(0.52), al)
-    c3.y += Inches(0.54)
-    c3.rule(Pt(1.5), INK, pad=0.02)
+        cell(slide, [(t, 21, True, GRAY)], xx, R.y, ww, Inches(0.48), al)
+    R.y += Inches(0.50)
+    R.rule(Pt(1.5), INK, pad=0.02)
     for g, name, qv, qp, qd, dv, dp, dd in [
             (".82", "MSCOCO CL-L", ".55", ".65", "+18%", ".47", ".63", "+34%"),
             (".82", "MSCOCO CLIP", ".58", ".63", "+9%", ".50", ".60", "+20%"),
             (".77", "Flickr30K CL-L", ".41", ".48", "+17%", ".33", ".48", "+45%"),
-            (".72", "LAION-400M CLIP", ".108", ".143", "+32%", ".069", ".073", "+6%"),
+            (".72", "LAION-400M CLIP", ".108", ".143", "+32%", ".069", ".073",
+             "+6%"),
             (".70", "MSCOCO IB", ".67", ".75", "+12%", ".71", ".75", "+6%"),
             (".61", "Clotho IB", ".72", ".73", "+1%", ".62", ".69", "+11%"),
             (".61", "AudioCaps IB", ".75", ".78", "+4%", ".83", ".83", "+0%")]:
-        rh = Inches(0.66)
-        cell(slide, [(g, 24, True, CRIMSON)], c3.x, c3.y, COL_G, rh)
-        cell(slide, [(name, 23, False, INK)], c3.x + COL_G, c3.y, COL_N, rh)
-        cell(slide, [(f"{qv}→", 20, False, GRAY), (qp, 24, True, BLUE),
+        rh = Inches(0.50)
+        cell(slide, [(g, 23, True, CRIMSON)], R.x, R.y, COL_G, rh)
+        cell(slide, [(name, 22, False, INK)], R.x + COL_G, R.y, COL_N, rh)
+        cell(slide, [(f"{qv}→", 20, False, GRAY), (qp, 23, True, BLUE),
                      (f" {qd}", 20, True, BLUE)],
-             c3.x + COL_G + COL_N, c3.y, COL_D, rh, PP_ALIGN.RIGHT)
-        cell(slide, [(f"{dv}→", 20, False, GRAY), (dp, 24, True, BLUE),
+             R.x + COL_G + COL_N, R.y, COL_D, rh, PP_ALIGN.RIGHT)
+        cell(slide, [(f"{dv}→", 20, False, GRAY), (dp, 23, True, BLUE),
                      (f" {dd}", 20, True, BLUE)],
-             c3.x + COL_G + COL_N + COL_D, c3.y, COL_D, rh, PP_ALIGN.RIGHT)
-        c3.y += rh
-        solid(slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, c3.x, c3.y, c3.w, Pt(0.8)), HAIR)
-    c3.gap(0.28)
-    c3.figure("asset_gapgain.png", 0.60)
-    c3.gap(0.12)
-    c3.text([[("The gain tracks the gap ", 27, True, CRIMSON),
-              ("— smallest gaps gain least, as E[F] predicts.", 27, False, INK)]],
-            size=27)
+             R.x + COL_G + COL_N + COL_D, R.y, COL_D, rh, PP_ALIGN.RIGHT)
+        R.y += rh
+        solid(slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, R.x, R.y, R.w,
+                                     Pt(0.8)), HAIR)
+    R.gap(0.16)
+    R.text([[("Gains scale with ‖g‖: the largest-gap rows improve most, exactly "
+              "as Eq. (2) predicts. At 407 M vectors (LAION-400M, 29.3 GB of "
+              "codes, 28× compressed) PMC lifts R@100 from .108 to ",
+              22, False, INK),
+             (".143 (+32%)", 22, True, BLUE),
+             ("; with exact reranking the lead carries over, .198 → ", 22, False,
+              INK),
+             (".277 (+40%)", 22, True, BLUE),
+             (". Exact rescoring cannot rescue Vanilla — it only re-scores what "
+              "the corrupted codes already retrieved.", 22, False, INK)]],
+           size=22)
+    R.gap(0.14)
+    R.figure("asset_gapgain.png", 0.48)
+    R.gap(0.08)
+    R.text([[("ΔR@100 vs modality gap across every backbone and index — the gain "
+              "tracks the gap.", 20, False, GRAY, True)]], size=20,
+           spacing=1.15, after=0)
 
-    c3.heading("9", "Where to correct")
-    c3.text([[("MSCOCO · CLIP-B/32 · IVF-RaBitQ · R@100 (t→i)", 21, False, GRAY)]],
-            size=21, after=0)
-    c3.gap(0.16)
+    R.heading("5", "Analysis")
+    R.text([[("Every binary index has the same wound  ", 23, True, INK),
+             ("(R@100, Vanilla → PMC)", 20, False, GRAY)]], after=0)
+    R.gap(0.12)
+    T1_W = Emu(int((R.w - Inches(3.2)) / 2))
+    for t, xx, ww, al in (("Method", R.x, Inches(3.2), PP_ALIGN.LEFT),
+                          ("MSCOCO t→i", R.x + Inches(3.2), T1_W, PP_ALIGN.RIGHT),
+                          ("AudioCaps a→t", R.x + Inches(3.2) + T1_W, T1_W,
+                           PP_ALIGN.RIGHT)):
+        cell(slide, [(t, 21, True, GRAY)], xx, R.y, ww, Inches(0.48), al)
+    R.y += Inches(0.50)
+    R.rule(Pt(1.5), INK, pad=0.02)
+    for m, a, b, c_, d in (("BinaryFlat", ".51", ".57", ".51", ".64"),
+                           ("BinaryIVF", ".51", ".57", ".50", ".63"),
+                           ("RotatedBinary", ".29", ".58", ".63", ".69"),
+                           ("RaBitQ", ".58", ".64", ".67", ".75")):
+        rh = Inches(0.50)
+        cell(slide, [(m, 22, False, INK)], R.x, R.y, Inches(3.2), rh)
+        cell(slide, [(f"{a} → ", 20, False, GRAY), (b, 23, True, BLUE)],
+             R.x + Inches(3.2), R.y, T1_W, rh, PP_ALIGN.RIGHT)
+        cell(slide, [(f"{c_} → ", 20, False, GRAY), (d, 23, True, BLUE)],
+             R.x + Inches(3.2) + T1_W, R.y, T1_W, rh, PP_ALIGN.RIGHT)
+        R.y += rh
+        solid(slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, R.x, R.y, R.w,
+                                     Pt(0.8)), HAIR)
+    R.gap(0.14)
+    R.text([[("Rotation (BBQ-style) spreads the concentrated gap energy across "
+              "every bit, so RotatedBinary collapses hardest without correction — "
+              "and gains most from it. PMC improves or matches R@100 in all 16 "
+              "method × direction configurations: the wound is in the centroid, "
+              "so the same one-line fix serves every sign(x − c) method. "
+              "Multi-bit quantizers (IVFPQ, OPQ) absorb part of the displacement "
+              "yet still gain +1–56%.", 22, False, INK)]], size=22)
+    R.gap(0.18)
+    R.text([[("Where to correct  ", 24, True, INK),
+             ("(MSCOCO · CLIP-B/32 · R@100 t→i)", 20, False, GRAY)]], after=0)
+    R.gap(0.14)
     for label, v, col, val in (("Vanilla", 0.578, GRAY, ".578"),
                                ("Query-only", 0.541, GRAY, ".541"),
                                ("Both sides", 0.599, GRAY, ".599"),
                                ("DB-only  (PMC)", 0.637, BLUE, ".637")):
-        c3.hbar((v - 0.45) / (0.637 - 0.45), col, label, val)
-    c3.gap(0.08)
-    c3.text([[("Correct the centroid where it controls both routing and code "
-               "formation.", 26, True, CRIMSON)]], size=26)
+        R.hbar((v - 0.45) / (0.637 - 0.45), col, label, val, h_in=0.50)
+    R.gap(0.06)
+    R.text([[("Shifting both sides re-displaces the routing pivot, and random, "
+              "shuffled or sign-flipped directions of the same norm all fall "
+              "below Vanilla — the direction of g is what matters. ",
+              22, False, INK),
+             ("Correct the centroid where it controls both routing and code "
+              "formation.", 22, True, CRIMSON)]], size=22)
+    R.gap(0.20)
+    R.band([[("Correct the index, not the query:  a one-time, database-side "
+              "centroid correction repairs IVF routing and binary quantization "
+              "together — zero query-time transform, zero extra index memory, "
+              "QPS unchanged at every n_{probe}.", 23, True, WHITE)],
+            [("Future work: drift-adaptive α, graph-based ANN, billion-scale "
+              "deployment.", 20, False, WHITE)]], pad=0.26)
 
-    c3.heading("10", "Throughput and conclusion")
-    c3.figure("asset_fig3c.png", 0.74)
-    c3.gap(0.08)
-    c3.text([[("QPS tracks Vanilla at every n_probe — no per-query work.",
-               21, False, GRAY, True)]], size=21, spacing=1.15, after=0)
-    c3.gap(0.20)
-    c3.card([[("One build-time correction repairs IVF routing and binary "
-               "quantization together.", 26, True, INK)],
-             [("↑ Recall scaling with ‖g‖  ·  0 query-time cost  ·  0 extra memory "
-               " ·  407M-vector scale", 22, False, BLUE)]], pad=0.30)
+    print(f"  L: {(L.y - TOP) / 914400.0:5.2f} / {(BOT - TOP) / 914400.0:5.2f} in"
+          f"  ({(L.y - TOP) / (BOT - TOP) * 100:4.1f}%)"
+          f"  {'OK' if L.y <= BOT else 'OVERFLOW'}")
+    print(f"  R: {(R.y - TOP) / 914400.0:5.2f} / {(BOT - TOP) / 914400.0:5.2f} in"
+          f"  ({(R.y - TOP) / (BOT - TOP) * 100:4.1f}%)"
+          f"  {'OK' if R.y <= BOT else 'OVERFLOW'}")
 
     # ============================= footer =============================
     fy = PAGE_H - FOOTER_H
@@ -546,11 +561,6 @@ def build():
                "National Research Foundation of Korea (MSIT), No. 00359638   ·   "
                "Code and reproduction package: github.com/sehoon787/PMC",
                18, False, GRAY)]], size=18, after=0)
-
-    for n, c in (("1", c1), ("2", c2), ("3", c3)):
-        used, room = (c.y - TOP) / 914400.0, (BOT - TOP) / 914400.0
-        print(f"  col {n}: {used:5.2f} / {room:5.2f} in  ({used / room * 100:4.1f}%)"
-              f"  {'OK' if c.y <= BOT else 'OVERFLOW'}")
 
     out = HERE / "PMC_CIKM2026_poster.pptx"
     prs.save(str(out))
