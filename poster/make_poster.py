@@ -52,6 +52,7 @@ ASPECT = {                        # native pixel aspect of each embedded asset
     "asset_fig3b.png": 1188 / 929,
     "asset_fig3c.png": 1206 / 929,
     "asset_gapgain.png": 989 / 657,
+    "asset_fig3.png": 3616 / 933,
     "asset_ku.jpg": 157 / 49,
     "asset_ielab.png": 177 / 71,
     "asset_cikm.png": 250 / 193,
@@ -343,7 +344,7 @@ def build():
     L.text([[("Under smooth symmetric residual densities, a first-order expansion "
               "gives the expected number of flipped bits,", 22, False, INK)]],
            size=22)
-    equation(L, [("E[F]  ≈  α Σ_{i} p_{i}(0) · |g_{i}|", 30, True, INK)])
+    equation(L, [("E[F]  ≈  α Σ_{i} p_{i}(0) |g_{i}|", 30, True, INK)])
     L.text([[("a density-weighted ℓ₁ norm of the gap: flip risk grows with |g_{i}|. "
               "On CLIP-L the top 10% of dimensions carry ≈90% of ‖g‖², so the "
               "corruption is structured rather than random, biasing Hamming "
@@ -401,8 +402,11 @@ def build():
     L.text([[("Selective PMC as a mechanism test.  ", 22, True, INK),
              ("Correction restricted to the top-P% of dimensions ranked by "
               "|g_{i}|,", 22, False, INK)]], size=22)
-    equation(L, [("g_{sel,i} = g_{i}  if  |g_{i}| ≥ |g|_{(P)} ,  else  0 ;      "
+    equation(L, [("g_{sel,i} = g_{i}  if  |g_{i}| ≥ |g|_{(P)} ,  0  otherwise ;      "
                   "x′_{sel} = (x + α g_{sel}) / ‖x + α g_{sel}‖", 25, True, INK)])
+    equation(L, [("E(P)  =  Σ_{i ∈ S(P)} g_{i}²  /  ‖g‖² ,      "
+                  "S(P) = { i : |g_{i}| ≥ |g|_{(P)} }", 25, True, INK)],
+             note="cumulative gap energy captured by the selected dimensions")
     L.text([[("isolates the mechanism. Since flip risk concentrates in high-|g_{i}| "
               "dimensions, correcting only the highest-energy ones suffices: for "
               "CLIP the top 10% carry 86–92% of gap energy, so P = 5% already "
@@ -473,12 +477,16 @@ def build():
              (". Exact rescoring cannot rescue Vanilla — it only re-scores what "
               "the corrupted codes already retrieved.", 22, False, INK)]],
            size=22)
-    R.gap(0.14)
-    R.figure("asset_gapgain.png", 0.48)
+    R.gap(0.16)
+    R.figure("asset_fig3.png", 1.0)
     R.gap(0.08)
-    R.text([[("ΔR@100 vs modality gap across every backbone and index — the gain "
-              "tracks the gap.", 20, False, GRAY, True)]], size=20,
-           spacing=1.15, after=0)
+    R.text([[("(a) R@100 vs shift strength α (α = 0: MeanShift, α = 1: full "
+              "DB-side PMC): α = 1 is best or near-best, justifying the default. "
+              "(b) Selective PMC: on concentrated-gap MSCOCO, top-P = 5% already "
+              "reaches peak R@100; diffuse gaps require broader correction. "
+              "(c) R@100–QPS Pareto: PMC dominates Vanilla across throughput "
+              "levels.", 20, False, GRAY, True)]], size=20, spacing=1.15,
+           after=0)
 
     R.heading("5", "Analysis")
     R.text([[("Every binary index has the same wound  ", 23, True, INK),
