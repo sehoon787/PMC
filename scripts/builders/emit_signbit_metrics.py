@@ -88,7 +88,8 @@ def run_r15() -> None:
             f"{R15_SCRIPT} is not part of this curated tree (it lives in the "
             "research tree, current/pmc_crossmodal/scripts/research/). The "
             "committed results/sources/mechcontrol_metrics.csv is canonical; "
-            "pass --skip-run to reformat it without re-measuring."
+            "Both the measurement and --skip-run paths need research-tree "
+            "artifacts; in this tree the committed CSV is the record."
         )
     """Run R15 over both small settings to (re)write the research CSVs.
 
@@ -130,6 +131,15 @@ def collect_n25_cos(calib_rows: list[dict[str, str]]) -> dict[tuple[str, str], f
 
 
 def build_records() -> list[dict[str, str]]:
+    if not RESEARCH_DIR.exists():
+        raise FileNotFoundError(
+            f"{RESEARCH_DIR} is not part of this curated tree: this builder "
+            "reformats the research-tree R15 outputs, which are not shipped. "
+            "The committed results/sources/mechcontrol_metrics.csv is the "
+            "canonical record. (The committed results/diagnostics/mechanism_* "
+            "CSVs are a later independent re-measurement and intentionally are "
+            "NOT used here, to keep the canonical file bit-stable.)"
+        )
     bitflip = collect_flip_pct(read_csv_rows(RESEARCH_DIR / "diagnostics" / "mechanism_bitflip.csv"))
     j100 = collect_j100(read_csv_rows(RESEARCH_DIR / "diagnostics" / "mechanism_exact_control.csv"))
     cos = collect_n25_cos(read_csv_rows(RESEARCH_DIR / "diagnostics" / "mechanism_calibration_sensitivity.csv"))
