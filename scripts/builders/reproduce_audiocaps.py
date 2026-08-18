@@ -15,7 +15,7 @@ Methods evaluated:
 Cross-validation: R@10 and R@100 should match pmc_reeval_imagebind_audiocaps_seed42.csv
 (recall_at_10_standard and recall_at_100 columns).
 
-Output: results/pmc_audiocaps_r1_seed42.csv
+Output: results/sources/pmc_audiocaps_r1_seed42.csv
 """
 
 from __future__ import annotations
