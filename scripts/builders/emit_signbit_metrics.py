@@ -83,6 +83,13 @@ def read_csv_rows(path: Path) -> list[dict[str, str]]:
 
 
 def run_r15() -> None:
+    if not R15_SCRIPT.exists():
+        raise FileNotFoundError(
+            f"{R15_SCRIPT} is not part of this curated tree (it lives in the "
+            "research tree, current/pmc_crossmodal/scripts/research/). The "
+            "committed results/sources/mechcontrol_metrics.csv is canonical; "
+            "pass --skip-run to reformat it without re-measuring."
+        )
     """Run R15 over both small settings to (re)write the research CSVs.
 
     NOTE: this invokes FAISS. Only call when the machine is free.
