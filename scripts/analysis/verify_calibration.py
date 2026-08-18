@@ -5,7 +5,7 @@ Table 5 / tab:mech_extra):
   - Calibration is stable from n_calib=25 (cosine ~= 0.986)
   - R@100 flat within .001 up to n_calib=400
 
-Source: results/mech_extra_calibration.csv (produced by
+Source: results/sources/mech_extra_calibration.csv (produced by
 emit_calibration_metrics.py, which requires FAISS). If that CSV does not yet
 exist, this script prints a PENDING note and exits 0.
 
@@ -49,7 +49,7 @@ def find_project_root() -> Path:
 
 PROJECT_ROOT = find_project_root()
 RESULTS_DIR = PROJECT_ROOT / "results"
-CALIB_CSV = RESULTS_DIR / "mech_extra_calibration.csv"
+CALIB_CSV = RESULTS_DIR / "sources" / "mech_extra_calibration.csv"
 
 
 def read_csv_rows(path: Path) -> list[dict[str, str]]:

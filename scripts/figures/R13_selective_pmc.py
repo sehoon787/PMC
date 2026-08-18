@@ -28,7 +28,7 @@ DATASETS:
   AudioCaps test -- ImageBind (d=1024)     directions: t2a, a2t
 
 OUTPUT:
-  results/selective_pmc_rabitq.csv
+  results/figures/selective_pmc_rabitq.csv
 
 USAGE:
   python3 scripts/research/R13_selective_pmc.py
@@ -74,7 +74,7 @@ ALPHA = 1.0  # alpha=1 => DB fully shifted, query unchanged
 P_VALUES = [5, 10, 20, 50, 100]
 
 DATA_DIR = _ROOT / "data" / "features"
-OUT_CSV = _ROOT / "results" / "selective_pmc_rabitq.csv"
+OUT_CSV = _ROOT / "results" / "figures" / "selective_pmc_rabitq.csv"
 
 FIELDNAMES = [
     "dataset", "backbone", "direction",

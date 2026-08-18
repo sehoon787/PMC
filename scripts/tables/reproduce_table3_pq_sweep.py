@@ -4,7 +4,7 @@
 Tests alpha in {0, 0.25, 0.5, 0.75, 1.0} for PQ-based quantizers
 to verify alpha=1 optimality (matching RaBitQ alpha sweep).
 
-Output: results/pmc_pq_alpha_sweep_clip_mscoco_seed42.csv
+Output: results/sources/pmc_pq_alpha_sweep_clip_mscoco_seed42.csv
 """
 
 from __future__ import annotations
@@ -124,7 +124,7 @@ def main() -> None:
                 print(f"    OPQ SKIP: {e}")
 
     # Write CSV
-    out_path = V4_CFG.results_dir / f"pmc_pq_alpha_sweep_clip_mscoco_seed{SEED}.csv"
+    out_path = V4_CFG.results_dir / "sources" / f"pmc_pq_alpha_sweep_clip_mscoco_seed{SEED}.csv"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with open(out_path, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=FIELDNAMES)

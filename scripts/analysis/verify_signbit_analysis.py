@@ -11,7 +11,7 @@ These numbers support the inline claims:
 
 Outputs:
   - stdout: verified metric values
-  - results/signbit_analysis_verified.csv
+  - results/diagnostics/signbit_analysis_verified.csv
 """
 
 from __future__ import annotations
@@ -52,9 +52,9 @@ def find_project_root() -> Path:
 
 PROJECT_ROOT = find_project_root()
 RESULTS_DIR = PROJECT_ROOT / "results"
-SIGNBIT_CSV = RESULTS_DIR / "signbit_original_gt.csv"
-METRICS_CSV = RESULTS_DIR / "mechcontrol_metrics.csv"
-OUTPUT_CSV = RESULTS_DIR / "signbit_analysis_verified.csv"
+SIGNBIT_CSV = RESULTS_DIR / "sources" / "signbit_original_gt.csv"
+METRICS_CSV = RESULTS_DIR / "sources" / "mechcontrol_metrics.csv"
+OUTPUT_CSV = RESULTS_DIR / "diagnostics" / "signbit_analysis_verified.csv"
 
 
 def read_csv_rows(path: Path) -> list[dict[str, str]]:

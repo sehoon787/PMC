@@ -23,7 +23,7 @@ Gap direction: mean(img_queries) - mean(text_db_sample)
   This is correct — compute_gap(db_sample, queries) with db=text, queries=img
   naturally yields mean(img) - mean(text).
 
-Output: results/pmc_laion400m_reverse_seed42.csv
+Output: results/sources/pmc_laion400m_reverse_seed42.csv
 
 Usage
 -----
@@ -97,7 +97,7 @@ TRAIN_SHARDS = 5        # first 5 shards for training sample (~5M vectors)
 GAP_SAMPLE_SHARDS = 5   # same 5 shards for gap estimation
 
 # Default data directory; override via LAION400M_DIR env var
-_DEFAULT_LAION_DIR = Path("E:/laion400m")
+_DEFAULT_LAION_DIR = Path("data/laion400m")
 LAION_DIR = Path(os.environ.get("LAION400M_DIR", str(_DEFAULT_LAION_DIR)))
 
 RESULTS_DIR = CFG.results_dir
@@ -487,7 +487,7 @@ def check_laion400m_reverse_csv_summary() -> bool:
     Invoked via:
       python scripts/scale/13_reproduce_laion400m_reverse.py --summary
     """
-    csv_path = RESULTS_DIR / f"pmc_laion400m_reverse_seed{SEED}.csv"
+    csv_path = RESULTS_DIR / "sources" / f"pmc_laion400m_reverse_seed{SEED}.csv"
     if not csv_path.exists():
         print(f"  SKIP: {csv_path} not found")
         return False
@@ -558,7 +558,7 @@ def main(gt_only: bool = False) -> None:
 
     # Paths for ground truth and results
     gt_path = LAION_DIR / f"groundtruth.laion400m.reverse.{N_QUERIES // 1000}K.npy"
-    out_csv = RESULTS_DIR / f"pmc_laion400m_reverse_seed{SEED}.csv"
+    out_csv = RESULTS_DIR / "sources" / f"pmc_laion400m_reverse_seed{SEED}.csv"
 
     # Load queries (image embeddings, reverse direction)
     queries = load_queries()

@@ -8,7 +8,7 @@ correction.
 
 Usage:
     cd current/pmc_crossmodal
-    python3 scripts/reproduce_gapcal_comparison.py
+    python3 scripts/analysis/reproduce_gapcal_comparison.py
 """
 
 import os

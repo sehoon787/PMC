@@ -29,7 +29,7 @@ for the LAION rows in the diagnostic.
 
 Outputs
 -------
-- results/probe_budget_sweep_mscoco_seed42.csv
+- results/diagnostics/probe_budget_sweep_mscoco_seed42.csv
 - a markdown summary table on stdout
 """
 
@@ -73,7 +73,7 @@ def find_project_root() -> Path:
 PROJECT_ROOT = find_project_root()
 FEATURES_DIR = PROJECT_ROOT / "data" / "features"
 RESULTS_DIR = PROJECT_ROOT / "results"
-OUTPUT_CSV = RESULTS_DIR / "probe_budget_sweep_mscoco_seed42.csv"
+OUTPUT_CSV = RESULTS_DIR / "diagnostics" / "probe_budget_sweep_mscoco_seed42.csv"
 
 
 def load_modality(modality: str) -> np.ndarray:

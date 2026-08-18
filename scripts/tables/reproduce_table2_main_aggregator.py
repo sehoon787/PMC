@@ -1,7 +1,7 @@
-"""Reproduce tab:main (base-regime main results, no rerank).
+"""Lightweight Table 2 (main results) reproduction/validation aggregator.
 
-This script runs NO FAISS or heavy experiment.  For the 6 small-dataset rows
-it reads results/nprobe_sweep_pivot.csv (nlist_setting == "sqrtN") at an
+This script does not run FAISS or any heavy experiment.  For the 6 small-dataset
+rows it reads results/sources/nprobe_sweep_pivot.csv (nlist_setting == "sqrtN") at an
 nprobe chosen by the matched-budget ρ¼ rule (one per direction):
 
   nprobe = round_half_up(nlist / 4)
@@ -12,16 +12,13 @@ nprobe chosen by the matched-budget ρ¼ rule (one per direction):
   for each direction (text→audio nlist=26, audio→text nlist=58), nprobe is
   computed separately per direction.
 
-The LAION-400M row is unchanged: read from
-  results/pmc_laion400m_nlist80k_seed42.csv   (forward, nprobe=256)
-  results/pmc_laion400m_reverse_nlist80k_seed42.csv  (reverse, nprobe=256)
-
-Table 2's reranked R@100 columns are reproduced by reproduce_tab2_rerank.py;
-the rerank K'-sweep ablation is in reproduce_ablation_rerank.py.
+The LAION-400M row is read from:
+  results/sources/pmc_laion400m_nlist80k_seed42.csv        (forward,  nprobe=256)
+  results/sources/pmc_laion400m_reverse_nlist80k_seed42.csv (reverse, nprobe=256)
 
 Outputs:
   - stdout (markdown table)
-  - results/tab2_main_reproduced.csv
+  - results/tables/table2_main_reproduced.csv
 """
 
 from __future__ import annotations
@@ -40,12 +37,12 @@ def find_project_root() -> Path:
 
 PROJECT_ROOT = find_project_root()
 RESULTS_DIR = PROJECT_ROOT / "results"
-OUTPUT_CSV = RESULTS_DIR / "tab2_main_reproduced.csv"
+OUTPUT_CSV = RESULTS_DIR / "tables" / "table2_main_reproduced.csv"
 
 # Required source files -- checked at startup.
 SOURCE_FILES = [
-    RESULTS_DIR / "nprobe_sweep_pivot.csv",
-    RESULTS_DIR / "pmc_laion400m_nlist80k_seed42.csv",
+    RESULTS_DIR / "sources" / "nprobe_sweep_pivot.csv",
+    RESULTS_DIR / "sources" / "pmc_laion400m_nlist80k_seed42.csv",
 ]
 
 FIELDNAMES = [
@@ -172,6 +169,12 @@ def pick_pivot(
     return matched[0]
 
 
+def _pivot_tuple(row: dict[str, str], col: str) -> tuple[float, float]:
+    """Return (R10, R100) for a pivot row using the given R100 column prefix."""
+    r10_col = col.replace("R100", "R10")
+    return (float(row[r10_col]), float(row[col]))
+
+
 def build_row(
     dataset: str,
     enc: str,
@@ -219,12 +222,6 @@ def build_row(
         row["db_delta_vp"] = db_delta_vp
         row["db_delta_mp"] = db_delta_mp
     return row
-
-
-def _pivot_tuple(row: dict[str, str], col: str) -> tuple[float, float]:
-    """Return (R10, R100) for a pivot row using the given R100 column prefix."""
-    r10_col = col.replace("R100", "R10")
-    return (float(row[r10_col]), float(row[col]))
 
 
 def build_small_row_from_pivot(
@@ -313,8 +310,8 @@ def compute_table_rows(pivot: list[dict[str, str]]) -> list[dict[str, str]]:
         q_direction="text->audio", db_direction="audio->text",
     ))
 
-    # --- LAION-400M -- CLIP (unchanged; nprobe=256, 3 decimals) ---
-    laion = read_csv_rows(RESULTS_DIR / "pmc_laion400m_nlist80k_seed42.csv")
+    # --- LAION-400M -- CLIP (nlist=80K, nprobe=256, 3 decimals) ---
+    laion = read_csv_rows(RESULTS_DIR / "sources" / "pmc_laion400m_nlist80k_seed42.csv")
     laion_van = pick_one(laion, method="vanilla_rabitq", alpha="0.0", nprobe="256")
     laion_pmc = pick_one(laion, method="pmc_1.00", alpha="1.0", nprobe="256")
     laion_ms_row = [
@@ -329,7 +326,7 @@ def compute_table_rows(pivot: list[dict[str, str]]) -> list[dict[str, str]]:
     db_van: tuple[float, float] | None = None
     db_pmc: tuple[float, float] | None = None
     db_ms: tuple[float, float] | None = None
-    laion_reverse_path = RESULTS_DIR / "pmc_laion400m_reverse_nlist80k_seed42.csv"
+    laion_reverse_path = RESULTS_DIR / "sources" / "pmc_laion400m_reverse_nlist80k_seed42.csv"
     if laion_reverse_path.exists():
         laion_reverse = read_csv_rows(laion_reverse_path)
         laion_rev_van = pick_one(laion_reverse, method="vanilla_rabitq", alpha="0.0", nprobe="256")
@@ -380,7 +377,7 @@ def print_markdown_table(table_rows: list[dict[str, str]]) -> None:
 
 def main() -> None:
     ensure_sources_readable()
-    pivot = read_csv_rows(RESULTS_DIR / "nprobe_sweep_pivot.csv")
+    pivot = read_csv_rows(RESULTS_DIR / "sources" / "nprobe_sweep_pivot.csv")
     table_rows = compute_table_rows(pivot)
     write_output_csv(table_rows)
     print_markdown_table(table_rows)

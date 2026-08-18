@@ -1,4 +1,4 @@
-"""Reproduce tab:signbit_methods from results/signbit_original_gt.csv.
+"""Reproduce tab:signbit_methods from results/sources/signbit_original_gt.csv.
 
 This script runs NO FAISS. It reads the single sign-bit method-comparison
 artifact and reproduces the 16-cell table that backs the paper's claim that
@@ -10,7 +10,7 @@ exactly matching the manuscript's reporting convention.
 
 Outputs:
   - stdout: human-readable table + LaTeX rows
-  - results/tab1_signbit_methods_reproduced.csv
+  - results/tables/tab1_signbit_methods_reproduced.csv
 """
 
 from __future__ import annotations
@@ -48,8 +48,8 @@ def find_project_root() -> Path:
 
 PROJECT_ROOT = find_project_root()
 RESULTS_DIR = PROJECT_ROOT / "results"
-SOURCE_CSV = RESULTS_DIR / "signbit_original_gt.csv"
-OUTPUT_CSV = RESULTS_DIR / "tab1_signbit_methods_reproduced.csv"
+SOURCE_CSV = RESULTS_DIR / "sources" / "signbit_original_gt.csv"
+OUTPUT_CSV = RESULTS_DIR / "tables" / "tab1_signbit_methods_reproduced.csv"
 
 
 def read_csv_rows(path: Path) -> list[dict[str, str]]:

@@ -1,4 +1,4 @@
-"""Emit results/mech_extra_calibration.csv for analysis/verify_calibration.py.
+"""Emit results/sources/mech_extra_calibration.csv for analysis/verify_calibration.py.
 
 REQUIRES FAISS + feature .npy files. DO NOT run while a large FAISS experiment
 owns the machine's RAM. Run it later, once the machine is free.
@@ -49,8 +49,8 @@ PROJECT_ROOT = find_project_root()
 RESULTS_DIR = PROJECT_ROOT / "results"
 RESEARCH_DIR = RESULTS_DIR / "research"
 R15_SCRIPT = PROJECT_ROOT / "scripts" / "research" / "R15_mechanism_controls.py"
-CALIB_SRC = RESEARCH_DIR / "mechanism_calibration_sensitivity.csv"
-OUTPUT_CSV = RESULTS_DIR / "mech_extra_calibration.csv"
+CALIB_SRC = RESEARCH_DIR / "diagnostics" / "mechanism_calibration_sensitivity.csv"
+OUTPUT_CSV = RESULTS_DIR / "sources" / "mech_extra_calibration.csv"
 
 
 def read_csv_rows(path: Path) -> list[dict[str, str]]:

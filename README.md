@@ -50,7 +50,7 @@ R@100 at `n_list=80K, n_probe=256`, single-thread CPU (i7-12700F):
 | q→db (text→image) | 0.108 | 0.074 | **0.143** | +32% |
 | db→q (image→text) | 0.069 | 0.043 | **0.073** | +6% |
 
-With exact reranking at `K'=400`, from `results/pmc_laion400m_rerank_nlist80k_k400_seed42.csv` and its `reverse` counterpart. The forward direction keeps PMC's lead at both cutoffs; the reverse direction is the one regime where uncorrected codes win, which the paper reports and attributes to scan depth — LAION probes only 0.32% of its lists, so PMC's flatter candidate pool covers fewer true positives once exact rescoring runs deep.
+With exact reranking at `K'=400`, from `results/sources/pmc_laion400m_rerank_nlist80k_k400_seed42.csv` and its `reverse` counterpart. The forward direction keeps PMC's lead at both cutoffs; the reverse direction is the one regime where uncorrected codes win, which the paper reports and attributes to scan depth — LAION probes only 0.32% of its lists, so PMC's flatter candidate pool covers fewer true positives once exact rescoring runs deep.
 
 | Dir. | Metric | Vanilla | MeanShift | PMC |
 |------|--------|---------|-----------|------|
@@ -61,7 +61,7 @@ With exact reranking at `K'=400`, from `results/pmc_laion400m_rerank_nlist80k_k4
 
 ### Early-rank quality — R@10
 
-R@10 at the same operating points and index protocol as the R@100 table above, from the same sources and the same round-half-up convention. PMC is best in all 14 dataset×direction configurations. Regenerate with `python scripts/reproduce_tab2_main.py` — the `q_r10_*` / `db_r10_*` columns of `results/tab2_main_reproduced.csv`.
+R@10 at the same operating points and index protocol as the R@100 table above, from the same sources and the same round-half-up convention. PMC is best in all 14 dataset×direction configurations. Regenerate with `python scripts/tables/reproduce_tab2_main.py` — the `q_r10_*` / `db_r10_*` columns of `results/tables/tab2_main_reproduced.csv`.
 
 | Dataset | Enc. | ‖g‖ | Dir. | Vanilla | MeanShift | PMC | Δ |
 |---------|------|-----|------|---------|-----------|------|---|
@@ -82,7 +82,7 @@ R@10 at the same operating points and index protocol as the R@100 table above, f
 
 ### Ranking quality — mAP and nDCG
 
-Exploratory run (`scripts/emit_map_ndcg.py`, seed 42), scored against exact-IP ground truth at the same operating points as the R@100 table. **PMC is best in all 12 cells on every metric.** Note that the R@100 table scores AudioCaps against caption--clip pairings, so its two rows here are not directly comparable to that table; the other ten reproduce it within ±0.005. LAION-400M is out of scope for this run.
+Exploratory run (`scripts/builders/emit_map_ndcg.py`, seed 42), scored against exact-IP ground truth at the same operating points as the R@100 table. **PMC is best in all 12 cells on every metric.** Note that the R@100 table scores AudioCaps against caption--clip pairings, so its two rows here are not directly comparable to that table; the other ten reproduce it within ±0.005. LAION-400M is out of scope for this run.
 
 | Dataset | Enc. | Dir. | mAP@100 (Van / MS / PMC) | nDCG@100 (Van / MS / PMC) |
 |---------|------|------|--------------------------|---------------------------|
@@ -153,34 +153,34 @@ from `data/features/` (see Data Requirements). LAION scripts honour `LAION400M_D
 
 | Script | Paper Element |
 |--------|---------------|
-| `scripts/reproduce_tab1_signbit_methods.py` | Table 1: Binary-quantization methods (R@100, Vanilla/PMC) |
-| `scripts/reproduce_tab2_main.py` | Table 2: Main PMC results (IVF-RaBitQFastScan), No-reranking columns |
-| `scripts/reproduce_tab2_rerank.py` | Table 2: Main PMC results, With-reranking columns (K'=400) |
-| `scripts/reproduce_laion400m.py`† | Table 2: LAION-400M large-scale row |
-| `scripts/reproduce_ablation_rerank.py` | LAION-400M K'-sweep reranking ablation (repo-only) |
+| `scripts/tables/reproduce_tab1_signbit_methods.py` | Table 1: Binary-quantization methods (R@100, Vanilla/PMC) |
+| `scripts/tables/reproduce_tab2_main.py` | Table 2: Main PMC results (IVF-RaBitQFastScan), No-reranking columns |
+| `scripts/tables/reproduce_tab2_rerank.py` | Table 2: Main PMC results, With-reranking columns (K'=400) |
+| `scripts/builders/reproduce_laion400m.py`† | Table 2: LAION-400M large-scale row |
+| `scripts/tables/reproduce_ablation_rerank.py` | LAION-400M K'-sweep reranking ablation (repo-only) |
 | `scripts/analysis/verify_signbit_analysis.py` | Table 4: sign-bit mechanism metrics (Flip%, J@100) |
 | `scripts/analysis/verify_calibration.py` | Table 4: calibration cosine (cos@25); §4.4 calibration prose |
-| `scripts/reproduce_mechanism_controls.py`† | Tables 3-4: bit-flip/J@100, exact control, component ablation, calibration sensitivity |
-| `scripts/reproduce_tab5_mech_extra.py` | Table 5: component ablation + IVF-RaBitQ controls (filename keeps legacy `tab3` prefix) |
-| `scripts/reproduce_mechanism_additional_controls.py`† | Table 5: Additional IVF-RaBitQ controls |
-| `scripts/reproduce_gapcal_comparison.py`† | Centroid-alignment strategy comparison (validates DB-side build-time correction) |
-| `scripts/reproduce_tab6_multibit.py` | Table 6: Multi-bit IVFPQ/OPQ generality (filename keeps legacy `tab4` prefix) |
-| `scripts/reproduce_table3_pq_sweep.py`† | PMC + PQ alpha sweep (feeds Table 6; Fig. 3a) |
-| `scripts/reproduce_fig3_analysis_bcd.py` | Figure 3: alpha sweep, selective PMC, QPS Pareto panels |
-| `scripts/reproduce_figure1_tsne.py`† | Figure 1: t-SNE of ImageBind embeddings |
-| `scripts/reproduce_figure_c.py`† | Figure: Selective PMC analysis |
-| `scripts/reproduce_qps_pareto.py`† | QPS vs Recall Pareto plot |
-| `scripts/reproduce_gap_energy.py`† | Method: gap-energy concentration claim |
-| `scripts/reproduce_clotho.py`† | Clotho audio retrieval (R@1) |
-| `scripts/reproduce_audiocaps.py`† | AudioCaps audio retrieval (R@1) |
-| `scripts/emit_map_ndcg.py`† | mAP/nDCG ranking-quality sweep (exploratory, not a paper element) → `results/map_ndcg_seed42.csv` |
-| `scripts/generate_figure.py` | Combined figure for paper |
+| `scripts/analysis/reproduce_mechanism_controls.py`† | Tables 3-4: bit-flip/J@100, exact control, component ablation, calibration sensitivity |
+| `scripts/tables/reproduce_tab5_mech_extra.py` | Table 5: component ablation + IVF-RaBitQ controls (filename keeps legacy `tab3` prefix) |
+| `scripts/analysis/reproduce_mechanism_additional_controls.py`† | Table 5: Additional IVF-RaBitQ controls |
+| `scripts/analysis/reproduce_gapcal_comparison.py`† | Centroid-alignment strategy comparison (validates DB-side build-time correction) |
+| `scripts/tables/reproduce_tab6_multibit.py` | Table 6: Multi-bit IVFPQ/OPQ generality (filename keeps legacy `tab4` prefix) |
+| `scripts/tables/reproduce_table3_pq_sweep.py`† | PMC + PQ alpha sweep (feeds Table 6; Fig. 3a) |
+| `scripts/figures/reproduce_fig3_analysis_bcd.py` | Figure 3: alpha sweep, selective PMC, QPS Pareto panels |
+| `scripts/figures/reproduce_figure1_tsne.py`† | Figure 1: t-SNE of ImageBind embeddings |
+| `scripts/figures/reproduce_figure_c.py`† | Figure: Selective PMC analysis |
+| `scripts/figures/reproduce_qps_pareto.py`† | QPS vs Recall Pareto plot |
+| `scripts/builders/reproduce_gap_energy.py`† | Method: gap-energy concentration claim |
+| `scripts/builders/reproduce_clotho.py`† | Clotho audio retrieval (R@1) |
+| `scripts/builders/reproduce_audiocaps.py`† | AudioCaps audio retrieval (R@1) |
+| `scripts/builders/emit_map_ndcg.py`† | mAP/nDCG ranking-quality sweep (exploratory, not a paper element) → `results/diagnostics/map_ndcg_seed42.csv` |
+| `scripts/figures/generate_figure.py` | Combined figure for paper |
 
 ### Quick mechanism check (no GPU required)
 
 ```bash
 PMC_FEATURES_DIR=data/features \
-python scripts/reproduce_mechanism_controls.py \
+python scripts/analysis/reproduce_mechanism_controls.py \
   --settings mscoco_clip audiocaps_imagebind --skip-heavy
 ```
 

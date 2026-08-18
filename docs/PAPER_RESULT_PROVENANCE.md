@@ -29,7 +29,7 @@ What each result-bearing section claims and the exact scripts that verify it.
 PMC corrects the modality gap before index construction; the ratio condition
 predicts when sign-bit corruption is severe (top 10% of gap dimensions carry ≈90%
 of ‖g‖²). Verified via:
-* `scripts/reproduce_gap_energy.py`
+* `scripts/builders/reproduce_gap_energy.py`
 
 ### §4.1 Setup
 Describes datasets (MSCOCO, Flickr30K, AudioCaps, Clotho, LAION-400M), index
@@ -42,10 +42,10 @@ PMC improves RaBitQ R@100 across nearly all configs (the No-reranking columns of
 `tab:signbit_methods`), including LAION-400M at scale. Sign-bit mechanism prose
 (formerly §3.3) is also reported here: flip 14–18%, J@100 0.54–0.80, gap direction
 stable from n=25 (cosine ≥ 0.95). Verified via:
-* `scripts/reproduce_tab2_main.py`            — No-reranking columns of `tab:mainresults`
-* `scripts/reproduce_tab1_signbit_methods.py` — Table 1 (`tab:signbit_methods`)
-* `scripts/analysis/verify_signbit_analysis.py` — §4.2 sign-bit prose metrics → `results/signbit_analysis_verified.csv`
-* `scripts/emit_signbit_metrics.py`           — upstream FAISS builder
+* `scripts/tables/reproduce_tab2_main.py`            — No-reranking columns of `tab:mainresults`
+* `scripts/tables/reproduce_tab1_signbit_methods.py` — Table 1 (`tab:signbit_methods`)
+* `scripts/analysis/verify_signbit_analysis.py` — §4.2 sign-bit prose metrics → `results/diagnostics/signbit_analysis_verified.csv`
+* `scripts/builders/emit_signbit_metrics.py`           — upstream FAISS builder
 
 ### §4.3 Robustness under Exact Reranking
 The With-reranking ($K'{=}400$) columns of `tab:mainresults`: R@100
@@ -57,33 +57,33 @@ scale; **LAION reverse np256 is shown in the table and Vanilla overtakes PMC
 (.158 vs .140)** — a scan-depth effect: small corpora rerank near-exhaustively
 (n_probe≈n_list) while LAION scans only 0.32% of its lists (n_probe=256), where
 PMC's flatter candidate pool covers fewer true positives than Vanilla. Verified via:
-* `scripts/reproduce_tab2_rerank.py`         — With-reranking columns of `tab:mainresults` / §4.3
-* `scripts/reproduce_ablation_rerank.py`     — §4.3 LAION-400M K'-sweep ablation (repo-only)
-* `scripts/analysis/29_diagnose_pool_coverage.py` — pool-coverage diagnostic across all Table-2 configs + LAION proxy rows → `results/pool_coverage_diagnostic_seed42.csv` (FAISS-bound; cov_gap<0 only for LAION reverse at probe_budget≈0.0032)
-* `scripts/analysis/30_probe_budget_sweep.py` — decisive single-variable sweep on MSCOCO/CLIP fixed index (nlist=320), sweeping n_probe from probe_budget 0.0031→0.25 → `results/probe_budget_sweep_mscoco_seed42.csv` (FAISS-bound; cov_gap flips − to + as budget increases, confirming probe budget not modality concentration drives the reversal)
+* `scripts/tables/reproduce_tab2_rerank.py`         — With-reranking columns of `tab:mainresults` / §4.3
+* `scripts/tables/reproduce_ablation_rerank.py`     — §4.3 LAION-400M K'-sweep ablation (repo-only)
+* `scripts/analysis/29_diagnose_pool_coverage.py` — pool-coverage diagnostic across all Table-2 configs + LAION proxy rows → `results/diagnostics/pool_coverage_diagnostic_seed42.csv` (FAISS-bound; cov_gap<0 only for LAION reverse at probe_budget≈0.0032)
+* `scripts/analysis/30_probe_budget_sweep.py` — decisive single-variable sweep on MSCOCO/CLIP fixed index (nlist=320), sweeping n_probe from probe_budget 0.0031→0.25 → `results/diagnostics/probe_budget_sweep_mscoco_seed42.csv` (FAISS-bound; cov_gap flips − to + as budget increases, confirming probe budget not modality concentration drives the reversal)
 
 ### §4.4 Ablation
 Table 5 (`tab:mech_extra`): component ablation + IVF-RaBitQ controls. Calibration
 PROSE: cosine ≈ 0.986; R@100 flat within .001 up to n_calib=400. DB-only build-time
 correction outperforms Q-only and both-sides. Verified via:
-* `scripts/reproduce_tab5_mech_extra.py`          — Table 5 (`tab:mech_extra`)
-* `scripts/analysis/verify_calibration.py`        — verifies §4.4 calibration prose → `results/signbit_analysis_verified.csv`
-* `scripts/emit_calibration_metrics.py`           — upstream FAISS builder
-* `scripts/reproduce_gapcal_comparison.py`        — six centroid-alignment strategies; validates DB-only build-time choice
+* `scripts/tables/reproduce_tab5_mech_extra.py`          — Table 5 (`tab:mech_extra`)
+* `scripts/analysis/verify_calibration.py`        — verifies §4.4 calibration prose → `results/diagnostics/signbit_analysis_verified.csv`
+* `scripts/builders/emit_calibration_metrics.py`           — upstream FAISS builder
+* `scripts/analysis/reproduce_gapcal_comparison.py`        — six centroid-alignment strategies; validates DB-only build-time choice
 
 ### §4.5 Multi-Bit Generality
 Table 6 (`tab:multibit`): IVFPQ/OPQ R@100 Vanilla/PMC direction-averaged across
 encoders and datasets. Verified via:
-* `scripts/reproduce_tab6_multibit.py`
+* `scripts/tables/reproduce_tab6_multibit.py`
 
 ### Figures
 `fig:modality-gap` (Fig 1) is data-driven: `paper/figures/fig1_tsne.py`, wrapped by
-`scripts/reproduce_figure1_tsne.py`, t-SNEs ImageBind embeddings and therefore needs
+`scripts/figures/reproduce_figure1_tsne.py`, t-SNEs ImageBind embeddings and therefore needs
 `data/features/`. `fig:pmc-overview` (Fig 2) is schematic; no reproduce script.
 `fig:analysis-bcd` (Fig 3) panels: α-sweep, selective PMC,
 QPS Pareto. Verified via:
-* `scripts/reproduce_fig3_analysis_bcd.py`
-* `scripts/emit_fig_alpha_sweep.py`
+* `scripts/figures/reproduce_fig3_analysis_bcd.py`
+* `scripts/figures/emit_fig_alpha_sweep.py`
 * `paper/figures/fig3_analysis.py`
 
 ---
@@ -92,12 +92,12 @@ QPS Pareto. Verified via:
 
 | Printed | Label | Appears in | Reproduce script | Source CSV(s) | Reproduced CSV |
 |---|---|---|---|---|---|
-| **Table 1** | `tab:signbit_methods` | `sections/01b_related.tex` | `scripts/reproduce_tab1_signbit_methods.py` | `results/signbit_original_gt.csv` | `results/tab1_signbit_methods_reproduced.csv` |
-| **Table 2** | `tab:mainresults` | `sections/01b_related.tex` | `scripts/reproduce_tab2_main.py` (No-reranking columns) + `scripts/reproduce_tab2_rerank.py` (With-reranking columns, + `scripts/reproduce_ablation_rerank.py` for LAION K'-sweep) | No-reranking: `results/multiseed_rabitq_summary.csv`, `results/pmc_eval_clip-l_flickr30k_full_seed42.csv`, `results/pmc_clotho_r1_seed42.csv`, `results/pmc_laion400m_nlist80k_seed42.csv`, `results/pmc_laion400m_reverse_nlist80k_seed42.csv`; With-reranking: `results/rerank_subset_sqrtN_v2_seed42.csv`, `results/pmc_laion400m_rerank_nlist80k_seed42.csv`, `results/pmc_laion400m_reverse_rerank_nlist80k_seed42.csv` | `results/tab2_main_reproduced.csv` (No-reranking, incl. the `q_r10_*` / `db_r10_*` columns); `results/rerank_deployable_reproduced.csv` (With-reranking) |
-| **Table 3** | `tab:r10` | `sections/03_experiments.tex` | `scripts/reproduce_tab2_main.py` (the `q_r10_*` / `db_r10_*` columns) | same sources as Table 2's No-reranking columns | `results/tab2_main_reproduced.csv` |
-| **Table 4** | `tab:mechanism` | `sections/03_experiments.tex` | (no dedicated `reproduce_tab*.py`) `scripts/analysis/verify_signbit_analysis.py` + `scripts/analysis/verify_calibration.py` | `results/mechcontrol_metrics.csv` (Flip%/J@100/cos@25, from `emit_signbit_metrics.py`); BinaryFlat R@100 from `results/signbit_original_gt.csv` | `results/signbit_analysis_verified.csv` |
-| **Table 5** | `tab:mech_extra` | `sections/03_experiments.tex` | `scripts/reproduce_tab5_mech_extra.py` | `results/mechanism_additional_controls.csv` (component ablation + IVF-RaBitQ controls); `results/mech_extra_calibration.csv` (calibration, **CSV retained**, panel removed from table) | `results/tab5_mech_extra_reproduced.csv` |
-| **Table 6** | `tab:multibit` | `sections/03_experiments.tex` | `scripts/reproduce_tab6_multibit.py` | `results/rerank_multibit_seed42.csv`; OPQ CLIP/MSCOCO from `results/pmc_opq_multiseed_clip_mscoco.csv` | `results/tab6_multibit_reproduced__np16_k0.csv` (**per-direction**, referenced by caption "per-direction in repo") |
+| **Table 1** | `tab:signbit_methods` | `sections/01b_related.tex` | `scripts/tables/reproduce_tab1_signbit_methods.py` | `results/sources/signbit_original_gt.csv` | `results/tables/tab1_signbit_methods_reproduced.csv` |
+| **Table 2** | `tab:mainresults` | `sections/01b_related.tex` | `scripts/tables/reproduce_tab2_main.py` (No-reranking columns) + `scripts/tables/reproduce_tab2_rerank.py` (With-reranking columns, + `scripts/tables/reproduce_ablation_rerank.py` for LAION K'-sweep) | No-reranking: `results/sources/multiseed_rabitq_summary.csv`, `results/sources/pmc_eval_clip-l_flickr30k_full_seed42.csv`, `results/sources/pmc_clotho_r1_seed42.csv`, `results/sources/pmc_laion400m_nlist80k_seed42.csv`, `results/sources/pmc_laion400m_reverse_nlist80k_seed42.csv`; With-reranking: `results/sources/rerank_subset_sqrtN_v2_seed42.csv`, `results/sources/pmc_laion400m_rerank_nlist80k_seed42.csv`, `results/sources/pmc_laion400m_reverse_rerank_nlist80k_seed42.csv` | `results/tables/tab2_main_reproduced.csv` (No-reranking, incl. the `q_r10_*` / `db_r10_*` columns); `results/tables/rerank_deployable_reproduced.csv` (With-reranking) |
+| **Table 3** | `tab:r10` | `sections/03_experiments.tex` | `scripts/tables/reproduce_tab2_main.py` (the `q_r10_*` / `db_r10_*` columns) | same sources as Table 2's No-reranking columns | `results/tables/tab2_main_reproduced.csv` |
+| **Table 4** | `tab:mechanism` | `sections/03_experiments.tex` | (no dedicated `reproduce_tab*.py`) `scripts/analysis/verify_signbit_analysis.py` + `scripts/analysis/verify_calibration.py` | `results/sources/mechcontrol_metrics.csv` (Flip%/J@100/cos@25, from `emit_signbit_metrics.py`); BinaryFlat R@100 from `results/sources/signbit_original_gt.csv` | `results/diagnostics/signbit_analysis_verified.csv` |
+| **Table 5** | `tab:mech_extra` | `sections/03_experiments.tex` | `scripts/tables/reproduce_tab5_mech_extra.py` | `results/sources/mechanism_additional_controls.csv` (component ablation + IVF-RaBitQ controls); `results/sources/mech_extra_calibration.csv` (calibration, **CSV retained**, panel removed from table) | `results/tables/tab5_mech_extra_reproduced.csv` |
+| **Table 6** | `tab:multibit` | `sections/03_experiments.tex` | `scripts/tables/reproduce_tab6_multibit.py` | `results/sources/rerank_multibit_seed42.csv`; OPQ CLIP/MSCOCO from `results/sources/pmc_opq_multiseed_clip_mscoco.csv` | `results/tables/tab6_multibit_reproduced__np16_k0.csv` (**per-direction**, referenced by caption "per-direction in repo") |
 
 ### Table 1 — `tab:signbit_methods`
 BQ methods (PureBinary, BinaryIVF, RotatedBinary/BBQ-style, RaBitQ, PMC-RaBitQ),
@@ -123,8 +123,8 @@ columns and Vanilla overtakes PMC (.158 vs .140) — a scan-depth effect (probe_
 Sign-bit mechanism / control checks at $\alpha{=}1$: per-direction sign-bit Flip%,
 top-100 Jaccard $J@100$ vs. exact-IP GT, BinaryFlat R@100 (Vanilla→PMC), and
 calibration cosine at $n_\mathrm{calib}{=}25$ (cos@25), on MSCOCO (CLIP-B/32) and
-AudioCaps (ImageBind). Numbers come from `results/signbit_analysis_verified.csv`
-(BinaryFlat R@100 from `results/signbit_original_gt.csv`), verified by
+AudioCaps (ImageBind). Numbers come from `results/diagnostics/signbit_analysis_verified.csv`
+(BinaryFlat R@100 from `results/sources/signbit_original_gt.csv`), verified by
 `scripts/analysis/verify_signbit_analysis.py` and `scripts/analysis/verify_calibration.py`.
 
 ### Table 5 — `tab:mech_extra`
@@ -132,22 +132,22 @@ MSCOCO/CLIP-B/32 checks: **(b) component ablation** and **(c) IVF-RaBitQ
 controls** (random, shuffled, sign-flipped, un-normalized; Rand/Shuf are
 mean±std over 5 seeds). The script's `print_latex_rows` emits only parts (b)+(c).
 The **calibration-sensitivity panel (n=25/100/400) was removed from the table**,
-but `results/mech_extra_calibration.csv` and its verification are retained because
+but `results/sources/mech_extra_calibration.csv` and its verification are retained because
 the numbers back inline prose (see below).
 
 ### Table 6 — `tab:multibit`
 PMC generality on IVFPQ and OPQ across encoders, R@100 Vanilla/PMC, **mean over
 both retrieval directions**. Each printed cell is the direction-average of the two
-per-direction rows held at full precision in `results/rerank_multibit_seed42.csv`
-(OPQ CLIP/MSCOCO from `results/pmc_opq_multiseed_clip_mscoco.csv`); the committed
-per-direction breakdown is `results/tab6_multibit_reproduced__np16_k0.csv`. The
+per-direction rows held at full precision in `results/sources/rerank_multibit_seed42.csv`
+(OPQ CLIP/MSCOCO from `results/sources/pmc_opq_multiseed_clip_mscoco.csv`); the committed
+per-direction breakdown is `results/tables/tab6_multibit_reproduced__np16_k0.csv`. The
 reproduce script prints `# AVG-LATEX-NOTE` lines for any averaged cell that differs
 from the printed table cell.
 
 ### Table 3 — `tab:r10`
 R@10 at Table 2's no-reranking operating points, Vanilla/MeanShift/PMC. Same sources,
-same rows and same round-half-up convention as Table 2: `scripts/reproduce_tab2_main.py`
-emits the `q_r10_*` / `db_r10_*` columns of `results/tab2_main_reproduced.csv` alongside
+same rows and same round-half-up convention as Table 2: `scripts/tables/reproduce_tab2_main.py`
+emits the `q_r10_*` / `db_r10_*` columns of `results/tables/tab2_main_reproduced.csv` alongside
 the R@100 ones.
 
 ---
@@ -160,8 +160,8 @@ now shown in Table 4 (`tab:mechanism`). Their CSVs are kept verifiable.
 
 | Prose claim (location) | Verifier script | Source CSV(s) |
 |---|---|---|
-| "PMC induces 14–18% sign-bit flips with J@100 of 0.54–0.80; gap direction stable from n=25 (cosine ≥0.95)" — §4.2 Main Results (`03_experiments.tex`) | `scripts/analysis/verify_signbit_analysis.py` (verifies the metrics → `results/signbit_analysis_verified.csv`) | built by `scripts/emit_signbit_metrics.py` from `results/mechanism_bitflip.csv`, `mechanism_exact_control.csv`, `mechanism_calibration_sensitivity.csv`; BinaryFlat van/pmc from `results/signbit_original_gt.csv` |
-| "Calibration stable from n_calib=25 (cosine ≈0.986; R@100 flat within .001 up to n_calib=400)" — §4.4 Ablation (`03_experiments.tex`) | `scripts/analysis/verify_calibration.py` (calibration block) | `results/mech_extra_calibration.csv` (built by `scripts/emit_calibration_metrics.py` from `results/mechanism_calibration_sensitivity.csv`) |
+| "PMC induces 14–18% sign-bit flips with J@100 of 0.54–0.80; gap direction stable from n=25 (cosine ≥0.95)" — §4.2 Main Results (`03_experiments.tex`) | `scripts/analysis/verify_signbit_analysis.py` (verifies the metrics → `results/diagnostics/signbit_analysis_verified.csv`) | built by `scripts/builders/emit_signbit_metrics.py` from `results/diagnostics/mechanism_bitflip.csv`, `mechanism_exact_control.csv`, `mechanism_calibration_sensitivity.csv`; BinaryFlat van/pmc from `results/sources/signbit_original_gt.csv` |
+| "Calibration stable from n_calib=25 (cosine ≈0.986; R@100 flat within .001 up to n_calib=400)" — §4.4 Ablation (`03_experiments.tex`) | `scripts/analysis/verify_calibration.py` (calibration block) | `results/sources/mech_extra_calibration.csv` (built by `scripts/builders/emit_calibration_metrics.py` from `results/diagnostics/mechanism_calibration_sensitivity.csv`) |
 
 ---
 
@@ -169,8 +169,8 @@ now shown in Table 4 (`tab:mechanism`). Their CSVs are kept verifiable.
 
 | Asset | Reproduce / render script | Source CSV(s) | Reproduced CSV |
 |---|---|---|---|
-| `fig:analysis-bcd` panels (a) alpha sweep, (b) selective PMC, (c) QPS Pareto | data: `scripts/emit_fig_alpha_sweep.py` (FAISS-bound builder; + verifier `scripts/reproduce_fig3_analysis_bcd.py`); render: `paper/figures/fig3_analysis.py` | `results/fig_alpha_sweep_rabitq.csv`, `results/selective_pmc_rabitq.csv`, `results/pmc_qps_pareto_clip_mscoco_seed42.csv` | `results/fig3_analysis_bcd_reproduced.csv` |
-| Gap-energy concentration (§Method "top 10% carry ≈90% of \|g\|²") | `scripts/reproduce_gap_energy.py` | `results/gap_energy_all_datasets.csv` | — |
+| `fig:analysis-bcd` panels (a) alpha sweep, (b) selective PMC, (c) QPS Pareto | data: `scripts/figures/emit_fig_alpha_sweep.py` (FAISS-bound builder; + verifier `scripts/figures/reproduce_fig3_analysis_bcd.py`); render: `paper/figures/fig3_analysis.py` | `results/figures/fig_alpha_sweep_rabitq.csv`, `results/figures/selective_pmc_rabitq.csv`, `results/figures/pmc_qps_pareto_clip_mscoco_seed42.csv` | `results/figures/fig3_analysis_bcd_reproduced.csv` |
+| Gap-energy concentration (§Method "top 10% carry ≈90% of \|g\|²") | `scripts/builders/reproduce_gap_energy.py` | `results/sources/gap_energy_all_datasets.csv` | — |
 
 ---
 
@@ -179,15 +179,15 @@ now shown in Table 4 (`tab:mechanism`). Their CSVs are kept verifiable.
 From `current/pmc_crossmodal/`:
 
 ```bash
-python3 scripts/reproduce_tab1_signbit_methods.py         # Table 1
-python3 scripts/reproduce_tab2_main.py                    # Table 2 No-reranking columns
-python3 scripts/reproduce_tab2_rerank.py                  # Table 2 With-reranking columns / §4.3
-python3 scripts/reproduce_tab5_mech_extra.py              # Table 5 (tab:mech_extra) + calibration prose
-python3 scripts/reproduce_tab6_multibit.py                # Table 6 (tab:multibit)
-python3 scripts/reproduce_ablation_rerank.py              # §4.3 LAION K'-sweep ablation (repo-only)
+python3 scripts/tables/reproduce_tab1_signbit_methods.py         # Table 1
+python3 scripts/tables/reproduce_tab2_main.py                    # Table 2 No-reranking columns
+python3 scripts/tables/reproduce_tab2_rerank.py                  # Table 2 With-reranking columns / §4.3
+python3 scripts/tables/reproduce_tab5_mech_extra.py              # Table 5 (tab:mech_extra) + calibration prose
+python3 scripts/tables/reproduce_tab6_multibit.py                # Table 6 (tab:multibit)
+python3 scripts/tables/reproduce_ablation_rerank.py              # §4.3 LAION K'-sweep ablation (repo-only)
 python3 scripts/analysis/verify_signbit_analysis.py       # §4.2 sign-bit prose metrics
 python3 scripts/analysis/verify_calibration.py            # §4.4 calibration prose
-python3 scripts/reproduce_fig3_analysis_bcd.py            # Figure analysis panels
+python3 scripts/figures/reproduce_fig3_analysis_bcd.py            # Figure analysis panels
 ```
 
 Each script exits non-zero / prints `# REPRODUCE-MISMATCH` if a committed CSV no
@@ -196,11 +196,11 @@ longer backs the paper value. Large-dataset regeneration from raw embeddings
 the cached path; the `emit_*.py` builders listed above are the FAISS-bound entry
 points for it.
 
-> **Exception — `scripts/reproduce_gap_energy.py`** (§3 Method gap-energy claim)
+> **Exception — `scripts/builders/reproduce_gap_energy.py`** (§3 Method gap-energy claim)
 > is *feature-bound*, not cached: it recomputes gap-energy concentration from raw
 > `data/features/*.npy` caches and the LAION embedding shards (`laion_dir` in
 > `config/paths.yaml`, or `PMC_LAION_DIR` / `LAION400M_DIR` env). Its committed
-> output `results/gap_energy_all_datasets.csv` is the canonical record; treat the
+> output `results/sources/gap_energy_all_datasets.csv` is the canonical record; treat the
 > script as an emit-class builder despite the `reproduce_` name.
 
 ## Upstream of every result
@@ -213,8 +213,8 @@ which is why those CSVs, not the raw data, are the canonical source of truth.
 
 ## Not a paper element
 
-* `scripts/emit_map_ndcg.py` — mAP@k / nDCG@k sweep (FAISS-bound; requires `data/features/`) over the six small-corpus rows, scored
-  against exact-IP ground truth at the Table-2 operating points → `results/map_ndcg_seed42.csv`.
+* `scripts/builders/emit_map_ndcg.py` — mAP@k / nDCG@k sweep (FAISS-bound; requires `data/features/`) over the six small-corpus rows, scored
+  against exact-IP ground truth at the Table-2 operating points → `results/diagnostics/map_ndcg_seed42.csv`.
   Exploratory only: no figure or table in the paper reports these metrics. Note that Table 2 scores
   AudioCaps against caption--clip pairings rather than exact-IP, so those two rows are not directly
   comparable with that table; the other ten reproduce its R@100 within 0.005.

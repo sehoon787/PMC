@@ -17,10 +17,10 @@ Datasets:
 
 Output:
   - Formatted table to stdout
-  - CSV saved to results/gap_energy_all_datasets.csv
+  - CSV saved to results/sources/gap_energy_all_datasets.csv
 
 Usage:
-  python scripts/reproduce_gap_energy.py
+  python scripts/builders/reproduce_gap_energy.py
 """
 
 from __future__ import annotations
@@ -312,7 +312,7 @@ def main() -> None:
 
     features_dir = CFG.features_dir
     results_dir = CFG.results_dir
-    csv_out = results_dir / "gap_energy_all_datasets.csv"
+    csv_out = results_dir / "sources" / "gap_energy_all_datasets.csv"
 
     print("=" * 70)
     print("Gap Energy Concentration Analysis -- All Datasets")

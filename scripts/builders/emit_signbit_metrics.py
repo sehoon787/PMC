@@ -1,4 +1,4 @@
-"""Emit results/mechcontrol_metrics.csv for analysis/verify_signbit_analysis.py.
+"""Emit results/sources/mechcontrol_metrics.csv for analysis/verify_signbit_analysis.py.
 
 REQUIRES FAISS + the feature .npy files. DO NOT run while a large FAISS
 experiment owns the machine's RAM -- it will OOM. Run it later, once the
@@ -74,7 +74,7 @@ PROJECT_ROOT = find_project_root()
 RESULTS_DIR = PROJECT_ROOT / "results"
 RESEARCH_DIR = RESULTS_DIR / "research"
 R15_SCRIPT = PROJECT_ROOT / "scripts" / "research" / "R15_mechanism_controls.py"
-OUTPUT_CSV = RESULTS_DIR / "mechcontrol_metrics.csv"
+OUTPUT_CSV = RESULTS_DIR / "sources" / "mechcontrol_metrics.csv"
 
 
 def read_csv_rows(path: Path) -> list[dict[str, str]]:
@@ -123,9 +123,9 @@ def collect_n25_cos(calib_rows: list[dict[str, str]]) -> dict[tuple[str, str], f
 
 
 def build_records() -> list[dict[str, str]]:
-    bitflip = collect_flip_pct(read_csv_rows(RESEARCH_DIR / "mechanism_bitflip.csv"))
-    j100 = collect_j100(read_csv_rows(RESEARCH_DIR / "mechanism_exact_control.csv"))
-    cos = collect_n25_cos(read_csv_rows(RESEARCH_DIR / "mechanism_calibration_sensitivity.csv"))
+    bitflip = collect_flip_pct(read_csv_rows(RESEARCH_DIR / "diagnostics" / "mechanism_bitflip.csv"))
+    j100 = collect_j100(read_csv_rows(RESEARCH_DIR / "diagnostics" / "mechanism_exact_control.csv"))
+    cos = collect_n25_cos(read_csv_rows(RESEARCH_DIR / "diagnostics" / "mechanism_calibration_sensitivity.csv"))
 
     records: list[dict[str, str]] = []
     for dataset, direction in ROWS:

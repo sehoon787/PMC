@@ -14,13 +14,13 @@ Data layout:
   E:/laion400m/img_emb/img_emb_{0..409}.npy   float16 (N_shard, 512)
   E:/laion400m/text_emb/text_emb_{0..9}.npy   float16 (N_shard, 512)
 
-Output: results/pmc_laion400m_seed42.csv
+Output: results/sources/pmc_laion400m_seed42.csv
 
 Usage
 -----
-  python scripts/reproduce_laion400m.py             # full 400M experiment
-  python scripts/reproduce_laion400m.py --summary   # print CSV summary and exit
-  python scripts/reproduce_laion400m.py --gt-only   # compute and save GT only
+  python scripts/builders/reproduce_laion400m.py             # full 400M experiment
+  python scripts/builders/reproduce_laion400m.py --summary   # print CSV summary and exit
+  python scripts/builders/reproduce_laion400m.py --gt-only   # compute and save GT only
 """
 
 from __future__ import annotations
@@ -88,7 +88,7 @@ TRAIN_SHARDS = 5        # first 5 shards for training sample (~5M vectors)
 GAP_SAMPLE_SHARDS = 5   # same 5 shards for gap estimation
 
 # Default data directory; override via LAION400M_DIR env var
-_DEFAULT_LAION_DIR = Path("E:/laion400m")
+_DEFAULT_LAION_DIR = Path("data/laion400m")
 LAION_DIR = Path(os.environ.get("LAION400M_DIR", str(_DEFAULT_LAION_DIR)))
 
 RESULTS_DIR = CFG.results_dir
@@ -475,9 +475,9 @@ def check_laion400m_csv_summary() -> bool:
     Returns True if the CSV exists and was printed.
 
     Invoked via:
-      python scripts/reproduce_laion400m.py --summary
+      python scripts/builders/reproduce_laion400m.py --summary
     """
-    csv_path = RESULTS_DIR / f"pmc_laion400m_seed{SEED}.csv"
+    csv_path = RESULTS_DIR / "sources" / f"pmc_laion400m_seed{SEED}.csv"
     if not csv_path.exists():
         print(f"  SKIP: {csv_path} not found")
         return False
@@ -548,7 +548,7 @@ def main(gt_only: bool = False) -> None:
 
     # Paths for ground truth and results
     gt_path = LAION_DIR / f"groundtruth.laion400m.{N_QUERIES // 1000}K.npy"
-    out_csv = RESULTS_DIR / f"pmc_laion400m_seed{SEED}.csv"
+    out_csv = RESULTS_DIR / "sources" / f"pmc_laion400m_seed{SEED}.csv"
 
     # Load queries
     queries = load_queries()

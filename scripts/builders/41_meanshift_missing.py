@@ -10,8 +10,8 @@ This script builds the vanilla index (required to search with shifted queries) b
 records ONLY the meanshift method.
 
 Output:
-  - Appends meanshift rows to results/multiseed_rabitq_summary.csv
-  - Writes standalone results/meanshift_missing_results.csv for verification
+  - Appends meanshift rows to results/sources/multiseed_rabitq_summary.csv
+  - Writes standalone results/sources/meanshift_missing_results.csv for verification
 
 Protocol is identical to 40_multiseed_rabitq.py.
 """
@@ -56,8 +56,8 @@ NPROBE = 16
 
 FEATURES_DIR = CFG.features_dir
 RESULTS_DIR = CFG.results_dir
-SUMMARY_CSV = RESULTS_DIR / "multiseed_rabitq_summary.csv"
-STANDALONE_CSV = RESULTS_DIR / "meanshift_missing_results.csv"
+SUMMARY_CSV = RESULTS_DIR / "sources" / "multiseed_rabitq_summary.csv"
+STANDALONE_CSV = RESULTS_DIR / "sources" / "meanshift_missing_results.csv"
 
 FIELDNAMES = [
     "condition", "backbone", "dataset", "direction", "seed",

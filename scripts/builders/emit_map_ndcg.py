@@ -29,7 +29,7 @@ is recomputed alongside purely as a harness cross-check and printed to stdout.
 
 NOTE: exploratory run -- not a camera-ready artifact.
 
-Output: results/map_ndcg_seed42.csv
+Output: results/diagnostics/map_ndcg_seed42.csv
 """
 
 from __future__ import annotations
@@ -87,8 +87,8 @@ QUERY_BATCH = 2048
 
 FEATURES_DIR = CFG.features_dir
 RESULTS_DIR = CFG.results_dir
-OUT_CSV = RESULTS_DIR / f"map_ndcg_seed{SEED}.csv"
-TAB2_CSV = RESULTS_DIR / "tab2_main_reproduced.csv"
+OUT_CSV = RESULTS_DIR / "diagnostics" / f"map_ndcg_seed{SEED}.csv"
+TAB2_CSV = RESULTS_DIR / "tables" / "tab2_main_reproduced.csv"
 
 FIELDNAMES = [
     "dataset", "backbone", "direction", "nlist", "nprobe", "method",

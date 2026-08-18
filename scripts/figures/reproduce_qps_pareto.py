@@ -17,8 +17,8 @@ Usage:
     python scripts/scale/05_pmc_qps_pareto.py
 
 Output:
-    results/pmc_qps_pareto_clip_mscoco_seed42.csv
-    results/pmc_qps_pareto_imagebind_mscoco_seed42.csv
+    results/figures/pmc_qps_pareto_clip_mscoco_seed42.csv
+    results/figures/pmc_qps_pareto_imagebind_mscoco_seed42.csv
 """
 
 from __future__ import annotations
@@ -178,7 +178,7 @@ def main() -> None:
             backbone_records.extend(records)
 
         # Write CSV per backbone
-        out_path = V4_CFG.results_dir / f"pmc_qps_pareto_{backbone}_mscoco_seed{seed}.csv"
+        out_path = V4_CFG.results_dir / "figures" / f"pmc_qps_pareto_{backbone}_mscoco_seed{seed}.csv"
         write_csv(backbone_records, out_path)
         print_summary(backbone_records, backbone)
         print(f"\n[qps_pareto] {backbone}: {len(backbone_records)} records -> {out_path}")

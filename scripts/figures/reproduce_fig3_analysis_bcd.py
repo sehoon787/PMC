@@ -2,22 +2,22 @@
 
 This script runs NO FAISS.
 
-  Panel (b) -- selective PMC: from results/selective_pmc_rabitq.csv, R@100 by
+  Panel (b) -- selective PMC: from results/figures/selective_pmc_rabitq.csv, R@100 by
     dataset {mscoco, clotho} x direction x top_p_percent. CLEAN.
 
   Panel (c) -- Pareto frontier: from
-    results/pmc_qps_pareto_clip_mscoco_seed42.csv (text->image), R@100 + QPS
+    results/figures/pmc_qps_pareto_clip_mscoco_seed42.csv (text->image), R@100 + QPS
     across the nprobe ladder per method. CLEAN.
 
   Panel (a) -- alpha sweep (RaBitQ R@100 across alpha in {0,.25,.5,.75,1}): no
     faithful CSV exists (the figure currently hardcodes the array in
     paper/figures/fig3_analysis.py). Wired to the intermediate CSV produced by
-    the FAISS-bound emit script scripts/emit_fig_alpha_sweep.py. PENDING until
+    the FAISS-bound emit script scripts/figures/emit_fig_alpha_sweep.py. PENDING until
     that runs.
 
 Outputs:
   - stdout: per-panel tables
-  - results/fig3_analysis_bcd_reproduced.csv
+  - results/figures/fig3_analysis_bcd_reproduced.csv
 """
 
 from __future__ import annotations
@@ -61,10 +61,10 @@ def find_project_root() -> Path:
 
 PROJECT_ROOT = find_project_root()
 RESULTS_DIR = PROJECT_ROOT / "results"
-SELECTIVE_CSV = RESULTS_DIR / "selective_pmc_rabitq.csv"
-PARETO_CSV = RESULTS_DIR / "pmc_qps_pareto_clip_mscoco_seed42.csv"
-ALPHA_CSV = RESULTS_DIR / "fig_alpha_sweep_rabitq.csv"
-OUTPUT_CSV = RESULTS_DIR / "fig3_analysis_bcd_reproduced.csv"
+SELECTIVE_CSV = RESULTS_DIR / "figures" / "selective_pmc_rabitq.csv"
+PARETO_CSV = RESULTS_DIR / "figures" / "pmc_qps_pareto_clip_mscoco_seed42.csv"
+ALPHA_CSV = RESULTS_DIR / "figures" / "fig_alpha_sweep_rabitq.csv"
+OUTPUT_CSV = RESULTS_DIR / "figures" / "fig3_analysis_bcd_reproduced.csv"
 
 
 def read_csv_rows(path: Path) -> list[dict[str, str]]:

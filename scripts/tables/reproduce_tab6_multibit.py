@@ -6,9 +6,9 @@ Each cell reports vanilla R@100 / PMC R@100 + relative-R@100 delta% at the
 multi-bit (IVFPQ / OPQ) operating point nprobe=16, rerank_k=0.
 
 Source map (per the authoritative analyst pass):
-  - All cells come from results/rerank_multibit_seed42.csv, EXCEPT
+  - All cells come from results/sources/rerank_multibit_seed42.csv, EXCEPT
   - the OPQ cell for CLIP/MSCOCO, which comes from the 3-seed mean in
-    results/pmc_opq_multiseed_clip_mscoco.csv (the rerank_multibit single-seed
+    results/sources/pmc_opq_multiseed_clip_mscoco.csv (the rerank_multibit single-seed
     OPQ point disagrees with the paper there; the multiseed mean reproduces it).
 
 Known reproduce notes (cells where the source disagrees with the paper number)
@@ -16,7 +16,7 @@ are tagged inline with `# REPRODUCE-MISMATCH:` and surfaced at runtime.
 
 Outputs:
   - stdout: human-readable table + LaTeX rows (per-direction + direction-averaged)
-  - results/tab6_multibit_reproduced__np16_k0.csv
+  - results/tables/tab6_multibit_reproduced__np16_k0.csv
 """
 
 from __future__ import annotations
@@ -97,8 +97,8 @@ def find_project_root() -> Path:
 
 PROJECT_ROOT = find_project_root()
 RESULTS_DIR = PROJECT_ROOT / "results"
-MULTIBIT_CSV = RESULTS_DIR / "rerank_multibit_seed42.csv"
-OPQ_MULTISEED_CSV = RESULTS_DIR / "pmc_opq_multiseed_clip_mscoco.csv"
+MULTIBIT_CSV = RESULTS_DIR / "sources" / "rerank_multibit_seed42.csv"
+OPQ_MULTISEED_CSV = RESULTS_DIR / "sources" / "pmc_opq_multiseed_clip_mscoco.csv"
 
 
 def read_csv_rows(path: Path) -> list[dict[str, str]]:
@@ -267,7 +267,7 @@ def check_mismatch(enc: str, dataset: str, family: str, dir_label: str,
 
 
 def output_csv_path(nprobe: int, rerank_k: int) -> Path:
-    return RESULTS_DIR / f"tab6_multibit_reproduced__np{nprobe}_k{rerank_k}.csv"
+    return RESULTS_DIR / "tables" / f"tab6_multibit_reproduced__np{nprobe}_k{rerank_k}.csv"
 
 
 def write_output_csv(records: list[dict[str, str]], path: Path) -> None:

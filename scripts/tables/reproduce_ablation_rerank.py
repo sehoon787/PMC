@@ -8,15 +8,15 @@ reproduce_tab2_main.py; its reranked columns by reproduce_tab2_rerank.py.
 This script runs NO FAISS. It reads existing rerank artifacts:
 
   Small 6 rows (MSCOCO/CLIP, MSCOCO/CL-L, MSCOCO/IB, Flickr30K/CL-L,
-    Clotho/IB, AudioCaps/IB): source results/rerank_subset_seed42.csv. Each
+    Clotho/IB, AudioCaps/IB): source results/sources/rerank_subset_seed42.csv. Each
     cell is Vanilla / MeanShift / PMC R@100 at fixed nprobe with the chosen
     oversampling K' (image family K'=500, audio family K'=200 by default), with
     relative R@100 deltas and a min-K' deployable-recall diagnostic. This ports
     the verified logic from reproduce_tab2_rerank.py.
 
   LAION-400M row: forward source
-    results/pmc_laion400m_rerank_nlist80k_seed42.csv; reverse source
-    results/pmc_laion400m_reverse_rerank_nlist80k_seed42.csv. The reverse file
+    results/sources/pmc_laion400m_rerank_nlist80k_seed42.csv; reverse source
+    results/sources/pmc_laion400m_reverse_rerank_nlist80k_seed42.csv. The reverse file
     may not exist (its experiment was deferred off the critical path). When it
     is missing, the forward (q->db) cells are printed and the reverse (db->q)
     cells emit "--" with a clear "[PENDING reverse rerank CSV]" note. No crash.
@@ -92,9 +92,9 @@ def find_project_root() -> Path:
 
 PROJECT_ROOT = find_project_root()
 RESULTS_DIR = PROJECT_ROOT / "results"
-SUBSET_CSV = RESULTS_DIR / "rerank_subset_seed42.csv"
-LAION_FWD_CSV = RESULTS_DIR / "pmc_laion400m_rerank_nlist80k_seed42.csv"
-LAION_REV_CSV = RESULTS_DIR / "pmc_laion400m_reverse_rerank_nlist80k_seed42.csv"
+SUBSET_CSV = RESULTS_DIR / "sources" / "rerank_subset_seed42.csv"
+LAION_FWD_CSV = RESULTS_DIR / "sources" / "pmc_laion400m_rerank_nlist80k_seed42.csv"
+LAION_REV_CSV = RESULTS_DIR / "sources" / "pmc_laion400m_reverse_rerank_nlist80k_seed42.csv"
 
 
 def read_csv_rows(path: Path) -> list[dict[str, str]]:
@@ -288,7 +288,7 @@ def build_laion_records(nprobe: int, rerank_k: int,
 
 def output_csv_path(nprobe: int, rerank_k_label: str, use_rerank: bool) -> Path:
     suffix = "rerank" if use_rerank else "norerank"
-    return RESULTS_DIR / f"ablation_rerank_reproduced__np{nprobe}_k{rerank_k_label}_{suffix}.csv"
+    return RESULTS_DIR / "tables" / f"ablation_rerank_reproduced__np{nprobe}_k{rerank_k_label}_{suffix}.csv"
 
 
 def write_output_csv(records: list[dict[str, str]], path: Path) -> None:

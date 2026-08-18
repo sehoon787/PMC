@@ -14,9 +14,9 @@ Output files (compatible with reproduce_laion400m.py):
 
 Usage
 -----
-  python scripts/compute_gt_laion400m_gpu.py
-  python scripts/compute_gt_laion400m_gpu.py --laion-dir F:/laion400m
-  python scripts/compute_gt_laion400m_gpu.py --dry-run  # check GPU, skip compute
+  python scripts/builders/compute_gt_laion400m_gpu.py
+  python scripts/builders/compute_gt_laion400m_gpu.py --laion-dir F:/laion400m
+  python scripts/builders/compute_gt_laion400m_gpu.py --dry-run  # check GPU, skip compute
 """
 
 from __future__ import annotations
@@ -42,7 +42,7 @@ N_IMG_SHARDS = 410
 TOP_K = 100
 DIM = 512
 
-_DEFAULT_LAION_DIR = Path("E:/laion400m")
+_DEFAULT_LAION_DIR = Path("data/laion400m")
 LAION_DIR = Path(os.environ.get("LAION400M_DIR", str(_DEFAULT_LAION_DIR)))
 
 # GPU temp memory: 512 MB is enough for 1M × 512d per shard search

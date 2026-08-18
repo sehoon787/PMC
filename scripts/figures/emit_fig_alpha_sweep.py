@@ -1,4 +1,4 @@
-"""Emit results/fig_alpha_sweep_rabitq.csv for reproduce_fig_analysis.py panel (a).
+"""Emit results/figures/fig_alpha_sweep_rabitq.csv for reproduce_fig_analysis.py panel (a).
 
 REQUIRES FAISS + feature .npy files. DO NOT run while a large FAISS experiment
 owns the machine's RAM. Run it later, once the machine is free.
@@ -103,7 +103,7 @@ def find_project_root() -> Path:
 PROJECT_ROOT = find_project_root()
 RESULTS_DIR = PROJECT_ROOT / "results"
 FEATURES_DIR = PROJECT_ROOT / "data" / "features"
-OUTPUT_CSV = RESULTS_DIR / "fig_alpha_sweep_rabitq.csv"
+OUTPUT_CSV = RESULTS_DIR / "figures" / "fig_alpha_sweep_rabitq.csv"
 
 
 # --- Core (mirrors R13_signbit_original_gt.py) -------------------------------

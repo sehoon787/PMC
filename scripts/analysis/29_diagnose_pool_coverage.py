@@ -16,7 +16,7 @@ existing rerank-ladder CSVs (the 407M index is NOT rebuilt).
 
 Outputs
 -------
-- results/pool_coverage_diagnostic_seed42.csv
+- results/diagnostics/pool_coverage_diagnostic_seed42.csv
 - a markdown summary table on stdout
 
 All ground truth and recall are computed on the ORIGINAL (unshifted) L2-
@@ -54,10 +54,10 @@ def find_project_root() -> Path:
 PROJECT_ROOT = find_project_root()
 FEATURES_DIR = PROJECT_ROOT / "data" / "features"
 RESULTS_DIR = PROJECT_ROOT / "results"
-OUTPUT_CSV = RESULTS_DIR / "pool_coverage_diagnostic_seed42.csv"
+OUTPUT_CSV = RESULTS_DIR / "diagnostics" / "pool_coverage_diagnostic_seed42.csv"
 
-LAION_FWD_CSV = RESULTS_DIR / "pmc_laion400m_rerank_nlist80k_k400_seed42.csv"
-LAION_REV_CSV = RESULTS_DIR / "pmc_laion400m_reverse_rerank_nlist80k_k400_seed42.csv"
+LAION_FWD_CSV = RESULTS_DIR / "sources" / "pmc_laion400m_rerank_nlist80k_k400_seed42.csv"
+LAION_REV_CSV = RESULTS_DIR / "sources" / "pmc_laion400m_reverse_rerank_nlist80k_k400_seed42.csv"
 
 
 # ---------------------------------------------------------------------------

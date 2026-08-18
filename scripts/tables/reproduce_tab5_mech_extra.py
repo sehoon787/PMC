@@ -2,7 +2,7 @@
 
 This script runs NO FAISS.
 
-  Part (b) -- component ablation: from results/mechanism_additional_controls.csv,
+  Part (b) -- component ablation: from results/sources/mechanism_additional_controls.csv,
     R@100 by index_type {binary_flat, ivf_rabitq} x direction {text2image,
     image2text} x mode {vanilla, query_only, db_only, both}, 3 decimals. CLEAN.
 
@@ -18,7 +18,7 @@ backs the §4.4 Ablation prose claims. This script reproduces ONLY parts (b) and
 
 Outputs:
   - stdout: human-readable tables + LaTeX rows (parts b and c)
-  - results/tab5_mech_extra_reproduced.csv
+  - results/tables/tab5_mech_extra_reproduced.csv
 """
 
 from __future__ import annotations
@@ -58,8 +58,8 @@ def find_project_root() -> Path:
 
 PROJECT_ROOT = find_project_root()
 RESULTS_DIR = PROJECT_ROOT / "results"
-CONTROLS_CSV = RESULTS_DIR / "mechanism_additional_controls.csv"
-OUTPUT_CSV = RESULTS_DIR / "tab5_mech_extra_reproduced.csv"
+CONTROLS_CSV = RESULTS_DIR / "sources" / "mechanism_additional_controls.csv"
+OUTPUT_CSV = RESULTS_DIR / "tables" / "tab5_mech_extra_reproduced.csv"
 
 
 def read_csv_rows(path: Path) -> list[dict[str, str]]:

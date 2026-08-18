@@ -238,7 +238,7 @@ def main() -> None:
 
     root = project_root()
     out_dir = args.results_dir.resolve() if args.results_dir else root / "results"
-    out_path = out_dir / "mechanism_additional_controls.csv"
+    out_path = out_dir / "sources" / "mechanism_additional_controls.csv"
     if args.validate_paper:
         validate_table5_controls(out_path)
         return

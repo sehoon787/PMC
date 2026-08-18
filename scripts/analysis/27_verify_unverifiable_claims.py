@@ -9,7 +9,7 @@ Claims verified:
   4. "33 B/vec lower bound" -- recorded as THEORETICAL
 
 Output:
-  results/unverifiable_claims_verification.csv
+  results/diagnostics/unverifiable_claims_verification.csv
   Formatted summary printed to stdout.
 
 Run:
@@ -46,7 +46,7 @@ from src.runtime.config import CFG
 
 FEATURES_DIR = CFG.features_dir
 RESULTS_DIR = CFG.results_dir
-OUTPUT_CSV = RESULTS_DIR / "unverifiable_claims_verification.csv"
+OUTPUT_CSV = RESULTS_DIR / "diagnostics" / "unverifiable_claims_verification.csv"
 
 TOP_K = 100
 NLIST = 64

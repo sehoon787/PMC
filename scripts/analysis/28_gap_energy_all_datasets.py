@@ -8,7 +8,7 @@ Paper claims: top 10% of dims capture >83% of gap energy, top 5% capture >87%.
 
 Output:
   - Formatted table to stdout
-  - CSV saved to results/gap_energy_all_datasets.csv
+  - CSV saved to results/sources/gap_energy_all_datasets.csv
 
 Usage:
   python scripts/analysis/28_gap_energy_all_datasets.py
@@ -307,7 +307,7 @@ def main() -> None:
 
     features_dir = CFG.features_dir
     results_dir = CFG.results_dir
-    csv_out = results_dir / "gap_energy_all_datasets.csv"
+    csv_out = results_dir / "sources" / "gap_energy_all_datasets.csv"
 
     print("=" * 70)
     print("Gap Energy Concentration Analysis -- All Datasets")

@@ -484,10 +484,10 @@ def _validate_tab_mech_extra(
 
 
 def validate_paper_tables(results_dir: Path) -> None:
-    bitflip_rows = _load_rows(results_dir / "mechanism_bitflip.csv")
-    exact_rows = _load_rows(results_dir / "mechanism_exact_control.csv")
-    calib_rows = _load_rows(results_dir / "mechanism_calibration_sensitivity.csv")
-    ablation_rows = _load_rows(results_dir / "mechanism_component_ablation.csv")
+    bitflip_rows = _load_rows(results_dir / "diagnostics" / "mechanism_bitflip.csv")
+    exact_rows = _load_rows(results_dir / "diagnostics" / "mechanism_exact_control.csv")
+    calib_rows = _load_rows(results_dir / "diagnostics" / "mechanism_calibration_sensitivity.csv")
+    ablation_rows = _load_rows(results_dir / "diagnostics" / "mechanism_component_ablation.csv")
 
     bitflip = {
         (r["dataset"], r["direction"]): float(r["flip_rate"])
@@ -556,31 +556,31 @@ def main() -> None:
             calibration_rows.extend(run_calibration_rows(db_orig, q_orig, dataset, backbone, direction))
 
     write_csv(
-        out_dir / "mechanism_bitflip.csv",
+        out_dir / "diagnostics" / "mechanism_bitflip.csv",
         ["dataset", "backbone", "direction", "vector_type", "margin_bin", "flip_rate", "n_vectors", "n_dims", "gt_protocol"],
         bitflip_rows,
     )
     write_csv(
-        out_dir / "mechanism_exact_control.csv",
+        out_dir / "diagnostics" / "mechanism_exact_control.csv",
         ["dataset", "backbone", "direction", "alpha", "r10_to_original_gt", "r100_to_original_gt", "jaccard10_vs_original_ranking", "jaccard100_vs_original_ranking", "gt_protocol"],
         exact_rows,
     )
     write_csv(
-        out_dir / "mechanism_component_ablation.csv",
+        out_dir / "diagnostics" / "mechanism_component_ablation.csv",
         ["dataset", "backbone", "direction", "index_type", "mode", "r10", "r100", "gt_protocol"],
         component_rows,
     )
     write_csv(
-        out_dir / "mechanism_calibration_sensitivity.csv",
+        out_dir / "diagnostics" / "mechanism_calibration_sensitivity.csv",
         ["dataset", "backbone", "direction", "n_calib", "sample_seed", "gap_cos_to_full", "gap_angle_deg", "r10", "r100", "delta_r100_vs_original_exact", "delta_r100_vs_fullgap", "gt_protocol"],
         calibration_rows,
     )
 
     print(f"[reproduce_mechanism_controls] features_dir={features_dir}")
-    print(f"[reproduce_mechanism_controls] wrote {out_dir / 'mechanism_bitflip.csv'} ({len(bitflip_rows)} rows)")
-    print(f"[reproduce_mechanism_controls] wrote {out_dir / 'mechanism_exact_control.csv'} ({len(exact_rows)} rows)")
-    print(f"[reproduce_mechanism_controls] wrote {out_dir / 'mechanism_component_ablation.csv'} ({len(component_rows)} rows)")
-    print(f"[reproduce_mechanism_controls] wrote {out_dir / 'mechanism_calibration_sensitivity.csv'} ({len(calibration_rows)} rows)")
+    print(f"[reproduce_mechanism_controls] wrote {out_dir / 'diagnostics' / 'mechanism_bitflip.csv'} ({len(bitflip_rows)} rows)")
+    print(f"[reproduce_mechanism_controls] wrote {out_dir / 'diagnostics' / 'mechanism_exact_control.csv'} ({len(exact_rows)} rows)")
+    print(f"[reproduce_mechanism_controls] wrote {out_dir / 'diagnostics' / 'mechanism_component_ablation.csv'} ({len(component_rows)} rows)")
+    print(f"[reproduce_mechanism_controls] wrote {out_dir / 'diagnostics' / 'mechanism_calibration_sensitivity.csv'} ({len(calibration_rows)} rows)")
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 """Reproduce the "with reranking" column group of tab:mainresults: §4.3 Robustness under Exact Reranking.
 
 This script runs NO FAISS and no heavy experiment. It reads the recall-tuned
-rerank artifact (results/rerank_subset_sqrtN_kfine_seed42.csv) and reproduces the
+rerank artifact (results/sources/rerank_subset_sqrtN_kfine_seed42.csv) and reproduces the
 operating-point numbers that back the "with reranking" half of tab:mainresults:
 
   R@100 after exact reranking of the top-K' binary candidates, with a
@@ -35,7 +35,7 @@ uniform-dominance property, or an expectation drifted from its committed value.
 Outputs:
   - stdout: human-readable operating-point table + dominance/min-K' diagnostics
             + LaTeX rows (tab:mainresults rerank format) + any # REPRODUCE-MISMATCH lines
-  - results/rerank_deployable_reproduced.csv
+  - results/tables/rerank_deployable_reproduced.csv
 """
 
 from __future__ import annotations
@@ -104,8 +104,8 @@ def find_project_root() -> Path:
 
 PROJECT_ROOT = find_project_root()
 RESULTS_DIR = PROJECT_ROOT / "results"
-SOURCE_CSV = RESULTS_DIR / "rerank_subset_sqrtN_kfine_seed42.csv"
-OUTPUT_CSV = RESULTS_DIR / "rerank_deployable_reproduced.csv"
+SOURCE_CSV = RESULTS_DIR / "sources" / "rerank_subset_sqrtN_kfine_seed42.csv"
+OUTPUT_CSV = RESULTS_DIR / "tables" / "rerank_deployable_reproduced.csv"
 
 
 def read_csv_rows(path: Path) -> list[dict[str, str]]:
