@@ -8,6 +8,7 @@
 data_dir: data
 results_dir: results
 features_dir: data/features
+laion_dir: data/laion400m
 audiocaps_dir: data/raw/audiocaps
 audiocaps_metadata_csv: data/raw/audiocaps/test.csv
 hf_home: .hf-cache

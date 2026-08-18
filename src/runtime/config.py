@@ -105,6 +105,7 @@ class V4Config:
     data_dir: Path = field(default_factory=lambda: V4_ROOT / "data")
     results_dir: Path = field(default_factory=lambda: V4_ROOT / "results")
     features_dir: Path = field(default_factory=lambda: V4_ROOT / "data" / "features")
+    laion_dir: Path = field(default_factory=lambda: V4_ROOT / "data" / "laion400m")
     audiocaps_dir: Path = field(default_factory=lambda: V4_ROOT / "data" / "raw" / "audiocaps")
     audiocaps_metadata_csv: Path = field(
         default_factory=lambda: V4_ROOT / "data" / "raw" / "audiocaps" / "test.csv"
@@ -154,6 +155,10 @@ def load_runtime_config(paths_yaml: Optional[Path] = None) -> V4Config:
         _setting(settings, "features_dir", str(Path("data") / "features")),
         base_dir=V4_ROOT,
     )
+    laion_dir = _resolve_path_value(
+        _setting(settings, "laion_dir", str(Path("data") / "laion400m")),
+        base_dir=V4_ROOT,
+    )
     audiocaps_dir = _resolve_path_value(
         _setting(settings, "audiocaps_dir", str(Path("data") / "raw" / "audiocaps")),
         base_dir=V4_ROOT,
@@ -172,6 +177,7 @@ def load_runtime_config(paths_yaml: Optional[Path] = None) -> V4Config:
         data_dir=data_dir or (V4_ROOT / "data"),
         results_dir=results_dir or (V4_ROOT / "results"),
         features_dir=features_dir or (V4_ROOT / "data" / "features"),
+        laion_dir=laion_dir or (V4_ROOT / "data" / "laion400m"),
         audiocaps_dir=audiocaps_dir or (V4_ROOT / "data" / "raw" / "audiocaps"),
         audiocaps_metadata_csv=audiocaps_metadata_csv or (V4_ROOT / "data" / "raw" / "audiocaps" / "test.csv"),
         hf_home=hf_home or (V4_ROOT / ".hf-cache"),

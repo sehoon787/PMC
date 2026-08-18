@@ -46,9 +46,11 @@ if str(_ROOT) not in sys.path:
 from src.runtime.config import CFG  # noqa: E402
 
 # ---------------------------------------------------------------------------
-# LAION path
+# LAION path — config/paths.yaml `laion_dir` (PMC_LAION_DIR env override);
+# legacy LAION400M_DIR env var still takes precedence when set.
 # ---------------------------------------------------------------------------
-LAION_DIR = Path(os.environ.get("LAION400M_DIR", "E:/laion400m"))
+_laion_env = os.environ.get("LAION400M_DIR")
+LAION_DIR = Path(_laion_env) if _laion_env else CFG.laion_dir
 
 # ---------------------------------------------------------------------------
 # Small-dataset specs: (label, backbone, db_file, query_file)

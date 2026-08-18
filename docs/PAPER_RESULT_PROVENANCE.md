@@ -188,7 +188,6 @@ python3 scripts/reproduce_ablation_rerank.py              # §4.3 LAION K'-sweep
 python3 scripts/analysis/verify_signbit_analysis.py       # §4.2 sign-bit prose metrics
 python3 scripts/analysis/verify_calibration.py            # §4.4 calibration prose
 python3 scripts/reproduce_fig3_analysis_bcd.py            # Figure analysis panels
-python3 scripts/reproduce_gap_energy.py                   # §3 Method gap-energy claim
 ```
 
 Each script exits non-zero / prints `# REPRODUCE-MISMATCH` if a committed CSV no
@@ -196,6 +195,13 @@ longer backs the paper value. Large-dataset regeneration from raw embeddings
 (Flickr30K-31K, LAION-400M, Yandex) requires external data and is out of scope for
 the cached path; the `emit_*.py` builders listed above are the FAISS-bound entry
 points for it.
+
+> **Exception — `scripts/reproduce_gap_energy.py`** (§3 Method gap-energy claim)
+> is *feature-bound*, not cached: it recomputes gap-energy concentration from raw
+> `data/features/*.npy` caches and the LAION embedding shards (`laion_dir` in
+> `config/paths.yaml`, or `PMC_LAION_DIR` / `LAION400M_DIR` env). Its committed
+> output `results/gap_energy_all_datasets.csv` is the canonical record; treat the
+> script as an emit-class builder despite the `reproduce_` name.
 
 ## Upstream of every result
 
@@ -212,3 +218,29 @@ which is why those CSVs, not the raw data, are the canonical source of truth.
   Exploratory only: no figure or table in the paper reports these metrics. Note that Table 2 scores
   AudioCaps against caption--clip pairings rather than exact-IP, so those two rows are not directly
   comparable with that table; the other ten reproduce its R@100 within 0.005.
+
+## Supporting / intermediate CSVs
+
+Files in `results/` that back the pipeline but are not themselves a printed
+table or figure. All are committed; `->` marks producer / consumer.
+
+| CSV | Producer -> Consumer | Role |
+|---|---|---|
+| `nprobe_sweep_pivot.csv` | offline sweep -> `reproduce_tab2_main.py`, `reproduce_table2_main_aggregator.py` | **The measured source of Table 2** (all nlist settings incl. `sqrtN`; also carries R@10 columns used by `tab:r10`) |
+| `table2_main_reproduced.csv` | `reproduce_table2_main_aggregator.py` output | Aggregator cross-check of Table 2; distinct from `tab2_main_reproduced.csv` (per-table reproduce output) |
+| `mechanism_bitflip.csv`, `mechanism_exact_control.csv`, `mechanism_component_ablation.csv`, `mechanism_calibration_sensitivity.csv` | `reproduce_mechanism_controls.py` outputs | §4.4 mechanism/control derivations (from committed sources) |
+| `meanshift_missing_results.csv` | `41_meanshift_missing.py` | MeanShift cells absent from the original sweeps |
+| `pmc_laion400m_seed42.csv`, `pmc_laion400m_reverse_seed42.csv` | `reproduce_laion400m{,_reverse}.py` | LAION legacy operating point (`n_list=20K`); paper cells use the `*_nlist80k_*` files |
+| `pmc_laion400m_rerank_nlist80k_k400_seed42.csv`, `pmc_laion400m_reverse_rerank_nlist80k_k400_seed42.csv` | offline rerank runs -> `analysis/29_diagnose_pool_coverage.py` | K'=400 rerank measurements behind the §4.3 scan-depth diagnosis |
+| `rerank_subset_seed42.csv` | offline runs -> `reproduce_ablation_rerank.py` | §4.3 K'-sweep ablation source |
+| `rerank_subset_sqrtN_kfine_seed42.csv` | offline runs -> `reproduce_tab2_rerank.py` | Table 2 With-reranking column source (fine K' grid) |
+| `ablation_rerank_reproduced__np64_kperfamily_rerank.csv` | `reproduce_ablation_rerank.py` output (dynamic name `__np{n}_k{label}`) | Regenerable reproduce artifact |
+| `pmc_pq_alpha_sweep_clip_mscoco_seed42.csv` | `reproduce_table3_pq_sweep.py` output | PQ alpha-sweep backing the multi-bit prose |
+| `pmc_qps_pareto_imagebind_mscoco_seed42.csv` | offline QPS runs -> `reproduce_qps_pareto.py` | ImageBind QPS Pareto companion to the CLIP curve |
+| `unverifiable_claims_verification.csv` | `analysis/27_verify_unverifiable_claims.py` | Audit trail for prose claims without a table |
+
+## Legacy
+
+`results/legacy/` holds superseded measurement CSVs that nothing reads
+(old `scripts/pq/` per-dataset runs, an np512/1024 probe sweep, a renamed
+AudioCaps output). See `results/legacy/README.md` for the file-by-file origin.
