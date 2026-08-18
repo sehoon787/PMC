@@ -30,31 +30,18 @@ final/
 │       ├── fig_gap_vs_gain.pdf
 │       ├── fig_analysis_bcd.pdf
 │       └── fig_combined_1x4.pdf
-├── results/              (52 CSVs)
-├── scripts/
-│   ├── data_prep/                 # dataset download + feature extraction (FAISS-free; needs raw data)
-│   ├── analysis/
-│   │   ├── verify_signbit_analysis.py
-│   │   └── verify_calibration.py
-│   ├── reproduce_tab1_signbit_methods.py
-│   ├── reproduce_tab2_main.py
-│   ├── reproduce_tab2_rerank.py
-│   ├── reproduce_tab5_mech_extra.py
-│   ├── reproduce_tab6_multibit.py
-│   ├── emit_map_ndcg.py
-│   ├── reproduce_table3_pq_sweep.py
-│   ├── reproduce_ablation_rerank.py
-│   ├── reproduce_mechanism_controls.py
-│   ├── reproduce_mechanism_additional_controls.py
-│   ├── reproduce_gapcal_comparison.py
-│   ├── reproduce_gap_energy.py
-│   ├── reproduce_audiocaps.py
-│   ├── reproduce_clotho.py
-│   ├── reproduce_laion400m.py
-│   ├── reproduce_fig3_analysis_bcd.py
-│   ├── reproduce_figure_c.py
-│   ├── reproduce_qps_pareto.py
-│   └── generate_figure.py
+├── results/                       # committed measurement record (see results/README.md)
+│   ├── tables/       (7 CSVs)    # per-table reproduce outputs
+│   ├── figures/      (5 CSVs)    # figure-panel data
+│   ├── sources/     (24 CSVs)    # shared raw measurements (never edited by hand)
+│   ├── diagnostics/  (9 CSVs)    # verification / mechanism-control derivations
+│   └── legacy/       (7 CSVs)    # superseded, unread (results/legacy/README.md)
+├── scripts/                       # folder mirrors results/ (see scripts/README.md)
+│   ├── tables/                    # reproduce_tab*.py — re-derive every printed table cell
+│   ├── figures/                   # figure-data reproduce/emit scripts
+│   ├── builders/                  # FAISS/feature-bound emitters (emit_*, LAION GT, gap_energy)
+│   ├── analysis/                  # verifiers + mechanism/control derivations
+│   └── data_prep/                 # dataset download + feature extraction (needs raw data)
 ├── src/
 │   ├── core/
 │   │   ├── pmc.py
@@ -99,27 +86,27 @@ All reproduction scripts live in `final/scripts/`. Each script corresponds to on
 
 | Script | Paper Element |
 |---|---|
-| `reproduce_tab1_signbit_methods.py` | Table 1 (`tab:signbit_methods`) — BQ methods on MSCOCO and AudioCaps |
-| `reproduce_tab2_main.py` | Table 2 (`tab:mainresults`) — main PMC results, No-reranking columns |
-| `reproduce_tab2_rerank.py` | Table 2 (`tab:mainresults`) — main PMC results, With-reranking columns (K'=400) |
-| `reproduce_ablation_rerank.py` | LAION-400M K'-sweep reranking ablation (repo-only) |
+| `tables/reproduce_tab1_signbit_methods.py` | Table 1 (`tab:signbit_methods`) — BQ methods on MSCOCO and AudioCaps |
+| `tables/reproduce_tab2_main.py` | Table 2 (`tab:mainresults`) — main PMC results, No-reranking columns |
+| `tables/reproduce_tab2_rerank.py` | Table 2 (`tab:mainresults`) — main PMC results, With-reranking columns (K'=400) |
+| `tables/reproduce_ablation_rerank.py` | LAION-400M K'-sweep reranking ablation (repo-only) |
 | `analysis/verify_signbit_analysis.py` | Table 4 (`tab:mechanism`) — sign-bit Flip% and J@100 metrics |
 | `analysis/verify_calibration.py` | Table 4 (`tab:mechanism`) — calibration cosine (cos@25); backs the calibration prose |
-| `reproduce_tab5_mech_extra.py` | Table 5 (`tab:mech_extra`) — component ablation and IVF-RaBitQ controls (filename keeps legacy `tab3` prefix) |
-| `reproduce_mechanism_controls.py` | Source CSVs for Tables 3–4 (bit-flip, exact control, component ablation, calibration sensitivity) |
-| `reproduce_mechanism_additional_controls.py` | Table 5 additional IVF-RaBitQ controls |
-| `reproduce_gapcal_comparison.py` | Centroid-alignment strategy comparison (validates the DB-side build-time choice) |
-| `reproduce_tab6_multibit.py` | Table 6 (`tab:multibit`) — multi-bit generality aggregator (filename keeps legacy `tab4` prefix) |
+| `tables/reproduce_tab5_mech_extra.py` | Table 5 (`tab:mech_extra`) — component ablation and IVF-RaBitQ controls (filename keeps legacy `tab3` prefix) |
+| `analysis/reproduce_mechanism_controls.py` | Source CSVs for Tables 3–4 (bit-flip, exact control, component ablation, calibration sensitivity) |
+| `analysis/reproduce_mechanism_additional_controls.py` | Table 5 additional IVF-RaBitQ controls |
+| `analysis/reproduce_gapcal_comparison.py` | Centroid-alignment strategy comparison (validates the DB-side build-time choice) |
+| `tables/reproduce_tab6_multibit.py` | Table 6 (`tab:multibit`) — multi-bit generality aggregator (filename keeps legacy `tab4` prefix) |
 | `data_prep/*.py` | Dataset download and feature extraction: AudioCaps/Clotho download, CLIP and ImageBind extraction. Produces `data/features/`, which every FAISS-bound script consumes. |
-| `emit_map_ndcg.py` | mAP/nDCG ranking-quality sweep across the six small-corpus rows; FAISS-bound, requires `data/features/`; exploratory, not tied to a paper element |
-| `reproduce_table3_pq_sweep.py` | IVFPQ/OPQ alpha sweep (produces the PQ CSVs feeding Table 6 and Fig. 3a) |
-| `reproduce_audiocaps.py` | Table 2 AudioCaps rows |
-| `reproduce_clotho.py` | Table 2 Clotho rows |
-| `reproduce_laion400m.py` | Table 2 LAION-400M large-scale row |
-| `reproduce_gap_energy.py` | Method-section gap-energy concentration claim |
-| `reproduce_fig3_analysis_bcd.py` | `fig:analysis-bcd` — alpha sweep, selective PMC, and QPS Pareto panels |
-| `reproduce_figure_c.py` | Analysis source for selective PMC curve (`selective_pmc_rabitq.csv`) |
-| `reproduce_qps_pareto.py` | Analysis source for QPS Pareto curve (`pmc_qps_pareto_clip_mscoco_seed42.csv`) |
+| `builders/emit_map_ndcg.py` | mAP/nDCG ranking-quality sweep across the six small-corpus rows; FAISS-bound, requires `data/features/`; exploratory, not tied to a paper element |
+| `tables/reproduce_table3_pq_sweep.py` | IVFPQ/OPQ alpha sweep (produces the PQ CSVs feeding Table 6 and Fig. 3a) |
+| `builders/reproduce_audiocaps.py` | Table 2 AudioCaps rows |
+| `builders/reproduce_clotho.py` | Table 2 Clotho rows |
+| `builders/reproduce_laion400m.py` | Table 2 LAION-400M large-scale row |
+| `builders/reproduce_gap_energy.py` | Method-section gap-energy concentration claim |
+| `figures/reproduce_fig3_analysis_bcd.py` | `fig:analysis-bcd` — alpha sweep, selective PMC, and QPS Pareto panels |
+| `figures/reproduce_figure_c.py` | Analysis source for selective PMC curve (`selective_pmc_rabitq.csv`) |
+| `figures/reproduce_qps_pareto.py` | Analysis source for QPS Pareto curve (`pmc_qps_pareto_clip_mscoco_seed42.csv`) |
 | `paper/figures/fig3_analysis.py` | Renders split figure assets (`fig_gap_vs_gain`, `fig_analysis_bcd`) and legacy `fig_combined_1x4` |
 
 ## Runtime Paths
